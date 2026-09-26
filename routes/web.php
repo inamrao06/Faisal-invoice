@@ -10,6 +10,7 @@ use App\Http\Controllers\CompanyPaymentMethodController;
 use App\Http\Controllers\CompanyPermissionController;
 use App\Http\Controllers\CompanyRoleController;
 use App\Http\Controllers\CompanyTypeController;
+use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImpersonationController;
@@ -34,14 +35,16 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('company')->name('company.')->middleware('can:company-area')->group(function () {
         Route::get('/dashboard', CompanyDashboardController::class)->name('dashboard');
-        Route::resource('expense-types', CompanyExpenseTypeController::class)->parameters(['expense-types'=>'expense_type'])->except('show','destroy');
-        Route::resource('payment-methods', CompanyPaymentMethodController::class)->parameters(['payment-methods'=>'payment_method'])->except('show','destroy');
-        Route::resource('roles', CompanyRoleController::class)->except('show','destroy');
-        Route::resource('permissions', CompanyPermissionController::class)->except('show','destroy');
-        Route::resource('expenses', CompanyExpenseController::class)->only('index','create','store','show');
+        Route::resource('expense-types', CompanyExpenseTypeController::class)->parameters(['expense-types' => 'expense_type'])->except('show', 'destroy');
+        Route::resource('payment-methods', CompanyPaymentMethodController::class)->parameters(['payment-methods' => 'payment_method'])->except('show', 'destroy');
+        Route::resource('roles', CompanyRoleController::class)->except('show', 'destroy');
+        Route::resource('permissions', CompanyPermissionController::class)->except('show', 'destroy');
+        Route::resource('expenses', CompanyExpenseController::class)->only('index', 'create', 'store', 'show');
         Route::get('/expenses-data', [CompanyExpenseController::class, 'data'])->name('expenses.data');
         Route::get('/expense-dropdowns', [CompanyExpenseController::class, 'dropdowns'])->name('expenses.dropdowns');
         Route::get('/reports/expenses', CompanyExpenseReportController::class)->name('reports.expenses');
+        Route::resource('users', CompanyUserController::class)->except('show')->middleware('can:manage-users');
+
     });
 
     Route::prefix('settings')->name('settings.')->middleware('can:manage-settings')->group(function () {
@@ -50,28 +53,23 @@ Route::middleware('auth')->group(function () {
         Route::resource('currencies', CurrencyController::class)->except('show', 'destroy');
 
         // General settings
-        Route::get('/general',        [SettingController::class, 'general'])->name('general');
-        Route::post('/general',       [SettingController::class, 'updateGeneral'])->name('general.update');
-        Route::post('/general/mail',  [SettingController::class, 'updateMail'])->name('general.mail');
+        Route::get('/general', [SettingController::class, 'general'])->name('general');
+        Route::post('/general', [SettingController::class, 'updateGeneral'])->name('general.update');
+        Route::post('/general/mail', [SettingController::class, 'updateMail'])->name('general.mail');
         Route::post('/general/mail/test', [SettingController::class, 'testMail'])->name('general.mail.test');
-        Route::post('/general/env',   [SettingController::class, 'updateEnv'])->name('general.env');
+        Route::post('/general/env', [SettingController::class, 'updateEnv'])->name('general.env');
 
         // Theme
-        Route::get('/theme',  [SettingController::class, 'theme'])->name('theme');
+        Route::get('/theme', [SettingController::class, 'theme'])->name('theme');
         Route::post('/theme', [SettingController::class, 'updateTheme'])->name('theme.update');
 
         // Notification Templates
-        Route::get('/notifications',                     [NotificationTemplateController::class, 'index'])->name('notifications.index');
-        Route::get('/notifications/create',              [NotificationTemplateController::class, 'create'])->name('notifications.create');
-        Route::post('/notifications',                    [NotificationTemplateController::class, 'store'])->name('notifications.store');
+        Route::get('/notifications', [NotificationTemplateController::class, 'index'])->name('notifications.index');
+        Route::get('/notifications/create', [NotificationTemplateController::class, 'create'])->name('notifications.create');
+        Route::post('/notifications', [NotificationTemplateController::class, 'store'])->name('notifications.store');
         Route::get('/notifications/{notification}/edit', [NotificationTemplateController::class, 'edit'])->name('notifications.edit');
-        Route::put('/notifications/{notification}',      [NotificationTemplateController::class, 'update'])->name('notifications.update');
+        Route::put('/notifications/{notification}', [NotificationTemplateController::class, 'update'])->name('notifications.update');
         Route::post('/notifications/{notification}/toggle', [NotificationTemplateController::class, 'toggle'])->name('notifications.toggle');
-        Route::delete('/notifications/{notification}',   [NotificationTemplateController::class, 'destroy'])->name('notifications.destroy');
+        Route::delete('/notifications/{notification}', [NotificationTemplateController::class, 'destroy'])->name('notifications.destroy');
     });
 });
-
-
-
-
-
