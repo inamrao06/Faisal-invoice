@@ -5,11 +5,14 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class SettingController extends Controller
 {
     /* ─────────────────────────────────────────────────────────────
-     | GENERAL SETTINGS  (tabs: App Info, Mail, Push, ENV)
+     | GENERAL SETTINGS  (tabs: App Info, Mail, ENV)
      ─────────────────────────────────────────────────────────────*/
 
     public function general()
@@ -59,7 +62,7 @@ class SettingController extends Controller
     public function updateMail(Request $request)
     {
         $data = $request->validate([
-            'mail_mailer'       => ['required', Rule::in(['smtp', 'sendmail', 'mailgun', 'ses', 'log', 'array'])],
+            'mail_mailer'       => ['required', Rule::in(['smtp', 'log'])],
             'mail_host'         => ['nullable', 'max:120'],
             'mail_port'         => ['nullable', 'numeric'],
             'mail_username'     => ['nullable', 'max:120'],
@@ -83,60 +86,65 @@ class SettingController extends Controller
         $envUpdates = [];
         foreach ($data as $key => $value) {
             if (isset($envMap[$key])) {
-                $envUpdates[$envMap[$key]] = str_contains($value, ' ') ? '"' . $value . '"' : $value;
+                $envUpdates[$envMap[$key]] = str_contains((string) $value, ' ') ? '"' . $value . '"' : $value;
             }
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
+        $envUpdates['MAIL_SCHEME'] = ($data['mail_encryption'] ?? '') === 'ssl' ? 'smtps' : 'smtp';
         $this->writeEnv($envUpdates);
         Artisan::call('config:clear');
 
-        return back()->with('success', 'Mail settings saved.');
+        return redirect()->to(route('settings.general') . '#tab-mail')->with('success', 'Mail settings saved.');
     }
 
-    /* Tab 3 – Push Notification Settings (Firebase / OneSignal) */
-    public function updatePush(Request $request)
+    public function testMail(Request $request)
     {
-        $data = $request->validate([
-            'push_provider'         => ['nullable', Rule::in(['firebase', 'onesignal', 'pusher', ''])],
-            'firebase_server_key'   => ['nullable', 'max:300'],
-            'firebase_sender_id'    => ['nullable', 'max:120'],
-            'firebase_vapid_key'    => ['nullable', 'max:300'],
-            'onesignal_app_id'      => ['nullable', 'max:120'],
-            'onesignal_api_key'     => ['nullable', 'max:300'],
-            'pusher_app_id'         => ['nullable', 'max:120'],
-            'pusher_app_key'        => ['nullable', 'max:120'],
-            'pusher_app_secret'     => ['nullable', 'max:120'],
-            'pusher_app_cluster'    => ['nullable', 'max:40'],
+        $returnUrl = route('settings.general') . '#tab-mail';
+        $validator = Validator::make($request->all(), [
+            'test_email' => ['required', 'email', 'max:120'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->to($returnUrl)->withErrors($validator)->withInput();
+        }
+        $recipient = $validator->validated()['test_email'];
+        $settings = Setting::pluck('value', 'key');
+
+        if (($settings['mail_mailer'] ?? config('mail.default')) !== 'smtp') {
+            return redirect()->to($returnUrl)->withErrors(['test_email' => 'Save SMTP as the mail driver before sending a test.']);
+        }
+
+        $host = $settings['mail_host'] ?? config('mail.mailers.smtp.host');
+        $fromAddress = $settings['mail_from_address'] ?? config('mail.from.address');
+        if (! $host || ! $fromAddress) {
+            return redirect()->to($returnUrl)->withErrors(['test_email' => 'Save an SMTP host and from address first.']);
+        }
+
+        $encryption = $settings['mail_encryption'] ?? '';
+        config([
+            'mail.mailers.smtp.host' => $host,
+            'mail.mailers.smtp.port' => (int) ($settings['mail_port'] ?? config('mail.mailers.smtp.port')),
+            'mail.mailers.smtp.username' => $settings['mail_username'] ?? config('mail.mailers.smtp.username'),
+            'mail.mailers.smtp.password' => $settings['mail_password'] ?? config('mail.mailers.smtp.password'),
+            'mail.mailers.smtp.scheme' => $encryption === 'ssl' ? 'smtps' : 'smtp',
         ]);
 
-        $envMap = [
-            'firebase_server_key'   => 'FIREBASE_SERVER_KEY',
-            'firebase_sender_id'    => 'FIREBASE_SENDER_ID',
-            'firebase_vapid_key'    => 'FIREBASE_VAPID_KEY',
-            'onesignal_app_id'      => 'ONESIGNAL_APP_ID',
-            'onesignal_api_key'     => 'ONESIGNAL_API_KEY',
-            'pusher_app_id'         => 'PUSHER_APP_ID',
-            'pusher_app_key'        => 'PUSHER_APP_KEY',
-            'pusher_app_secret'     => 'PUSHER_APP_SECRET',
-            'pusher_app_cluster'    => 'PUSHER_APP_CLUSTER',
-        ];
-
-        $envUpdates = [];
-        foreach ($data as $key => $value) {
-            if (isset($envMap[$key])) {
-                $envUpdates[$envMap[$key]] = $value;
-            }
-            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        try {
+            Mail::purge('smtp');
+            Mail::mailer('smtp')->raw('This is a test email from ' . ($settings['site_name'] ?? config('app.name')) . '.', function ($message) use ($recipient, $fromAddress, $settings) {
+                $message->from($fromAddress, $settings['mail_from_name'] ?? config('mail.from.name'))
+                    ->to($recipient)
+                    ->subject('SMTP test email');
+            });
+        } catch (Throwable $exception) {
+            report($exception);
+            return redirect()->to($returnUrl)->withErrors(['test_email' => 'Test email could not be sent. Check the SMTP settings and application log.']);
         }
 
-        $this->writeEnv($envUpdates);
-        Artisan::call('config:clear');
-
-        return back()->with('success', 'Push notification settings saved.');
+        return redirect()->to($returnUrl)->with('mail_test_success', 'Test email sent to ' . $recipient . '.');
     }
 
-    /* Tab 4 – ENV Settings (App URL, debug, env) */
+    /* Tab 3 – ENV Settings (App URL, debug, env) */
     public function updateEnv(Request $request)
     {
         $data = $request->validate([
@@ -176,9 +184,9 @@ class SettingController extends Controller
     {
         $data = $request->validate([
             'theme_mode'    => ['required', Rule::in(['light', 'dark'])],
-            'header_color'  => ['required', 'max:20'],
-            'sidebar_color' => ['required', 'max:20'],
-            'accent_color'  => ['required', 'max:20'],
+            'header_color'  => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'sidebar_color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'accent_color'  => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
         foreach ($data as $key => $value) {

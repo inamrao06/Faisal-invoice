@@ -2,6 +2,12 @@
 @section('title', $user->exists ? 'Edit User' : 'Create User')
 @section('page_title', $user->exists ? 'Edit User' : 'Create User')
 @section('content')
+@php
+    $isSuper = auth()->user()->isSuperUser();
+    $currentRoleNum = (int) old('company_role_num', $user->company_role_num ?? 0);
+    $currentBranch = old('branch_id', $user->branch_id ?? ($isSuper ? null : auth()->user()->branch_id));
+    $myCompany = $companies->firstWhere('id', (int) auth()->user()->branch_id);
+@endphp
 <style>
 .uf-wrap{max-width:860px}
 .uf-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
@@ -46,6 +52,9 @@
 .status-toggle span{font-size:13px;font-weight:700;color:#15803d}
 .uf-footer{padding:20px 28px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;gap:10px;align-items:center}
 .company-field{transition:.3s}
+.uf-static{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:14px;font-weight:600;color:#1e293b}
+.uf-static i{color:#2563eb;font-size:16px}
+.uf-static small{display:block;font-weight:400;color:#94a3b8;font-size:11px}
 @media(max-width:600px){.uf-grid{grid-template-columns:1fr}.uf-grid .g2{grid-column:span 1}.type-cards{grid-template-columns:1fr}}
 </style>
 
@@ -53,7 +62,15 @@
 <div class="uf-header">
     <div>
         <h2>{{ $user->exists ? 'Edit User' : 'Create New User' }}</h2>
-        <p>{{ $user->exists ? 'Update account details, access type and company assignment.' : 'Super Admin can create both Super Admin and Company Admin users.' }}</p>
+        <p>
+            @if($user->exists)
+                Update account details, access type and company assignment.
+            @elseif($isSuper)
+                Super Admin can create both Super Admin and Company Admin users.
+            @else
+                Create a user for {{ $myCompany?->name ?? 'your company' }} and choose their access role.
+            @endif
+        </p>
     </div>
     <a href="{{ route('users.index') }}" class="btn btn-light">
         <i class="ti ti-arrow-left"></i> Back
@@ -69,13 +86,14 @@
     <div class="uf-card">
 
         {{-- ① USER TYPE --}}
+        @php $currentType = old('user_type', $user->user_type ?? 'admin'); @endphp
+
+        @if($isSuper)
         <div class="uf-section">
             <div class="uf-sec-title">
                 <div class="uf-sec-icon violet"><i class="ti ti-shield-lock"></i></div>
                 <div><h4>User Type</h4><p>Determines global access scope</p></div>
             </div>
-
-            @php $currentType = old('user_type', $user->user_type ?? 'admin'); @endphp
 
             <div class="type-cards">
                 {{-- Super Admin --}}
@@ -83,7 +101,6 @@
                        id="card_super" for="type_super">
                     <input type="radio" id="type_super" name="user_type" value="super_admin"
                            {{ $currentType === 'super_admin' ? 'checked' : '' }}
-                           @if(!auth()->user()->isSuperUser()) disabled @endif
                            onchange="onTypeChange(this)">
                     <div class="check-dot"></div>
                     <div class="type-card-icon"><i class="ti ti-shield-star"></i></div>
@@ -104,6 +121,9 @@
                 </label>
             </div>
         </div>
+        @else
+            <input type="hidden" name="user_type" value="admin">
+        @endif
 
         {{-- ② PROFILE --}}
         <div class="uf-section">

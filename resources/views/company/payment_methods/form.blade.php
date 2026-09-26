@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title',$type->exists?'Edit Expense Type':'Add Expense Type')
-@section('page_title',$type->exists?'Edit Expense Type':'Add Expense Type')
+@section('title',$method->exists?'Edit Payment Method':'Add Payment Method')
+@section('page_title',$method->exists?'Edit Payment Method':'Add Payment Method')
 @section('content')
 <style>
 .frm-head h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}
@@ -17,34 +17,34 @@
 
 <div class="frm-head">
     <div>
-        <h2>{{ $type->exists ? 'Edit Expense Type' : 'Add Expense Type' }}</h2>
-        <p>Expense categories used when recording company expenses.</p>
+        <h2>{{ $method->exists ? 'Edit Payment Method' : 'Add Payment Method' }}</h2>
+        <p>Define a payment account your company can use on expenses.</p>
     </div>
 </div>
 
-<form class="frm-card" method="POST" action="{{ $type->exists ? route('company.expense-types.update',$type) : route('company.expense-types.store') }}">
+<form class="frm-card" method="POST" action="{{ $method->exists ? route('company.payment-methods.update',$method) : route('company.payment-methods.store') }}">
     @csrf
-    @if($type->exists)@method('PUT')@endif
+    @if($method->exists)@method('PUT')@endif
     <div class="frm-card-body">
         <div class="form-grid">
             <div>
                 <label for="name">Name *</label>
-                <input id="name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name',$type->name) }}" placeholder="e.g. Fuel &amp; Lubricants" required>
+                <input id="name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name',$method->name) }}" placeholder="e.g. Meezan Bank Account" required>
                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div>
                 <label for="code">Code *</label>
-                <input id="code" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ old('code',$type->code) }}" placeholder="e.g. fuel" required>
+                <input id="code" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ old('code',$method->code) }}" placeholder="e.g. meezan_bank" required>
                 @error('code')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="span-2">
                 <label for="description">Description</label>
-                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" rows="2" placeholder="Optional notes about this expense type">{{ old('description',$type->description) }}</textarea>
+                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" rows="2" placeholder="Optional notes about this account">{{ old('description',$method->description) }}</textarea>
                 @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="span-2">
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" value="1" @checked(old('is_active',$type->exists?$type->is_active:true))>
+                    <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" value="1" @checked(old('is_active',$method->exists?$method->is_active:true))>
                     <label class="form-check-label" for="is_active">Active</label>
                 </div>
             </div>
@@ -52,7 +52,7 @@
     </div>
     <div class="form-actions">
         <button class="btn btn-primary px-4" type="submit"><i class="ti ti-check me-1"></i>Save</button>
-        <a class="btn btn-light" href="{{ route('company.expense-types.index') }}">Cancel</a>
+        <a class="btn btn-light" href="{{ route('company.payment-methods.index') }}">Cancel</a>
     </div>
 </form>
 @endsection

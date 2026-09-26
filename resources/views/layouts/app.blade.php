@@ -4,9 +4,21 @@
     $appSettings = \App\Models\Setting::pluck('value', 'key');
     $siteName = $appSettings['site_name'] ?? $appSettings['business_name'] ?? 'Car Business';
     $themeMode = $appSettings['theme_mode'] ?? 'light';
-    $accent = $appSettings['accent_color'] ?? '#4a81d4';
-    $sidebarBg = $appSettings['sidebar_color'] ?? '#1f2533';
+    $accent = $appSettings['accent_color'] ?? '#236dc9';
+    $sidebarBg = $appSettings['sidebar_color'] ?? '#1e1f27';
     $headerBg = $appSettings['header_color'] ?? '#ffffff';
+    if (! preg_match('/^#[0-9a-fA-F]{6}$/', $accent)) $accent = '#236dc9';
+    if (! preg_match('/^#[0-9a-fA-F]{6}$/', $sidebarBg)) $sidebarBg = '#1e1f27';
+    if (! preg_match('/^#[0-9a-fA-F]{6}$/', $headerBg)) $headerBg = '#ffffff';
+    $logoPath = $appSettings['logo_path'] ?? null;
+    $faviconPath = $appSettings['favicon_path'] ?? null;
+    $accentRgb = implode(',', array_map('hexdec', str_split(substr($accent, 1), 2)));
+    $contrast = static function ($color) {
+        [$red, $green, $blue] = array_map('hexdec', str_split(substr($color, 1), 2));
+        return ($red * 299 + $green * 587 + $blue * 114) / 1000 < 150 ? '#ffffff' : '#26313d';
+    };
+    $sidebarText = $contrast($sidebarBg);
+    $headerText = $contrast($headerBg);
     $user = auth()->user();
     $pageTitle = trim($__env->yieldContent('page_title', 'Dashboard'));
 @endphp
@@ -16,7 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ $siteName }} management dashboard">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ asset('paces/assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ $faviconPath ? asset('storage/'.$faviconPath) : asset('paces/assets/images/favicon.ico') }}">
     <script>
         document.documentElement.setAttribute('data-bs-theme', @json($themeMode));
         document.documentElement.setAttribute('data-menu-color', 'dark');
@@ -26,8 +38,12 @@
     <link href="{{ asset('paces/assets/css/vendors.min.css') }}" rel="stylesheet">
     <link id="app-style" href="{{ asset('paces/assets/css/app.min.css') }}" rel="stylesheet">
     <link href="{{ asset('paces/assets/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/paces-custom.css') }}?v=8" rel="stylesheet">
-    <style>:root { --app-accent: {{ $accent }}; --app-sidebar: {{ $sidebarBg }}; --app-topbar: {{ $headerBg }}; }</style>
+    <link href="{{ asset('css/paces-custom.css') }}?v=10" rel="stylesheet">
+    <style>
+        html[data-bs-theme] { --app-accent: {{ $accent }}; --app-sidebar: {{ $sidebarBg }}; --app-topbar: {{ $headerBg }}; --theme-primary: {{ $accent }}; --theme-primary-rgb: {{ $accentRgb }}; --bs-primary: {{ $accent }}; --bs-primary-rgb: {{ $accentRgb }}; }
+        html[data-menu-color] { --theme-sidenav-bg: {{ $sidebarBg }}; --theme-sidenav-border-color: {{ $sidebarBg }}; --theme-sidenav-item-color: color-mix(in srgb, {{ $sidebarText }} 65%, {{ $sidebarBg }}); --theme-sidenav-item-hover-color: {{ $sidebarText }}; --theme-sidenav-item-active-color: {{ $sidebarText }}; --theme-sidenav-item-hover-bg: color-mix(in srgb, {{ $sidebarText }} 10%, {{ $sidebarBg }}); --theme-sidenav-item-active-bg: color-mix(in srgb, {{ $sidebarText }} 10%, {{ $sidebarBg }}); }
+        html[data-topbar-color] { --theme-topbar-bg: {{ $headerBg }}; --theme-topbar-item-color: {{ $headerText }}; --theme-topbar-item-hover-color: {{ $accent }}; }
+    </style>
     @stack('styles')
 </head>
 <body>
@@ -36,8 +52,8 @@
         <div class="container-fluid topbar-menu">
             <div class="d-flex align-items-center gap-2">
                 <div class="logo-topbar">
-                    <a href="{{ route('dashboard') }}" class="logo-light"><span class="logo-lg app-wordmark">{{ $siteName }}</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></a>
-                    <a href="{{ route('dashboard') }}" class="logo-dark"><span class="logo-lg app-wordmark text-dark">{{ $siteName }}</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></a>
+                    <a href="{{ route('dashboard') }}" class="logo-light"><span class="logo-lg app-wordmark">@if($logoPath)<img src="{{ asset('storage/'.$logoPath) }}" alt="{{ $siteName }}">@else {{ $siteName }} @endif</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></a>
+                    <a href="{{ route('dashboard') }}" class="logo-dark"><span class="logo-lg app-wordmark text-dark">@if($logoPath)<img src="{{ asset('storage/'.$logoPath) }}" alt="{{ $siteName }}">@else {{ $siteName }} @endif</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></a>
                 </div>
                 <button class="sidenav-toggle-button btn btn-primary btn-icon" type="button" aria-label="Toggle navigation" title="Toggle navigation"><i class="ti ti-menu-4"></i></button>
                 <div class="d-none d-md-block ms-2"><h4 class="mb-0 fs-16 fw-semibold">{{ $pageTitle }}</h4><span class="text-muted fs-12">{{ $user->isSuperUser() ? 'System administration' : ($user->company?->name ?? $siteName) }}</span></div>
@@ -67,8 +83,8 @@
 
     <div class="sidenav-menu">
         <a href="{{ route('dashboard') }}" class="logo">
-            <span class="logo logo-light"><span class="logo-lg app-wordmark text-white">{{ $siteName }}</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></span>
-            <span class="logo logo-dark"><span class="logo-lg app-wordmark text-dark">{{ $siteName }}</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></span>
+            <span class="logo logo-light"><span class="logo-lg app-wordmark text-white">@if($logoPath)<img src="{{ asset('storage/'.$logoPath) }}" alt="{{ $siteName }}">@else {{ $siteName }} @endif</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></span>
+            <span class="logo logo-dark"><span class="logo-lg app-wordmark text-dark">@if($logoPath)<img src="{{ asset('storage/'.$logoPath) }}" alt="{{ $siteName }}">@else {{ $siteName }} @endif</span><span class="logo-sm app-mark">{{ strtoupper(substr($siteName, 0, 1)) }}</span></span>
         </a>
         <button class="button-on-hover" type="button"><span class="btn-on-hover-icon"></span></button>
         <button class="button-close-offcanvas" type="button" aria-label="Close navigation"><i class="ti ti-menu-4 align-middle"></i></button>
@@ -118,6 +134,12 @@
 
     <div class="content-page">
         <div class="container-fluid">
+            @if(session()->has('impersonation'))
+                <div class="alert alert-warning d-flex align-items-center justify-content-between gap-2 flex-wrap mt-3 mb-2" role="status">
+                    <span><i class="ti ti-user-share me-2"></i>Viewing as <strong>{{ $user->name }}</strong> ({{ $user->email }})</span>
+                    <form method="POST" action="{{ route('impersonation.stop') }}" class="mb-0">@csrf<button class="btn btn-sm btn-dark" type="submit"><i class="ti ti-arrow-back-up me-1"></i>Return to Super Admin</button></form>
+                </div>
+            @endif
             <div class="page-title-head d-flex align-items-center"><div class="flex-grow-1"><h4 class="page-main-title m-0">{{ $pageTitle }}</h4></div><div class="text-end d-none d-sm-block"><ol class="breadcrumb m-0 py-0"><li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ $siteName }}</a></li><li class="breadcrumb-item active">{{ $pageTitle }}</li></ol></div></div>
             @if(session('success'))<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="ti ti-circle-check me-2"></i>{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>@endif
             @if($errors->any())<div class="alert alert-danger"><i class="ti ti-alert-triangle me-2"></i><strong>Please fix the following:</strong><ul class="mb-0 mt-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif

@@ -5,7 +5,7 @@
 
     RewriteEngine On
 
-    RewriteRule ^(css|js|images|assets|paces)/(.*)$ public/$1/$2 [L]
+    RewriteRule ^(css|js|images|assets|paces|storage)/(.*)$ public/$1/$2 [L]
 
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f

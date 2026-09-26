@@ -126,6 +126,12 @@
                             </span>
                         </td>
                         <td class="text-end" style="white-space:nowrap">
+                            @if(auth()->user()->isSuperUser() && !session()->has('impersonation') && $user->is_active && !$user->is(auth()->user()))
+                                <form method="POST" action="{{ route('users.impersonate', $user) }}" class="d-inline" data-confirm-impersonate data-user-name="{{ $user->name }}">
+                                    @csrf
+                                    <button class="btn btn-sm btn-light me-1" type="submit" title="Log in as {{ $user->name }}"><i class="ti ti-user-share me-1"></i>Log in as</button>
+                                </form>
+                            @endif
                             <a class="btn btn-sm btn-outline-primary"
                                href="{{ route('users.edit',$user) }}">
                                 <i class="ti ti-pencil"></i> Edit
@@ -134,9 +140,9 @@
                                 <form method="POST"
                                       action="{{ route('users.destroy',$user) }}"
                                       style="display:inline"
-                                      onsubmit="return confirm('Disable this user?')">
+                                      data-confirm-disable data-user-name="{{ $user->name }}">
                                     @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-light ms-1" type="submit">
+                                    <button class="btn btn-sm btn-light ms-1" type="submit" title="Disable user" aria-label="Disable {{ $user->name }}">
                                         <i class="ti ti-user-x"></i>
                                     </button>
                                 </form>
@@ -165,3 +171,72 @@
     @endif
 </div>
 @endsection
+
+@push('styles')
+<link href="{{ asset('paces/assets/plugins/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
+@endpush
+
+@push('scripts')
+<script src="{{ asset('paces/assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<script>
+document.querySelectorAll('[data-confirm-disable]').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const name = form.dataset.userName || 'this user';
+        if (!window.Swal) {
+            if (window.confirm('Disable ' + name + '?')) form.submit();
+            return;
+        }
+        const result = await Swal.fire({
+            title: 'Disable user?',
+            text: name + ' will no longer be able to sign in.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Disable user',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#dc3545',
+            reverseButtons: true,
+            focusCancel: true,
+            background: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#252831' : '#ffffff',
+            color: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#f5f7fa' : '#26313d'
+        });
+        if (result.isConfirmed) form.submit();
+    });
+});
+document.querySelectorAll('[data-confirm-impersonate]').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const name = form.dataset.userName || 'this user';
+        if (!window.Swal) {
+            if (window.confirm('Log in as ' + name + '?')) form.submit();
+            return;
+        }
+        const result = await Swal.fire({
+            title: 'Log in as ' + name + '?',
+            text: 'You can return to your Super Admin account from the banner at the top.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Log in as user',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#236dc9',
+            reverseButtons: true
+        });
+        if (result.isConfirmed) form.submit();
+    });
+});
+@if(session('success'))
+if (window.Swal) {
+    document.querySelector('.content-page .alert.alert-success')?.remove();
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: @json(session('success')),
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true
+    });
+}
+@endif
+</script>
+@endpush

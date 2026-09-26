@@ -45,19 +45,11 @@
 /* ── Logo preview ──────────────────────────────────────────── */
 .logo-box{display:flex;align-items:center;gap:16px;padding:14px 16px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;margin-top:8px}
 .logo-box img{height:48px;width:auto;border-radius:6px;object-fit:contain}
-.logo-box .remove-logo{font-size:11px;color:#ef4444;text-decoration:none}
+.logo-box strong,.logo-box small{display:block;font-size:12px;color:var(--bs-body-color)}
+.logo-box small{font-size:11px;color:var(--bs-secondary-color)}
 
 /* ── Section separator ─────────────────────────────────────── */
 .section-sep{border:none;border-top:1px dashed #e2e8f0;margin:20px 0}
-
-/* ── Provider card pick ────────────────────────────────────── */
-.provider-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.provider-card{border:2px solid #e2e8f0;border-radius:10px;padding:14px 12px;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
-.provider-card:hover{border-color:#93c5fd;background:#eff6ff}
-.provider-card.selected{border-color:#2563eb;background:#eff6ff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.provider-card i{font-size:26px;display:block;margin-bottom:6px}
-.provider-card span{font-size:12px;font-weight:700;color:#334155}
-.provider-card input{display:none}
 
 /* ── Env badge ─────────────────────────────────────────────── */
 .env-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-bottom:4px}
@@ -101,9 +93,6 @@
         </a>
         <a href="#tab-mail" class="tab-link" data-tab="tab-mail">
             <i class="ti ti-mail"></i> Mail / SMTP
-        </a>
-        <a href="#tab-push" class="tab-link" data-tab="tab-push">
-            <i class="ti ti-bell"></i> Push Notifications
         </a>
         <a href="#tab-env"  class="tab-link" data-tab="tab-env">
             <i class="ti ti-terminal"></i> Environment
@@ -184,39 +173,29 @@
                 <div class="s-card">
                     <div class="s-card-head">
                         <div class="card-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-photo"></i></div>
-                        <div>
-                            <h3>Branding</h3>
-                            <p>Logo and favicon displayed across the app</p>
-                        </div>
+                        <div><h3>Branding</h3><p>Logo and favicon displayed across the app</p></div>
                     </div>
                     <div class="s-card-body">
                         <div class="fg">
                             <div>
-                                <label>Logo</label>
-                                <input class="form-control" type="file" name="logo" accept="image/*">
-                                <span class="hint">JPG, PNG, WEBP or SVG — max 2 MB</span>
-                                @if(!empty($settings['logo_path']))
+                                <label for="siteLogo">Logo</label>
+                                <input id="siteLogo" class="form-control @error('logo') is-invalid @enderror" type="file" name="logo" accept=".jpg,.jpeg,.png,.webp,.svg,image/*" data-image-preview="logoPreview">
+                                @error('logo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <span class="hint">JPG, PNG, WEBP or SVG, max 2 MB</span>
                                 <div class="logo-box mt-2">
-                                    <img src="{{ asset('storage/'.$settings['logo_path']) }}" alt="Logo">
-                                    <div>
-                                        <div style="font-size:12px;font-weight:600;color:#334155">Current logo</div>
-                                        <div style="font-size:11px;color:#94a3b8">Upload a new file to replace it</div>
-                                    </div>
+                                    <img id="logoPreview" src="{{ !empty($settings['logo_path']) ? asset('storage/'.$settings['logo_path']) : asset('paces/assets/images/logo.png') }}" alt="Logo preview">
+                                    <div><strong>Logo preview</strong><small id="logoPreviewName">{{ !empty($settings['logo_path']) ? 'Current logo' : 'Paces default' }}</small></div>
                                 </div>
-                                @endif
                             </div>
                             <div>
-                                <label>Favicon</label>
-                                <input class="form-control" type="file" name="favicon" accept="image/*,.ico">
-                                <span class="hint">ICO, PNG or JPG — max 512 KB · 32×32 recommended</span>
-                                @if(!empty($settings['favicon_path']))
+                                <label for="siteFavicon">Favicon</label>
+                                <input id="siteFavicon" class="form-control @error('favicon') is-invalid @enderror" type="file" name="favicon" accept=".ico,.jpg,.jpeg,.png,.webp,image/*" data-image-preview="faviconPreview">
+                                @error('favicon')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <span class="hint">ICO, PNG, JPG or WEBP, max 512 KB</span>
                                 <div class="logo-box mt-2">
-                                    <img src="{{ asset('storage/'.$settings['favicon_path']) }}" alt="Favicon" style="height:32px">
-                                    <div>
-                                        <div style="font-size:12px;font-weight:600;color:#334155">Current favicon</div>
-                                    </div>
+                                    <img id="faviconPreview" src="{{ !empty($settings['favicon_path']) ? asset('storage/'.$settings['favicon_path']) : asset('paces/assets/images/favicon.ico') }}" alt="Favicon preview">
+                                    <div><strong>Favicon preview</strong><small id="faviconPreviewName">{{ !empty($settings['favicon_path']) ? 'Current favicon' : 'Paces default' }}</small></div>
                                 </div>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -279,7 +258,7 @@
                             <div class="span-2">
                                 <label>Mail Driver</label>
                                 <select class="form-select" name="mail_mailer" id="mailMailer">
-                                    @foreach(['smtp'=>'SMTP','sendmail'=>'Sendmail','mailgun'=>'Mailgun','ses'=>'Amazon SES','log'=>'Log (Development)','array'=>'Array (Testing)'] as $v => $l)
+                                    @foreach(['smtp'=>'SMTP','log'=>'Log (Development)'] as $v => $l)
                                     <option value="{{ $v }}" @selected(($settings['mail_mailer'] ?? $env['MAIL_MAILER'] ?? 'log') === $v)>{{ $l }}</option>
                                     @endforeach
                                 </select>
@@ -356,147 +335,23 @@
                     <span style="font-size:12px;color:#94a3b8">Writes to .env and clears config cache</span>
                 </div>
             </form>
-        </div>
-
-        {{-- ════════════════════════════════════════════════════
-             TAB 3 — PUSH NOTIFICATIONS
-        ════════════════════════════════════════════════════ --}}
-        <div id="tab-push" class="tab-panel">
-            <form method="POST" action="{{ route('settings.general.push') }}">
+            <form class="s-card" method="POST" action="{{ route('settings.general.mail.test') }}">
                 @csrf
-
-                <div class="s-card">
-                    <div class="s-card-head">
-                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-bell-filled"></i></div>
-                        <div>
-                            <h3>Push Notification Provider</h3>
-                            <p>Choose your provider and enter API credentials</p>
-                        </div>
+                <div class="s-card-head"><div class="card-icon" style="background:#e8f5ef;color:#14836b"><i class="ti ti-send"></i></div><div><h3>Send test email</h3><p>Uses the saved SMTP settings</p></div></div>
+                <div class="s-card-body">
+                    @if(session('mail_test_success'))<div class="alert alert-success">{{ session('mail_test_success') }}</div>@endif
+                    <label for="testEmail" class="form-label">Recipient email</label>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <input id="testEmail" class="form-control @error('test_email') is-invalid @enderror" type="email" name="test_email" value="{{ old('test_email', auth()->user()->email) }}" required style="max-width:360px">
+                        <button class="btn btn-outline-primary" type="submit"><i class="ti ti-send me-1"></i>Send Test</button>
+                        @error('test_email')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
-                    <div class="s-card-body">
-
-                        {{-- Provider picker --}}
-                        <label style="font-size:11.5px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:10px">Select Provider</label>
-                        <div class="provider-grid" style="margin-bottom:24px">
-                            @php $currentProvider = $settings['push_provider'] ?? $env['PUSH_PROVIDER'] ?? ''; @endphp
-                            @foreach([
-                                'firebase'  => ['label'=>'Firebase FCM',  'icon'=>'bi-fire',        'color'=>'#f97316'],
-                                'onesignal' => ['label'=>'OneSignal',     'icon'=>'bi-broadcast',   'color'=>'#e11d48'],
-                                'pusher'    => ['label'=>'Pusher Beams',  'icon'=>'bi-lightning-charge-fill', 'color'=>'#7c3aed'],
-                            ] as $pKey => $p)
-                            <label class="provider-card {{ $currentProvider === $pKey ? 'selected' : '' }}" for="prov_{{ $pKey }}">
-                                <input type="radio" name="push_provider" id="prov_{{ $pKey }}" value="{{ $pKey }}"
-                                       {{ $currentProvider === $pKey ? 'checked' : '' }}
-                                       onchange="switchProvider('{{ $pKey }}')">
-                                <i class="{{ $p['icon'] }}" style="color:{{ $p['color'] }}"></i>
-                                <span>{{ $p['label'] }}</span>
-                            </label>
-                            @endforeach
-                        </div>
-
-                        {{-- Firebase fields --}}
-                        <div id="fields-firebase" class="provider-fields {{ ($currentProvider === 'firebase' || !$currentProvider) ? '' : 'd-none' }}">
-                            <div class="fg">
-                                <div class="span-2">
-                                    <label>Server Key (Legacy)</label>
-                                    <input class="form-control font-monospace" name="firebase_server_key"
-                                           value="{{ old('firebase_server_key', $settings['firebase_server_key'] ?? $env['FIREBASE_SERVER_KEY'] ?? '') }}"
-                                           placeholder="AAAAxxxxxxx:APA91b…">
-                                    <span class="hint">From Firebase Console → Project Settings → Cloud Messaging</span>
-                                </div>
-                                <div>
-                                    <label>Sender ID</label>
-                                    <input class="form-control font-monospace" name="firebase_sender_id"
-                                           value="{{ old('firebase_sender_id', $settings['firebase_sender_id'] ?? $env['FIREBASE_SENDER_ID'] ?? '') }}"
-                                           placeholder="1234567890">
-                                </div>
-                                <div>
-                                    <label>VAPID Public Key (Web Push)</label>
-                                    <input class="form-control font-monospace" name="firebase_vapid_key"
-                                           value="{{ old('firebase_vapid_key', $settings['firebase_vapid_key'] ?? $env['FIREBASE_VAPID_KEY'] ?? '') }}"
-                                           placeholder="BNxxxxxx…">
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- OneSignal fields --}}
-                        <div id="fields-onesignal" class="provider-fields {{ $currentProvider === 'onesignal' ? '' : 'd-none' }}">
-                            <div class="fg">
-                                <div>
-                                    <label>App ID</label>
-                                    <input class="form-control font-monospace" name="onesignal_app_id"
-                                           value="{{ old('onesignal_app_id', $settings['onesignal_app_id'] ?? $env['ONESIGNAL_APP_ID'] ?? '') }}"
-                                           placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
-                                </div>
-                                <div>
-                                    <label>REST API Key</label>
-                                    <input class="form-control font-monospace" name="onesignal_api_key"
-                                           value="{{ old('onesignal_api_key', $settings['onesignal_api_key'] ?? $env['ONESIGNAL_API_KEY'] ?? '') }}"
-                                           placeholder="Basic xxxxxxx…">
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Pusher fields --}}
-                        <div id="fields-pusher" class="provider-fields {{ $currentProvider === 'pusher' ? '' : 'd-none' }}">
-                            <div class="fg">
-                                <div>
-                                    <label>App ID</label>
-                                    <input class="form-control font-monospace" name="pusher_app_id"
-                                           value="{{ old('pusher_app_id', $settings['pusher_app_id'] ?? $env['PUSHER_APP_ID'] ?? '') }}"
-                                           placeholder="123456">
-                                </div>
-                                <div>
-                                    <label>App Key</label>
-                                    <input class="form-control font-monospace" name="pusher_app_key"
-                                           value="{{ old('pusher_app_key', $settings['pusher_app_key'] ?? $env['PUSHER_APP_KEY'] ?? '') }}"
-                                           placeholder="app-key">
-                                </div>
-                                <div>
-                                    <label>App Secret</label>
-                                    <input class="form-control font-monospace" type="password" name="pusher_app_secret"
-                                           value="{{ old('pusher_app_secret', $settings['pusher_app_secret'] ?? $env['PUSHER_APP_SECRET'] ?? '') }}"
-                                           placeholder="app-secret" autocomplete="new-password">
-                                </div>
-                                <div>
-                                    <label>Cluster</label>
-                                    <input class="form-control" name="pusher_app_cluster"
-                                           value="{{ old('pusher_app_cluster', $settings['pusher_app_cluster'] ?? $env['PUSHER_APP_CLUSTER'] ?? 'ap2') }}"
-                                           placeholder="ap2">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                {{-- Quick link to templates --}}
-                <div class="s-card">
-                    <div class="s-card-body" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px">
-                        <div style="display:flex;align-items:center;gap:12px">
-                            <div style="width:36px;height:36px;border-radius:9px;background:#eff6ff;color:#2563eb;display:grid;place-items:center;font-size:16px">
-                                <i class="ti ti-list-details"></i>
-                            </div>
-                            <div>
-                                <div style="font-size:13px;font-weight:700;color:#0f172a">Notification Templates</div>
-                                <div style="font-size:12px;color:#94a3b8">Manage message templates for each event type</div>
-                            </div>
-                        </div>
-                        <a href="{{ route('settings.notifications.index') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="ti ti-arrow-right me-1"></i>Manage Templates
-                        </a>
-                    </div>
-                </div>
-
-                <div class="form-footer">
-                    <button class="btn btn-primary px-4"><i class="ti ti-check me-1"></i>Save Push Settings</button>
-                    <span style="font-size:12px;color:#94a3b8">Credentials written to .env file</span>
                 </div>
             </form>
         </div>
 
         {{-- ════════════════════════════════════════════════════
-             TAB 4 — ENVIRONMENT
+             TAB 3 — ENVIRONMENT
         ════════════════════════════════════════════════════ --}}
         <div id="tab-env" class="tab-panel">
             <form method="POST" action="{{ route('settings.general.env') }}">
@@ -621,15 +476,20 @@ document.querySelectorAll('.tab-link').forEach(function(link) {
     }
 })();
 
-/* ── Push provider switcher ────────────────────────────────── */
-function switchProvider(key) {
-    document.querySelectorAll('.provider-fields').forEach(function(el){ el.classList.add('d-none'); });
-    document.querySelectorAll('.provider-card').forEach(function(el){ el.classList.remove('selected'); });
-    var el = document.getElementById('fields-' + key);
-    if(el) el.classList.remove('d-none');
-    var card = document.querySelector('#prov_' + key).closest('.provider-card');
-    if(card) card.classList.add('selected');
-}
+
+/* Update branding previews before saving. */
+document.querySelectorAll('[data-image-preview]').forEach(function(input) {
+    var currentUrl;
+    input.addEventListener('change', function() {
+        var image = document.getElementById(input.dataset.imagePreview);
+        var label = document.getElementById(input.dataset.imagePreview + 'Name');
+        if (!image || !input.files || !input.files[0]) return;
+        if (currentUrl) URL.revokeObjectURL(currentUrl);
+        currentUrl = URL.createObjectURL(input.files[0]);
+        image.src = currentUrl;
+        if (label) label.textContent = input.files[0].name;
+    });
+});
 
 /* ── ENV: production warning ───────────────────────────────── */
 var envSel = document.getElementById('appEnvSelect');

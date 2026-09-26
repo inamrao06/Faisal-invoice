@@ -18,6 +18,7 @@ class CompanyExpenseReportController extends Controller
         $summary = (clone $query)->selectRaw('count(*) records, coalesce(sum(total_amount),0) total')->first();
         $expenses = $query->latest('expense_date')->paginate(20)->withQueryString();
         $heads = ExpenseHead::where('branch_id',$companyId)->orderBy('name')->get();
+        if ($heads->isEmpty()) $heads = ExpenseHead::whereNull('branch_id')->orderBy('name')->get();
         return view('company.reports.expenses',compact('expenses','summary','heads'));
     }
 }

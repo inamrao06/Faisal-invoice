@@ -12,6 +12,7 @@ use App\Http\Controllers\CompanyRoleController;
 use App\Http\Controllers\CompanyTypeController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\NotificationTemplateController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -24,9 +25,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/impersonation/stop', [ImpersonationController::class, 'stop'])->name('impersonation.stop');
     Route::get('/', DashboardController::class)->name('dashboard');
 
     Route::resource('companies', CompanyController::class)->parameters(['companies' => 'company'])->except('destroy')->middleware('can:manage-companies');
+    Route::post('/users/{user}/impersonate', [ImpersonationController::class, 'start'])->name('users.impersonate')->middleware('can:manage-users');
     Route::resource('users', UserController::class)->except('show')->middleware('can:manage-users');
 
     Route::prefix('company')->name('company.')->middleware('can:company-area')->group(function () {
@@ -46,11 +49,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/company-types', [CompanyTypeController::class, 'update'])->name('company-types.update');
         Route::resource('currencies', CurrencyController::class)->except('show', 'destroy');
 
-        // General settings (tabbed: app-info, mail, push, env)
+        // General settings
         Route::get('/general',        [SettingController::class, 'general'])->name('general');
         Route::post('/general',       [SettingController::class, 'updateGeneral'])->name('general.update');
         Route::post('/general/mail',  [SettingController::class, 'updateMail'])->name('general.mail');
-        Route::post('/general/push',  [SettingController::class, 'updatePush'])->name('general.push');
+        Route::post('/general/mail/test', [SettingController::class, 'testMail'])->name('general.mail.test');
         Route::post('/general/env',   [SettingController::class, 'updateEnv'])->name('general.env');
 
         // Theme

@@ -2,9 +2,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\CompanyRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -25,8 +27,9 @@ class UserController extends Controller
     public function create()
     {
         return view('users.form', [
-            'user'      => new User(['is_active' => true, 'user_type' => 'admin', 'company_role_num' => 0]),
-            'companies' => $this->companies(),
+            'user'         => new User(['is_active' => true, 'user_type' => 'admin', 'company_role_num' => 0]),
+            'companies'    => $this->companies(),
+            'companyRoles' => $this->companyRoles(),
         ]);
     }
 
@@ -39,7 +42,11 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $this->authorizeUser($user);
-        return view('users.form', ['user' => $user, 'companies' => $this->companies()]);
+        return view('users.form', [
+            'user'         => $user,
+            'companies'    => $this->companies(),
+            'companyRoles' => $this->companyRoles(),
+        ]);
     }
 
     public function update(Request $request, User $user)
@@ -90,6 +97,19 @@ class UserController extends Controller
         }
 
         $data['company_role_num'] = (int) ($data['company_role_num'] ?? 0);
+
+        if ($data['company_role_num'] > 0) {
+            $roleExists = CompanyRole::whereKey($data['company_role_num'])
+                ->where('is_active', true)
+                ->when($data['branch_id'] !== null, fn($q) => $q->where('branch_id', $data['branch_id']))
+                ->exists();
+
+            if (!$roleExists) {
+                throw ValidationException::withMessages([
+                    'company_role_num' => 'The selected role is not available for this company.',
+                ]);
+            }
+        }
         if (blank($data['password'] ?? null)) unset($data['password']);
         $data['is_active'] = $request->boolean('is_active');
 
@@ -109,6 +129,14 @@ class UserController extends Controller
         return Branch::where('is_active', true)
             ->when(!auth()->user()->isSuperUser(), fn($q) => $q->whereKey(auth()->user()->branch_id ?? 0))
             ->orderBy('name')->get();
+    }
+
+    private function companyRoles()
+    {
+        return CompanyRole::where('is_active', true)
+            ->when(!auth()->user()->isSuperUser(), fn($q) => $q->where('branch_id', auth()->user()->branch_id))
+            ->orderBy('name')
+            ->get();
     }
 
     private function authorizeUser(User $user): void
