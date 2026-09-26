@@ -50,7 +50,7 @@
         <p>{{ $company->exists ? 'Update the company profile, contact details and brand assets.' : 'Register a new company in the booking system. All marked fields are required.' }}</p>
     </div>
     <a href="{{ route('companies.index') }}" class="btn btn-light">
-        <i class="bi bi-arrow-left"></i> Back
+        <i class="ti ti-arrow-left"></i> Back
     </a>
 </div>
 
@@ -63,7 +63,7 @@
     <div class="frm-card">
         <div class="frm-section">
             <div class="frm-sec-title">
-                <div class="frm-sec-icon blue"><i class="bi bi-building"></i></div>
+                <div class="frm-sec-icon blue"><i class="ti ti-building"></i></div>
                 <div><h4>Company Identity</h4><p>Core registration and business details</p></div>
             </div>
             <div class="frm-grid">
@@ -82,8 +82,8 @@
                     @error('code')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div>
-                    <label class="frm-lbl">Company Type <span class="req">*</span></label>
-                    <select class="form-select @error('type') is-invalid @enderror" name="type" required>
+                    <label class="frm-lbl" for="company_type">Company Type <span class="req">*</span></label>
+                    <select id="company_type" class="form-select @error('type') is-invalid @enderror" name="type" required>
                         @foreach($types as $t)
                             <option value="{{ $t->code }}" @selected(old('type',$company->type)===$t->code)>
                                 {{ $t->name }}
@@ -93,8 +93,8 @@
                     @error('type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div>
-                    <label class="frm-lbl">Currency</label>
-                    <select class="form-select" name="currency_id">
+                    <label class="frm-lbl" for="company_currency">Currency</label>
+                    <select id="company_currency" class="form-select" name="currency_id">
                         <option value="">— Select Currency —</option>
                         @foreach($currencies as $c)
                             <option value="{{ $c->id }}" @selected(old('currency_id',$company->currency_id)==$c->id)>
@@ -121,7 +121,7 @@
         {{-- ② CONTACT --}}
         <div class="frm-section">
             <div class="frm-sec-title">
-                <div class="frm-sec-icon teal"><i class="bi bi-envelope"></i></div>
+                <div class="frm-sec-icon teal"><i class="ti ti-mail"></i></div>
                 <div><h4>Contact Information</h4><p>Email, phone, address and web presence</p></div>
             </div>
             <div class="frm-grid">
@@ -164,7 +164,7 @@
         {{-- ③ AUTHORIZED PERSON --}}
         <div class="frm-section">
             <div class="frm-sec-title">
-                <div class="frm-sec-icon violet"><i class="bi bi-person-vcard"></i></div>
+                <div class="frm-sec-icon violet"><i class="ti ti-id"></i></div>
                 <div><h4>Authorized Person</h4><p>Person authorized to sign and represent the company</p></div>
             </div>
             <div class="frm-grid">
@@ -192,7 +192,7 @@
         {{-- ④ BRAND ASSETS --}}
         <div class="frm-section">
             <div class="frm-sec-title">
-                <div class="frm-sec-icon amber"><i class="bi bi-images"></i></div>
+                <div class="frm-sec-icon amber"><i class="ti ti-photo"></i></div>
                 <div><h4>Logo, Signature &amp; Stamp</h4><p>Upload company brand assets — PNG/JPG, max 2 MB each</p></div>
             </div>
             <div class="frm-grid">
@@ -208,7 +208,7 @@
                         @else
                             <img id="prev_logo" class="uz-preview">
                         @endif
-                        <i class="bi bi-cloud-upload uz-icon"></i>
+                        <i class="ti ti-cloud-upload uz-icon"></i>
                         <p><strong>Click to upload</strong><br>Company logo</p>
                     </div>
                 </div>
@@ -224,7 +224,7 @@
                         @else
                             <img id="prev_sig" class="uz-preview">
                         @endif
-                        <i class="bi bi-pen uz-icon"></i>
+                        <i class="ti ti-pencil uz-icon"></i>
                         <p><strong>Click to upload</strong><br>Signature image</p>
                     </div>
                 </div>
@@ -240,7 +240,7 @@
                         @else
                             <img id="prev_stamp" class="uz-preview">
                         @endif
-                        <i class="bi bi-award uz-icon"></i>
+                        <i class="ti ti-award uz-icon"></i>
                         <p><strong>Click to upload</strong><br>Stamp / seal</p>
                     </div>
                 </div>
@@ -250,7 +250,7 @@
         {{-- ⑤ STATUS --}}
         <div class="frm-section">
             <div class="frm-sec-title">
-                <div class="frm-sec-icon green"><i class="bi bi-toggle-on"></i></div>
+                <div class="frm-sec-icon green"><i class="ti ti-toggle-right"></i></div>
                 <div><h4>Status</h4><p>Inactive companies cannot be accessed by their admins</p></div>
             </div>
             <label class="toggle-row">
@@ -262,7 +262,7 @@
 
         <div class="frm-footer">
             <button class="btn btn-primary px-5" type="submit">
-                <i class="bi bi-check2-circle me-1"></i>
+                <i class="ti ti-circle-check me-1"></i>
                 {{ $company->exists ? 'Update Company' : 'Create Company' }}
             </button>
             <a href="{{ route('companies.index') }}" class="btn btn-light">Cancel</a>

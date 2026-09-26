@@ -33,7 +33,7 @@
         <p>Super Admin and Company Admin accounts for the booking system.</p>
     </div>
     <a class="btn btn-primary" href="{{ route('users.create') }}">
-        <i class="bi bi-person-plus"></i> Create User
+        <i class="ti ti-user-plus"></i> Create User
     </a>
 </div>
 
@@ -43,7 +43,7 @@
             <input class="form-control" name="q" value="{{ request('q') }}"
                    placeholder="Search name or email…">
             <button class="btn btn-dark" type="submit">
-                <i class="bi bi-search"></i>
+                <i class="ti ti-search"></i>
             </button>
             @if(request('q'))
                 <a href="{{ route('users.index') }}" class="btn btn-light">Clear</a>
@@ -85,11 +85,11 @@
                         <td>
                             @if($user->isSuperUser())
                                 <span class="type-super">
-                                    <i class="bi bi-shield-star-fill"></i> Super Admin
+                                    <i class="ti ti-shield-star"></i> Super Admin
                                 </span>
                             @else
                                 <span class="type-admin">
-                                    <i class="bi bi-building-check"></i> Company Admin
+                                    <i class="ti ti-building-community"></i> Company Admin
                                 </span>
                             @endif
                         </td>
@@ -108,15 +108,15 @@
                         <td>
                             @if($user->isSuperUser())
                                 <span class="role-badge role-full">
-                                    <i class="bi bi-infinity"></i> Global
+                                    <i class="ti ti-infinity"></i> Global
                                 </span>
                             @elseif((int)($user->company_role_num ?? 0) === 0)
                                 <span class="role-badge role-full">
-                                    <i class="bi bi-shield-fill-check"></i> Full Access
+                                    <i class="ti ti-shield-check-filled"></i> Full Access
                                 </span>
                             @else
                                 <span class="role-badge role-restricted">
-                                    <i class="bi bi-shield-half"></i> Role {{ $user->company_role_num }}
+                                    <i class="ti ti-shield-half"></i> Role {{ $user->company_role_num }}
                                 </span>
                             @endif
                         </td>
@@ -128,7 +128,7 @@
                         <td class="text-end" style="white-space:nowrap">
                             <a class="btn btn-sm btn-outline-primary"
                                href="{{ route('users.edit',$user) }}">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="ti ti-pencil"></i> Edit
                             </a>
                             @if($user->is_active && !$user->is(auth()->user()))
                                 <form method="POST"
@@ -137,7 +137,7 @@
                                       onsubmit="return confirm('Disable this user?')">
                                     @csrf @method('DELETE')
                                     <button class="btn btn-sm btn-light ms-1" type="submit">
-                                        <i class="bi bi-person-x"></i>
+                                        <i class="ti ti-user-x"></i>
                                     </button>
                                 </form>
                             @endif
@@ -147,10 +147,10 @@
                     <tr>
                         <td colspan="6">
                             <div class="ui-empty">
-                                <i class="bi bi-people"></i>
+                                <i class="ti ti-users"></i>
                                 <p>No users found{{ request('q') ? ' for "'.request('q').'"' : '' }}.</p>
                                 <a href="{{ route('users.create') }}" class="btn btn-primary mt-3">
-                                    <i class="bi bi-person-plus"></i> Create First User
+                                    <i class="ti ti-user-plus"></i> Create First User
                                 </a>
                             </div>
                         </td>

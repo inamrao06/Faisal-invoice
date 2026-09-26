@@ -28,7 +28,7 @@
     </div>
     @can('manage-branches')
         <a class="btn btn-primary" href="{{ route('companies.create') }}">
-            <i class="bi bi-plus-lg"></i> Create Company
+            <i class="ti ti-plus"></i> Create Company
         </a>
     @endcan
 </div>
@@ -69,17 +69,17 @@
                         </td>
                         <td>
                             <span class="type-tag">
-                                <i class="bi bi-tag-fill"></i>
+                                <i class="ti ti-tag-filled"></i>
                                 {{ str($company->type)->replace('_',' ')->title() }}
                             </span>
                         </td>
                         <td>
                             <div style="font-size:13px;color:#475569;display:grid;gap:2px">
                                 @if($company->phone)
-                                    <span><i class="bi bi-telephone me-1"></i>{{ $company->phone }}</span>
+                                    <span><i class="ti ti-phone me-1"></i>{{ $company->phone }}</span>
                                 @endif
                                 @if($company->city)
-                                    <span><i class="bi bi-geo-alt me-1"></i>{{ $company->city }}</span>
+                                    <span><i class="ti ti-map-pin me-1"></i>{{ $company->city }}</span>
                                 @endif
                                 @if(!$company->phone && !$company->city)
                                     <span style="color:#cbd5e1">—</span>
@@ -104,12 +104,12 @@
                         </td>
                         <td class="text-end" style="white-space:nowrap">
                             <a class="btn btn-sm btn-light" href="{{ route('companies.show',$company) }}">
-                                <i class="bi bi-eye"></i> View
+                                <i class="ti ti-eye"></i> View
                             </a>
                             @can('manage-branches')
                                 <a class="btn btn-sm btn-outline-primary ms-1"
                                    href="{{ route('companies.edit',$company) }}">
-                                    <i class="bi bi-pencil"></i> Edit
+                                    <i class="ti ti-pencil"></i> Edit
                                 </a>
                             @endcan
                         </td>
@@ -118,11 +118,11 @@
                     <tr>
                         <td colspan="7">
                             <div class="ci-empty">
-                                <i class="bi bi-buildings"></i>
+                                <i class="ti ti-buildings"></i>
                                 <p>No companies registered yet.</p>
                                 @can('manage-branches')
                                     <a href="{{ route('companies.create') }}" class="btn btn-primary mt-3">
-                                        <i class="bi bi-plus-lg"></i> Create First Company
+                                        <i class="ti ti-plus"></i> Create First Company
                                     </a>
                                 @endcan
                             </div>

@@ -85,10 +85,10 @@
 @section('content')
 
 @if(session('success'))
-<div class="flash success"><i class="bi bi-check-circle-fill"></i> {{ session('success') }}</div>
+<div class="flash success"><i class="ti ti-circle-check-filled"></i> {{ session('success') }}</div>
 @endif
 @if($errors->any())
-<div class="flash error"><i class="bi bi-exclamation-triangle-fill"></i> {{ $errors->first() }}</div>
+<div class="flash error"><i class="ti ti-alert-triangle-filled"></i> {{ $errors->first() }}</div>
 @endif
 
 <div class="settings-wrap">
@@ -97,16 +97,16 @@
     <div class="tab-nav">
         <div class="tab-nav-head"><h4>Settings</h4></div>
         <a href="#tab-app"  class="tab-link active"  data-tab="tab-app">
-            <i class="bi bi-info-circle"></i> App Info
+            <i class="ti ti-info-circle"></i> App Info
         </a>
         <a href="#tab-mail" class="tab-link" data-tab="tab-mail">
-            <i class="bi bi-envelope"></i> Mail / SMTP
+            <i class="ti ti-mail"></i> Mail / SMTP
         </a>
         <a href="#tab-push" class="tab-link" data-tab="tab-push">
-            <i class="bi bi-bell"></i> Push Notifications
+            <i class="ti ti-bell"></i> Push Notifications
         </a>
         <a href="#tab-env"  class="tab-link" data-tab="tab-env">
-            <i class="bi bi-terminal"></i> Environment
+            <i class="ti ti-terminal"></i> Environment
             @php $envBadge = $env['APP_ENV'] ?? 'local'; @endphp
             <span class="nav-badge">{{ $envBadge }}</span>
         </a>
@@ -125,7 +125,7 @@
                 {{-- Identity --}}
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="bi bi-building"></i></div>
+                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-building"></i></div>
                         <div>
                             <h3>Business Identity</h3>
                             <p>Site name, slug and contact information</p>
@@ -183,7 +183,7 @@
                 {{-- Logo & Favicon --}}
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#faf5ff;color:#7c3aed"><i class="bi bi-image"></i></div>
+                        <div class="card-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-photo"></i></div>
                         <div>
                             <h3>Branding</h3>
                             <p>Logo and favicon displayed across the app</p>
@@ -225,7 +225,7 @@
                 {{-- Locale & Format --}}
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#f0fdf4;color:#16a34a"><i class="bi bi-globe"></i></div>
+                        <div class="card-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-world"></i></div>
                         <div>
                             <h3>Locale & Formats</h3>
                             <p>Timezone, date format and language preferences</p>
@@ -253,7 +253,7 @@
                 </div>
 
                 <div class="form-footer">
-                    <button class="btn btn-primary px-4"><i class="bi bi-check2 me-1"></i>Save App Info</button>
+                    <button class="btn btn-primary px-4"><i class="ti ti-check me-1"></i>Save App Info</button>
                     <span style="font-size:12px;color:#94a3b8">Changes also update APP_NAME in .env</span>
                 </div>
             </form>
@@ -268,7 +268,7 @@
 
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#fff7ed;color:#ea580c"><i class="bi bi-envelope-at"></i></div>
+                        <div class="card-icon" style="background:#fff7ed;color:#ea580c"><i class="ti ti-mail"></i></div>
                         <div>
                             <h3>Mail / SMTP Configuration</h3>
                             <p>Settings are written directly to your <code>.env</code> file</p>
@@ -352,7 +352,7 @@
                 </div>
 
                 <div class="form-footer">
-                    <button class="btn btn-primary px-4"><i class="bi bi-check2 me-1"></i>Save Mail Settings</button>
+                    <button class="btn btn-primary px-4"><i class="ti ti-check me-1"></i>Save Mail Settings</button>
                     <span style="font-size:12px;color:#94a3b8">Writes to .env and clears config cache</span>
                 </div>
             </form>
@@ -367,7 +367,7 @@
 
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="bi bi-bell-fill"></i></div>
+                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-bell-filled"></i></div>
                         <div>
                             <h3>Push Notification Provider</h3>
                             <p>Choose your provider and enter API credentials</p>
@@ -475,7 +475,7 @@
                     <div class="s-card-body" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px">
                         <div style="display:flex;align-items:center;gap:12px">
                             <div style="width:36px;height:36px;border-radius:9px;background:#eff6ff;color:#2563eb;display:grid;place-items:center;font-size:16px">
-                                <i class="bi bi-card-list"></i>
+                                <i class="ti ti-list-details"></i>
                             </div>
                             <div>
                                 <div style="font-size:13px;font-weight:700;color:#0f172a">Notification Templates</div>
@@ -483,13 +483,13 @@
                             </div>
                         </div>
                         <a href="{{ route('settings.notifications.index') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-arrow-right me-1"></i>Manage Templates
+                            <i class="ti ti-arrow-right me-1"></i>Manage Templates
                         </a>
                     </div>
                 </div>
 
                 <div class="form-footer">
-                    <button class="btn btn-primary px-4"><i class="bi bi-check2 me-1"></i>Save Push Settings</button>
+                    <button class="btn btn-primary px-4"><i class="ti ti-check me-1"></i>Save Push Settings</button>
                     <span style="font-size:12px;color:#94a3b8">Credentials written to .env file</span>
                 </div>
             </form>
@@ -504,7 +504,7 @@
 
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#f0fdf4;color:#16a34a"><i class="bi bi-terminal-fill"></i></div>
+                        <div class="card-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-terminal"></i></div>
                         <div>
                             <h3>Application Environment</h3>
                             <p>Core .env values — changes clear config cache automatically</p>
@@ -573,14 +573,14 @@
 
                         {{-- Production warning --}}
                         <div id="prodWarning" style="display:none;margin-top:16px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;font-size:13px;color:#b91c1c">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <i class="ti ti-alert-triangle-filled me-2"></i>
                             <strong>Production mode:</strong> Make sure <code>APP_DEBUG</code> is <strong>false</strong> and all secrets are properly set before deploying.
                         </div>
                     </div>
                 </div>
 
                 <div class="form-footer">
-                    <button class="btn btn-primary px-4"><i class="bi bi-check2 me-1"></i>Save Environment</button>
+                    <button class="btn btn-primary px-4"><i class="ti ti-check me-1"></i>Save Environment</button>
                     <span style="font-size:12px;color:#94a3b8">Runs <code>php artisan config:clear</code> after save</span>
                 </div>
             </form>

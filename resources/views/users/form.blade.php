@@ -56,7 +56,7 @@
         <p>{{ $user->exists ? 'Update account details, access type and company assignment.' : 'Super Admin can create both Super Admin and Company Admin users.' }}</p>
     </div>
     <a href="{{ route('users.index') }}" class="btn btn-light">
-        <i class="bi bi-arrow-left"></i> Back
+        <i class="ti ti-arrow-left"></i> Back
     </a>
 </div>
 
@@ -71,7 +71,7 @@
         {{-- ① USER TYPE --}}
         <div class="uf-section">
             <div class="uf-sec-title">
-                <div class="uf-sec-icon violet"><i class="bi bi-shield-lock"></i></div>
+                <div class="uf-sec-icon violet"><i class="ti ti-shield-lock"></i></div>
                 <div><h4>User Type</h4><p>Determines global access scope</p></div>
             </div>
 
@@ -86,7 +86,7 @@
                            @if(!auth()->user()->isSuperUser()) disabled @endif
                            onchange="onTypeChange(this)">
                     <div class="check-dot"></div>
-                    <div class="type-card-icon"><i class="bi bi-shield-star-fill"></i></div>
+                    <div class="type-card-icon"><i class="ti ti-shield-star"></i></div>
                     <strong>Super Admin</strong>
                     <span>Full system access.<br>Not tied to any company.</span>
                 </label>
@@ -98,7 +98,7 @@
                            {{ $currentType === 'admin' ? 'checked' : '' }}
                            onchange="onTypeChange(this)">
                     <div class="check-dot"></div>
-                    <div class="type-card-icon"><i class="bi bi-building-check"></i></div>
+                    <div class="type-card-icon"><i class="ti ti-building-check"></i></div>
                     <strong>Company Admin</strong>
                     <span>Scoped to one company.<br>Role 0 = full access.</span>
                 </label>
@@ -108,7 +108,7 @@
         {{-- ② PROFILE --}}
         <div class="uf-section">
             <div class="uf-sec-title">
-                <div class="uf-sec-icon blue"><i class="bi bi-person"></i></div>
+                <div class="uf-sec-icon blue"><i class="ti ti-user"></i></div>
                 <div><h4>Profile Details</h4><p>Name, email, phone and password</p></div>
             </div>
             <div class="uf-grid">
@@ -157,7 +157,7 @@
         {{-- ③ COMPANY & ROLE --}}
         <div class="uf-section company-field" id="companySection">
             <div class="uf-sec-title">
-                <div class="uf-sec-icon blue"><i class="bi bi-buildings"></i></div>
+                <div class="uf-sec-icon blue"><i class="ti ti-buildings"></i></div>
                 <div><h4>Company &amp; Access Role</h4><p>Assign company and set role number (0 = full access)</p></div>
             </div>
             <div class="uf-grid">
@@ -188,7 +188,7 @@
                 </div>
             </div>
             <div class="role-info mt-3">
-                <i class="bi bi-info-circle-fill"></i>
+                <i class="ti ti-info-circle-filled"></i>
                 <div>
                     <strong>Role Number Guide:</strong>
                     <strong style="color:#15803d"> 0</strong> = Full company access (same as Company Admin).
@@ -201,7 +201,7 @@
         {{-- ④ STATUS --}}
         <div class="uf-section">
             <div class="uf-sec-title">
-                <div class="uf-sec-icon green"><i class="bi bi-toggle-on"></i></div>
+                <div class="uf-sec-icon green"><i class="ti ti-toggle-right"></i></div>
                 <div><h4>Account Status</h4><p>Inactive users cannot log in</p></div>
             </div>
             <label class="status-toggle">
@@ -213,7 +213,7 @@
 
         <div class="uf-footer">
             <button class="btn btn-primary px-5" type="submit">
-                <i class="bi bi-check2-circle me-1"></i>
+                <i class="ti ti-circle-check me-1"></i>
                 {{ $user->exists ? 'Update User' : 'Create User' }}
             </button>
             <a href="{{ route('users.index') }}" class="btn btn-light">Cancel</a>

@@ -25,7 +25,8 @@
     <script src="{{ asset('paces/assets/js/config.js') }}"></script>
     <link href="{{ asset('paces/assets/css/vendors.min.css') }}" rel="stylesheet">
     <link id="app-style" href="{{ asset('paces/assets/css/app.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/paces-custom.css') }}?v=1" rel="stylesheet">
+    <link href="{{ asset('paces/assets/plugins/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/paces-custom.css') }}?v=8" rel="stylesheet">
     <style>:root { --app-accent: {{ $accent }}; --app-sidebar: {{ $sidebarBg }}; --app-topbar: {{ $headerBg }}; }</style>
     @stack('styles')
 </head>
@@ -135,10 +136,14 @@
 </div>
 <script src="{{ asset('paces/assets/js/vendors.min.js') }}"></script>
 <script src="{{ asset('paces/assets/js/app.js') }}"></script>
+<script src="{{ asset('paces/assets/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('paces/assets/plugins/select2/select2.min.js') }}"></script>
+<script src="{{ asset('js/searchable-selects.js') }}?v=2" defer></script>
 <script>
     document.querySelectorAll('.app-theme-choice').forEach((button) => button.addEventListener('click', () => { const theme = button.dataset.theme; document.documentElement.setAttribute('data-bs-theme', theme); window.config.theme = theme; sessionStorage.setItem('__THEME_CONFIG__', JSON.stringify(window.config)); }));
     document.querySelectorAll('.app-nav-choice').forEach((button) => button.addEventListener('click', () => { const size = button.dataset.size; document.documentElement.setAttribute('data-sidenav-size', size); window.config['sidenav-size'] = size; sessionStorage.setItem('__THEME_CONFIG__', JSON.stringify(window.config)); }));
 </script>
+<script src="{{ asset('js/inner-tables.js') }}?v=1" defer></script>
 @stack('scripts')
 </body>
 </html>

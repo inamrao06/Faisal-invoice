@@ -87,14 +87,14 @@
 {{-- Breadcrumb --}}
 <div class="bc">
     <a href="{{ route('settings.general') }}">Settings</a>
-    <i class="bi bi-chevron-right"></i>
+    <i class="ti ti-chevron-right"></i>
     <a href="{{ route('settings.notifications.index') }}">Notification Templates</a>
-    <i class="bi bi-chevron-right"></i>
+    <i class="ti ti-chevron-right"></i>
     <span>{{ $template->exists ? 'Edit Template' : 'New Template' }}</span>
 </div>
 
 @if($errors->any())
-<div class="flash error"><i class="bi bi-exclamation-triangle-fill"></i> {{ $errors->first() }}</div>
+<div class="flash error"><i class="ti ti-alert-triangle-filled"></i> {{ $errors->first() }}</div>
 @endif
 
 @php
@@ -135,7 +135,7 @@
             {{-- Event & Basic Info --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#eff6ff;color:#2563eb"><i class="bi bi-bell"></i></div>
+                    <div class="c-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-bell"></i></div>
                     <div>
                         <h3>Template Details</h3>
                         <p>Event trigger, notification title and message body</p>
@@ -204,7 +204,7 @@
                             <div class="var-chips">
                                 @foreach($variables as $var => $desc)
                                 <span class="var-chip" title="{{ $desc }}" onclick="insertVar('{{ $var }}')">
-                                    <i class="bi bi-braces"></i>{{ $var }}
+                                    <i class="ti ti-braces"></i>{{ $var }}
                                 </span>
                                 @endforeach
                             </div>
@@ -217,7 +217,7 @@
             {{-- Channel --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#faf5ff;color:#7c3aed"><i class="bi bi-broadcast-pin"></i></div>
+                    <div class="c-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-broadcast"></i></div>
                     <div>
                         <h3>Delivery Channel</h3>
                         <p>How this notification is sent</p>
@@ -243,7 +243,7 @@
             {{-- Icon --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#f0fdf4;color:#16a34a"><i class="bi bi-stars"></i></div>
+                    <div class="c-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-stars"></i></div>
                     <div>
                         <h3>Notification Icon</h3>
                         <p>Icon shown alongside the notification</p>
@@ -277,7 +277,7 @@
             {{-- Status --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#fef3c7;color:#d97706"><i class="bi bi-toggles"></i></div>
+                    <div class="c-icon" style="background:#fef3c7;color:#d97706"><i class="ti ti-adjustments"></i></div>
                     <div><h3>Status</h3><p>Enable or disable this template</p></div>
                 </div>
                 <div class="s-card-body">
@@ -301,7 +301,7 @@
             {{-- Actions --}}
             <div style="display:flex;align-items:center;gap:10px">
                 <button class="btn btn-primary px-4">
-                    <i class="bi bi-check2 me-1"></i>
+                    <i class="ti ti-check me-1"></i>
                     {{ $template->exists ? 'Update Template' : 'Create Template' }}
                 </button>
                 <a href="{{ route('settings.notifications.index') }}" class="btn btn-outline-secondary">
@@ -317,7 +317,7 @@
             {{-- Live preview --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#f8fafc;color:#64748b"><i class="bi bi-phone"></i></div>
+                    <div class="c-icon" style="background:#f8fafc;color:#64748b"><i class="ti ti-phone"></i></div>
                     <div><h3>Live Preview</h3><p>How the notification appears on device</p></div>
                 </div>
                 <div class="s-card-body">
@@ -347,7 +347,7 @@
             {{-- Variable reference --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#faf5ff;color:#7c3aed"><i class="bi bi-braces-asterisk"></i></div>
+                    <div class="c-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-code"></i></div>
                     <div><h3>Variable Reference</h3><p>Click any chip to insert into message body</p></div>
                 </div>
                 <div class="s-card-body">
@@ -368,7 +368,7 @@
             {{-- Tips --}}
             <div class="s-card">
                 <div class="s-card-head">
-                    <div class="c-icon" style="background:#fef9c3;color:#ca8a04"><i class="bi bi-lightbulb"></i></div>
+                    <div class="c-icon" style="background:#fef9c3;color:#ca8a04"><i class="ti ti-bulb"></i></div>
                     <div><h3>Tips</h3></div>
                 </div>
                 <div class="s-card-body">

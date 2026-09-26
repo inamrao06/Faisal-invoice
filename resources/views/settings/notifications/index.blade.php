@@ -84,21 +84,21 @@
 @section('content')
 
 @if(session('success'))
-<div class="flash success"><i class="bi bi-check-circle-fill"></i> {{ session('success') }}</div>
+<div class="flash success"><i class="ti ti-circle-check-filled"></i> {{ session('success') }}</div>
 @endif
 
 {{-- ── Page header ── --}}
 <div class="nt-header">
     <div class="nt-header-left">
-        <h2><i class="bi bi-bell-fill me-2" style="color:#2563eb"></i>Notification Templates</h2>
+        <h2><i class="ti ti-bell-filled me-2" style="color:#2563eb"></i>Notification Templates</h2>
         <p>Manage push, SMS and email message templates for every event in the system</p>
     </div>
     <div style="display:flex;gap:8px">
         <a href="{{ route('settings.general') }}#tab-push" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-gear me-1"></i>Push Settings
+            <i class="ti ti-settings me-1"></i>Push Settings
         </a>
         <a href="{{ route('settings.notifications.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i>New Template
+            <i class="ti ti-plus me-1"></i>New Template
         </a>
     </div>
 </div>
@@ -113,19 +113,19 @@
 @endphp
 <div class="stats-bar">
     <div class="stat-card">
-        <div class="stat-icon" style="background:#eff6ff;color:#2563eb"><i class="bi bi-card-list"></i></div>
+        <div class="stat-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-list-details"></i></div>
         <div><div class="stat-val">{{ $total }}</div><div class="stat-lbl">Total Templates</div></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background:#dcfce7;color:#16a34a"><i class="bi bi-toggle-on"></i></div>
+        <div class="stat-icon" style="background:#dcfce7;color:#16a34a"><i class="ti ti-toggle-right"></i></div>
         <div><div class="stat-val">{{ $active }}</div><div class="stat-lbl">Active</div></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background:#fef3c7;color:#d97706"><i class="bi bi-exclamation-circle"></i></div>
+        <div class="stat-icon" style="background:#fef3c7;color:#d97706"><i class="ti ti-alert-circle"></i></div>
         <div><div class="stat-val">{{ $allEvents - $covered }}</div><div class="stat-lbl">Not Configured</div></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background:#faf5ff;color:#7c3aed"><i class="bi bi-broadcast-pin"></i></div>
+        <div class="stat-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-broadcast"></i></div>
         <div><div class="stat-val">{{ $covered }}</div><div class="stat-lbl">Events Covered</div></div>
     </div>
 </div>
@@ -133,7 +133,7 @@
 {{-- ── Filter bar ── --}}
 <div class="filter-bar">
     <div class="search-wrap">
-        <i class="bi bi-search"></i>
+        <i class="ti ti-search"></i>
         <input class="form-control form-control-sm" id="tplSearch" placeholder="Search templates…">
     </div>
     <button class="cat-pill active" data-cat="all">All</button>
@@ -188,14 +188,14 @@
                 </form>
                 {{-- Edit --}}
                 <a href="{{ route('settings.notifications.edit', $tpl) }}" title="Edit">
-                    <i class="bi bi-pencil"></i>
+                    <i class="ti ti-pencil"></i>
                 </a>
                 {{-- Delete --}}
                 <form method="POST" action="{{ route('settings.notifications.destroy', $tpl) }}" style="display:contents"
                       onsubmit="return confirm('Delete this template?')">
                     @csrf @method('DELETE')
                     <button type="submit" class="btn-delete" title="Delete">
-                        <i class="bi bi-trash3"></i>
+                        <i class="ti ti-trash"></i>
                     </button>
                 </form>
             </div>
@@ -214,7 +214,7 @@
         </div>
         <a href="{{ route('settings.notifications.create', ['event' => $key]) }}"
            class="btn btn-sm btn-outline-primary" style="white-space:nowrap">
-            <i class="bi bi-plus me-1"></i>Add
+            <i class="ti ti-plus me-1"></i>Add
         </a>
     </div>
     @endif
