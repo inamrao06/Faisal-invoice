@@ -1,0 +1,5 @@
+@extends('layouts.app') @section('title','Theme Setting') @section('page_title','Theme Setting') @section('content')
+<form class="panel form-panel" method="POST" action="{{ route('settings.theme.update') }}">@csrf
+<div class="form-grid"><div><label>Theme Mode</label><select class="form-select" name="theme_mode"><option value="light" @selected(($settings['theme_mode'] ?? 'light')==='light')>Light</option><option value="dark" @selected(($settings['theme_mode'] ?? 'light')==='dark')>Dark</option></select></div><div><label>Header Color</label><input class="form-control form-control-color" type="color" name="header_color" value="{{ $settings['header_color'] ?? '#ffffff' }}"></div><div><label>Sidebar Color</label><input class="form-control form-control-color" type="color" name="sidebar_color" value="{{ $settings['sidebar_color'] ?? '#0f172a' }}"></div><div><label>Accent Color</label><input class="form-control form-control-color" type="color" name="accent_color" value="{{ $settings['accent_color'] ?? '#2563eb' }}"></div></div>
+<div class="form-actions"><button class="btn btn-primary">Save Theme Setting</button></div></form>
+@endsection

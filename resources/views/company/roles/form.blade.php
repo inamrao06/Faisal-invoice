@@ -1,0 +1,4 @@
+@extends('layouts.app') @section('title',$role->exists?'Edit Role':'Add Role') @section('page_title',$role->exists?'Edit Role':'Add Role') @section('content')
+<form class="panel form-panel" method="POST" action="{{ $role->exists?route('company.roles.update',$role):route('company.roles.store') }}">@csrf @if($role->exists)@method('PUT')@endif
+<div class="form-grid"><div><label>Name *</label><input class="form-control" name="name" value="{{ old('name',$role->name) }}" required></div><div><label class="check mt-4"><input type="checkbox" name="is_active" value="1" @checked(old('is_active',$role->exists?$role->is_active:true))> Active</label></div><div class="span-2"><label>Description</label><textarea class="form-control" name="description">{{ old('description',$role->description) }}</textarea></div></div><div class="form-actions"><button class="btn btn-primary">Save</button></div></form>
+@endsection

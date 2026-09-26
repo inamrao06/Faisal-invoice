@@ -1,0 +1,4 @@
+@extends('layouts.app') @section('title','Expense Types') @section('page_title','Expense Types') @section('content')
+<div class="page-actions"><div><h2>Expense Types</h2><p>Company-specific expense categories.</p></div><a class="btn btn-primary" href="{{ route('company.expense-types.create') }}">Add Expense Type</a></div>
+<div class="panel"><table class="table align-middle"><thead><tr><th>Name</th><th>Code</th><th>Description</th><th>Status</th><th></th></tr></thead><tbody>@foreach($types as $type)<tr><td>{{ $type->name }}</td><td>{{ $type->code }}</td><td>{{ $type->description }}</td><td><span class="status {{ $type->is_active?'on':'off' }}">{{ $type->is_active?'Active':'Inactive' }}</span></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ route('company.expense-types.edit',$type) }}">Edit</a></td></tr>@endforeach</tbody></table><div class="p-3">{{ $types->links() }}</div></div>
+@endsection

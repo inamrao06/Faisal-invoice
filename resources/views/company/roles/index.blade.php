@@ -1,0 +1,4 @@
+@extends('layouts.app') @section('title','Roles') @section('page_title','Roles') @section('content')
+<div class="page-actions"><div><h2>Roles</h2><p>Company user roles.</p></div><a class="btn btn-primary" href="{{ route('company.roles.create') }}">Add Role</a></div>
+<div class="panel"><table class="table align-middle"><thead><tr><th>Name</th><th>Description</th><th>Status</th><th></th></tr></thead><tbody>@foreach($roles as $role)<tr><td>{{ $role->name }}</td><td>{{ $role->description }}</td><td><span class="status {{ $role->is_active?'on':'off' }}">{{ $role->is_active?'Active':'Inactive' }}</span></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{{ route('company.roles.edit',$role) }}">Edit</a></td></tr>@endforeach</tbody></table><div class="p-3">{{ $roles->links() }}</div></div>
+@endsection

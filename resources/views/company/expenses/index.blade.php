@@ -1,0 +1,4 @@
+@extends('layouts.app') @section('title','Expenses') @section('page_title','Expenses') @section('content')
+<div class="page-actions"><div><h2>Expenses</h2><p>Create and view company expenses.</p></div><a class="btn btn-primary" href="{{ route('company.expenses.create') }}">Create Expense</a></div>
+<div class="panel"><table class="table align-middle"><thead><tr><th>Invoice</th><th>Date</th><th>Type</th><th>Status</th><th class="text-end">Total</th></tr></thead><tbody>@foreach($expenses as $expense)<tr><td><a href="{{ route('company.expenses.show',$expense) }}">{{ $expense->invoice_no }}</a></td><td>{{ $expense->expense_date->format('d M Y') }}</td><td>{{ $expense->head?->name }}</td><td><span class="status on">{{ str($expense->status)->title() }}</span></td><td class="text-end">PKR {{ number_format($expense->total_amount,2) }}</td></tr>@endforeach</tbody></table><div class="p-3">{{ $expenses->links() }}</div></div>
+@endsection
