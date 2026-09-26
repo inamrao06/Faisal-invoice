@@ -44,7 +44,7 @@ class CompanyUserController extends Controller
     {
         $this->authorizeUser($user);
 
-        return view('users.form', [
+        return view('company.users.form', [
             'user' => $user,
             'companies' => $this->companies(),
             'companyRoles' => $this->companyRoles(),

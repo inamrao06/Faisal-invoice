@@ -182,7 +182,7 @@
                     <i class="ti ti-search"></i>
                 </button>
                 @if (request('q'))
-                    <a href="{{ route('users.index') }}" class="btn btn-light">Clear</a>
+                    <a href="{{ route('company.users.index') }}" class="btn btn-light">Clear</a>
                 @endif
             </form>
             <small style="color:#94a3b8">
@@ -273,11 +273,11 @@
                                             in as</button>
                                     </form>
                                 @endif
-                                <a class="btn btn-sm btn-outline-primary" href="{{ route('users.edit', $user) }}">
+                                <a class="btn btn-sm btn-outline-primary" href="{{ route('company.users.edit', $user) }}">
                                     <i class="ti ti-pencil"></i> Edit
                                 </a>
                                 @if ($user->is_active && !$user->is(auth()->user()))
-                                    <form method="POST" action="{{ route('users.destroy', $user) }}"
+                                    <form method="POST" action="{{ route('company.users.destroy', $user) }}"
                                         style="display:inline" data-confirm-disable data-user-name="{{ $user->name }}">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-sm btn-light ms-1" type="submit" title="Disable user"
@@ -294,7 +294,7 @@
                                 <div class="ui-empty">
                                     <i class="ti ti-users"></i>
                                     <p>No users found{{ request('q') ? ' for "' . request('q') . '"' : '' }}.</p>
-                                    <a href="{{ route('users.create') }}" class="btn btn-primary mt-3">
+                                    <a href="{{ route('company.users.create') }}" class="btn btn-primary mt-3">
                                         <i class="ti ti-user-plus"></i> Create First User
                                     </a>
                                 </div>

@@ -16,6 +16,9 @@ class Branch extends Model
         'manager_name', 'authorized_person', 'designation',
         // Files
         'logo_path', 'signature_path', 'stamp_path',
+        // Company mail
+        'smtp_mailer', 'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password',
+        'smtp_encryption', 'smtp_from_address', 'smtp_from_name',
         // Business
         'invoice_prefix', 'tax_number',
         // Status

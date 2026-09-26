@@ -78,6 +78,15 @@
                             <a class="btn btn-sm btn-light" href="{{ route('company.expenses.show',$expense) }}">
                                 <i class="ti ti-eye"></i> View
                             </a>
+                            <a class="btn btn-sm btn-outline-primary ms-1" href="{{ route('company.expenses.edit',$expense) }}">
+                                <i class="ti ti-pencil"></i> Edit
+                            </a>
+                            <form method="POST" action="{{ route('company.expenses.destroy',$expense) }}" class="d-inline" data-confirm-delete data-invoice="{{ $expense->invoice_no }}">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-sm btn-light ms-1 text-danger" type="submit" title="Delete expense">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 @empty
@@ -101,3 +110,35 @@
     @endif
 </div>
 @endsection
+
+@push('styles')
+    <link href="{{ asset('paces/assets/plugins/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('paces/assets/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        document.querySelectorAll('[data-confirm-delete]').forEach(function(form) {
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                var invoice = form.dataset.invoice || 'this expense';
+                if (!window.Swal) {
+                    if (window.confirm('Delete ' + invoice + '?')) form.submit();
+                    return;
+                }
+                var result = await Swal.fire({
+                    title: 'Delete expense?',
+                    text: invoice + ' will be removed from the expense list.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#dc3545',
+                    reverseButtons: true,
+                    focusCancel: true
+                });
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    </script>
+@endpush

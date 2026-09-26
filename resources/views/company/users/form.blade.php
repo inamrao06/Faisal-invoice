@@ -346,12 +346,12 @@
                     @endif
                 </p>
             </div>
-            <a href="{{ route('users.index') }}" class="btn btn-light">
+            <a href="{{ route('company.users.index') }}" class="btn btn-light">
                 <i class="ti ti-arrow-left"></i> Back
             </a>
         </div>
 
-        <form method="POST" action="{{ $user->exists ? route('users.update', $user) : route('users.store') }}" id="userForm">
+        <form method="POST" action="{{ $user->exists ? route('company.users.update', $user) : route('company.users.store') }}" id="userForm">
             @csrf
             @if ($user->exists)
                 @method('PUT')
@@ -461,11 +461,11 @@
                         <div class="uf-sec-icon blue"><i class="ti ti-buildings"></i></div>
                         <div>
                             <h4>Company &amp; Access Role</h4>
-                            <p>Assign company and set role number (0 = full access)</p>
+                            <p>Choose full access or a permission role for this company user</p>
                         </div>
                     </div>
                     <div class="uf-grid">
-                        <div>
+                        <div class="d-none">
                             <label class="uf-lbl" for="inp_branch">Assigned Company</label>
                             <select class="form-select @error('branch_id') is-invalid @enderror" id="inp_branch"
                                 name="branch_id">
@@ -480,14 +480,17 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div>
-                            <label class="uf-lbl" for="inp_role">
-                                Role Number
-                                <span style="font-weight:400;color:#94a3b8;font-size:11px">(0 = Full Access)</span>
-                            </label>
-                            <input class="form-control @error('company_role_num') is-invalid @enderror" id="inp_role"
-                                type="number" name="company_role_num" min="0" max="255"
-                                value="{{ old('company_role_num', $user->company_role_num ?? 0) }}" placeholder="0">
+                        <div class="g2">
+                            <label class="uf-lbl" for="inp_role">Access Role</label>
+                            <select class="form-select @error('company_role_num') is-invalid @enderror" id="inp_role"
+                                name="company_role_num">
+                                <option value="0" @selected($currentRoleNum === 0)>Full Access</option>
+                                @foreach ($companyRoles as $role)
+                                    <option value="{{ $role->id }}" @selected($currentRoleNum === (int) $role->id)>
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                             @error('company_role_num')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -496,10 +499,9 @@
                     <div class="role-info mt-3">
                         <i class="ti ti-info-circle-filled"></i>
                         <div>
-                            <strong>Role Number Guide:</strong>
+                            <strong>Access Role Guide:</strong>
                             <strong style="color:#15803d"> 0</strong> = Full company access (same as Company Admin).
-                            Any other number (e.g. <strong>1</strong>, <strong>2</strong>) = restricted role — use with
-                            Roles &amp; Permissions to define what they can do.
+                            Any selected role is restricted by the Roles &amp; Permissions settings.
                         </div>
                     </div>
                 </div>
@@ -524,7 +526,7 @@
                         <i class="ti ti-circle-check me-1"></i>
                         {{ $user->exists ? 'Update User' : 'Create User' }}
                     </button>
-                    <a href="{{ route('users.index') }}" class="btn btn-light">Cancel</a>
+                    <a href="{{ route('company.users.index') }}" class="btn btn-light">Cancel</a>
                 </div>
 
             </div>

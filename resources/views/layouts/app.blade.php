@@ -285,6 +285,14 @@
                                         class="side-nav-link {{ request()->routeIs('company.payment-methods.*') ? 'active' : '' }}"><span
                                             class="menu-icon"><i class="ti ti-credit-card"></i></span><span
                                             class="menu-text">Payment Methods</span></a></li>
+                                <li class="side-nav-item"><a href="{{ route('company.warranty-providers.index') }}"
+                                        class="side-nav-link {{ request()->routeIs('company.warranty-providers.*') ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-shield-check"></i></span><span
+                                            class="menu-text">Warranty</span></a></li>
+                                <li class="side-nav-item"><a href="{{ route('company.settings.edit') }}"
+                                        class="side-nav-link {{ request()->routeIs('company.settings.*') ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-settings-cog"></i></span><span
+                                            class="menu-text">Settings</span></a></li>
                             @endcan
                         @endif
                     </ul>

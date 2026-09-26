@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title','Create Expense')
-@section('page_title','Create Expense')
+@section('title', $expense->exists ? 'Edit Expense' : 'Create Expense')
+@section('page_title', $expense->exists ? 'Edit Expense' : 'Create Expense')
 @section('content')
 <style>
 .frm-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
@@ -26,14 +26,18 @@
 .form-actions{display:flex;gap:10px;align-items:center;padding:16px 20px;border-top:1px solid var(--bs-border-color);background:var(--bs-tertiary-bg)}
 </style>
 
-<form method="POST" action="{{ route('company.expenses.store') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ $expense->exists ? route('company.expenses.update', $expense) : route('company.expenses.store') }}" enctype="multipart/form-data">
     @csrf
+    @if($expense->exists) @method('PUT') @endif
 
     <div class="frm-head">
         <div>
-            <h2>Expense Invoice</h2>
-            <p>Record a new company expense with line items.</p>
+            <h2>{{ $expense->exists ? 'Edit Expense Invoice' : 'Expense Invoice' }}</h2>
+            <p>{{ $expense->exists ? 'Update expense details and line items.' : 'Record a new company expense with line items.' }}</p>
         </div>
+        @if($expense->exists)
+            <a class="btn btn-light" href="{{ route('company.expenses.show', $expense) }}"><i class="ti ti-arrow-left me-1"></i>Back to Invoice</a>
+        @endif
     </div>
 
     <div class="frm-card">
@@ -69,12 +73,38 @@
                     <label for="attachment">Attachment</label>
                     <input id="attachment" class="form-control @error('attachment') is-invalid @enderror" type="file" name="attachment" accept=".jpg,.jpeg,.png,.webp,.pdf">
                     @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    <div class="form-text">Optional. JPG, PNG, WEBP or PDF, max 5 MB.</div>
+                    <div class="form-text">
+                        Optional. JPG, PNG, WEBP or PDF, max 5 MB.
+                        @if($expense->attachment_path)
+                            Current attachment will be kept unless you upload a new one.
+                        @endif
+                    </div>
                 </div>
                 <div>
                     <label for="remarks">Remarks</label>
                     <textarea id="remarks" class="form-control @error('remarks') is-invalid @enderror" name="remarks" rows="1" placeholder="Enter remarks / description">{{ old('remarks', $expense->remarks) }}</textarea>
                     @error('remarks')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div>
+                    <label for="warranty_provider_id">Warranty Provider</label>
+                    <select id="warranty_provider_id" class="form-select @error('warranty_provider_id') is-invalid @enderror" name="warranty_provider_id">
+                        <option value="">Select warranty...</option>
+                        @foreach($warrantyProviders as $provider)
+                            <option value="{{ $provider->id }}" @selected((int) old('warranty_provider_id', $expense->warranty_provider_id) === $provider->id)>{{ $provider->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('warranty_provider_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div>
+                    <label for="warranty_duration_months">Warranty Duration</label>
+                    <select id="warranty_duration_months" class="form-select @error('warranty_duration_months') is-invalid @enderror" name="warranty_duration_months">
+                        <option value="">Select months...</option>
+                        <option value="0" @selected((string) old('warranty_duration_months', $expense->warranty_duration_months) === '0')>0 months</option>
+                        @foreach([1,3,6,12,18,24,36,48,60] as $months)
+                            <option value="{{ $months }}" @selected((int) old('warranty_duration_months', $expense->warranty_duration_months) === $months)>{{ $months }} month{{ $months === 1 ? '' : 's' }}</option>
+                        @endforeach
+                    </select>
+                    @error('warranty_duration_months')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
         </div>
@@ -98,7 +128,14 @@
                     </tr>
                 </thead>
                 <tbody id="itemsBody">
-                    @php $oldItems = old('items', []); @endphp
+                    @php
+                        $oldItems = old('items', $expense->exists ? $expense->items->map(fn ($item) => [
+                            'description' => $item->description,
+                            'quantity' => $item->quantity,
+                            'rate' => $item->rate,
+                            'tax_percent' => $item->tax_percent,
+                        ])->toArray() : []);
+                    @endphp
                     @forelse($oldItems as $i => $row)
                         <tr class="item-row">
                             <td><input class="form-control" name="items[{{ $i }}][description]" value="{{ $row['description'] ?? '' }}" placeholder="Description" required></td>
@@ -131,7 +168,7 @@
     </div>
 
     <div class="form-actions">
-        <button class="btn btn-primary px-4" type="submit"><i class="ti ti-check me-1"></i>Save Expense</button>
+        <button class="btn btn-primary px-4" type="submit"><i class="ti ti-check me-1"></i>{{ $expense->exists ? 'Update Expense' : 'Save Expense' }}</button>
         <a class="btn btn-light" href="{{ route('company.expenses.index') }}">Cancel</a>
     </div>
 </form>
