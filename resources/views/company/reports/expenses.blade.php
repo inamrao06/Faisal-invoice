@@ -8,7 +8,7 @@
         $hasFilters = request()->filled('from') || request()->filled('to') || request()->filled('expense_head_id');
     @endphp
 
-    
+
 
     <div class="report-page">
         <div class="report-shell">
@@ -33,15 +33,18 @@
                 <div class="filter-grid">
                     <div>
                         <label for="from">From</label>
-                        <input id="from" class="form-control" type="date" name="from" value="{{ request('from') }}">
+                        <input id="from" class="form-control" type="date" name="from"
+                            value="{{ request('from') }}">
                     </div>
                     <div>
                         <label for="to">To</label>
-                        <input id="to" class="form-control" type="date" name="to" value="{{ request('to') }}">
+                        <input id="to" class="form-control" type="date" name="to"
+                            value="{{ request('to') }}">
                     </div>
                     <div>
                         <label for="expense_head_id">Expense Type</label>
-                        <select id="expense_head_id" class="form-select" name="expense_head_id" data-toggle="select2" data-placeholder="All expense types">
+                        <select id="expense_head_id" name="expense_head_id" class="form-select" data-toggle="select2"
+                            data-placeholder="All expense types">
                             <option value="">All expense types</option>
                             @foreach ($heads as $head)
                                 <option value="{{ $head->id }}" @selected((string) request('expense_head_id') === (string) $head->id)>
@@ -58,12 +61,17 @@
                     </div>
                 </div>
 
-                @if($hasFilters)
+                @if ($hasFilters)
                     <div class="active-filters">
-                        @if(request('from'))<span class="filter-chip"><i class="ti ti-calendar"></i>From {{ request('from') }}</span>@endif
-                        @if(request('to'))<span class="filter-chip"><i class="ti ti-calendar"></i>To {{ request('to') }}</span>@endif
-                        @if(request('expense_head_id'))
-                            <span class="filter-chip"><i class="ti ti-tag"></i>{{ $heads->firstWhere('id', (int) request('expense_head_id'))?->name ?? 'Selected type' }}</span>
+                        @if (request('from'))
+                            <span class="filter-chip"><i class="ti ti-calendar"></i>From {{ request('from') }}</span>
+                        @endif
+                        @if (request('to'))
+                            <span class="filter-chip"><i class="ti ti-calendar"></i>To {{ request('to') }}</span>
+                        @endif
+                        @if (request('expense_head_id'))
+                            <span class="filter-chip"><i
+                                    class="ti ti-tag"></i>{{ $heads->firstWhere('id', (int) request('expense_head_id'))?->name ?? 'Selected type' }}</span>
                         @endif
                     </div>
                 @endif
@@ -92,10 +100,14 @@
                                         </a>
                                     </td>
                                     <td style="white-space:nowrap">{{ $expense->expense_date->format('d M Y') }}</td>
-                                    <td><span class="type-pill"><i class="ti ti-tag"></i>{{ $expense->head?->name ?? '-' }}</span></td>
+                                    <td><span class="type-pill"><i
+                                                class="ti ti-tag"></i>{{ $expense->head?->name ?? '-' }}</span></td>
                                     <td>{{ str($expense->payment_method)->replace('_', ' ')->title() }}</td>
-                                    <td><span class="status {{ in_array($expense->status, ['paid','approved','completed']) ? 'on' : 'off' }}">{{ str($expense->status)->title() }}</span></td>
-                                    <td class="text-end amount">{{ $currency }} {{ number_format($expense->total_amount, 2) }}</td>
+                                    <td><span
+                                            class="status {{ in_array($expense->status, ['paid', 'approved', 'completed']) ? 'on' : 'off' }}">{{ str($expense->status)->title() }}</span>
+                                    </td>
+                                    <td class="text-end amount">{{ $currency }}
+                                        {{ number_format($expense->total_amount, 2) }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -111,7 +123,8 @@
                     </table>
                 </div>
                 <div class="report-foot">
-                    <span class="text-muted">{{ number_format($summary->records) }} record{{ (int) $summary->records === 1 ? '' : 's' }}</span>
+                    <span class="text-muted">{{ number_format($summary->records) }}
+                        record{{ (int) $summary->records === 1 ? '' : 's' }}</span>
                     <strong>Total: {{ $currency }} {{ number_format($summary->total, 2) }}</strong>
                 </div>
                 @if ($expenses->hasPages())

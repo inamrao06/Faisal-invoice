@@ -14,7 +14,9 @@
     $inputBg = $appSettings['input_bg_color'] ?? $cardBg;
     $sidebarBg = $appSettings['sidebar_color'] ?? '#1e1f27';
     $headerBg = $appSettings['header_color'] ?? '#ffffff';
-    $safeColor = static fn ($color, $fallback) => preg_match('/^#[0-9a-fA-F]{6}$/', (string) $color) ? $color : $fallback;
+    $safeColor = static fn($color, $fallback) => preg_match('/^#[0-9a-fA-F]{6}$/', (string) $color)
+        ? $color
+        : $fallback;
     $accent = $safeColor($accent, '#236dc9');
     $activeColor = $safeColor($activeColor, $accent);
     $borderColor = $safeColor($borderColor, '#e5e7ef');
@@ -243,10 +245,7 @@
                                         <li class="side-nav-item"><a href="{{ route('settings.theme') }}"
                                                 class="side-nav-link {{ request()->routeIs('settings.theme') ? 'active' : '' }}"><span
                                                     class="menu-text">Theme</span></a></li>
-                                        <li class="side-nav-item"><a
-                                                href="{{ route('settings.notifications.index') }}"
-                                                class="side-nav-link {{ request()->routeIs('settings.notifications.*') ? 'active' : '' }}"><span
-                                                    class="menu-text">Notifications</span></a></li>
+
                                     </ul>
                                 </div>
                             </li>
@@ -297,7 +296,8 @@
                                     <div class="collapse {{ request()->routeIs('company.vehicle-*') || request()->routeIs('company.customers.*') || request()->routeIs('company.vehicles.*') ? 'show' : '' }}"
                                         id="sales-menu">
                                         <ul class="sub-menu">
-                                            <li class="side-nav-item"><a href="{{ route('company.vehicle-invoices.index') }}"
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.vehicle-invoices.index') }}"
                                                     class="side-nav-link {{ request()->routeIs('company.vehicle-invoices.*') ? 'active' : '' }}"><span
                                                         class="menu-text">Invoices</span></a></li>
                                             <li class="side-nav-item"><a href="{{ route('company.customers.index') }}"
@@ -306,7 +306,8 @@
                                             <li class="side-nav-item"><a href="{{ route('company.vehicles.index') }}"
                                                     class="side-nav-link {{ request()->routeIs('company.vehicles.*') ? 'active' : '' }}"><span
                                                         class="menu-text">Vehicles</span></a></li>
-                                            <li class="side-nav-item"><a href="{{ route('company.vehicle-categories.index') }}"
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.vehicle-categories.index') }}"
                                                     class="side-nav-link {{ request()->routeIs('company.vehicle-categories.*') ? 'active' : '' }}"><span
                                                         class="menu-text">Vehicle Categories</span></a></li>
                                         </ul>
@@ -317,16 +318,33 @@
                                         aria-expanded="{{ request()->routeIs('company.car-specifications.*') ? 'true' : 'false' }}"
                                         class="side-nav-link {{ request()->routeIs('company.car-specifications.*') ? 'active' : '' }}"><span
                                             class="menu-icon"><i class="ti ti-file-description"></i></span><span
-                                            class="menu-text">Car Specifications</span><span class="menu-arrow"></span></a>
+                                            class="menu-text">Car Specifications</span><span
+                                            class="menu-arrow"></span></a>
                                     <div class="collapse {{ request()->routeIs('company.car-specifications.*') ? 'show' : '' }}"
                                         id="car-spec-menu">
                                         <ul class="sub-menu">
-                                            <li class="side-nav-item"><a href="{{ route('company.vehicle-categories.index') }}" class="side-nav-link"><span class="menu-text">Categories</span></a></li>
-                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'condition') }}" class="side-nav-link"><span class="menu-text">Conditions</span></a></li>
-                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'brand') }}" class="side-nav-link"><span class="menu-text">Brands</span></a></li>
-                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'model') }}" class="side-nav-link"><span class="menu-text">Models</span></a></li>
-                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'fuel_type') }}" class="side-nav-link"><span class="menu-text">Fuel Types</span></a></li>
-                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'transmission_type') }}" class="side-nav-link"><span class="menu-text">Transmission Types</span></a></li>
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.vehicle-categories.index') }}"
+                                                    class="side-nav-link"><span class="menu-text">Categories</span></a>
+                                            </li>
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.car-specifications.index', 'condition') }}"
+                                                    class="side-nav-link"><span class="menu-text">Conditions</span></a>
+                                            </li>
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.car-specifications.index', 'brand') }}"
+                                                    class="side-nav-link"><span class="menu-text">Brands</span></a></li>
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.car-specifications.index', 'model') }}"
+                                                    class="side-nav-link"><span class="menu-text">Models</span></a></li>
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.car-specifications.index', 'fuel_type') }}"
+                                                    class="side-nav-link"><span class="menu-text">Fuel Types</span></a>
+                                            </li>
+                                            <li class="side-nav-item"><a
+                                                    href="{{ route('company.car-specifications.index', 'transmission_type') }}"
+                                                    class="side-nav-link"><span class="menu-text">Transmission
+                                                        Types</span></a></li>
                                         </ul>
                                     </div>
                                 </li>

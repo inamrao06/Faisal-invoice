@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyCarSpecificationController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyCustomerController;
 use App\Http\Controllers\CompanyDashboardController;
 use App\Http\Controllers\CompanyExpenseController;
@@ -17,12 +17,11 @@ use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\CompanyVehicleCategoryController;
 use App\Http\Controllers\CompanyVehicleController;
 use App\Http\Controllers\CompanyVehicleSaleInvoiceController;
-use App\Http\Controllers\CompanyWarrantyProviderController;
 use App\Http\Controllers\CompanyWarrantyDurationController;
+use App\Http\Controllers\CompanyWarrantyProviderController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImpersonationController;
-use App\Http\Controllers\NotificationTemplateController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -86,12 +85,5 @@ Route::middleware('auth')->group(function () {
         Route::post('/theme', [SettingController::class, 'updateTheme'])->name('theme.update');
 
         // Notification Templates
-        Route::get('/notifications', [NotificationTemplateController::class, 'index'])->name('notifications.index');
-        Route::get('/notifications/create', [NotificationTemplateController::class, 'create'])->name('notifications.create');
-        Route::post('/notifications', [NotificationTemplateController::class, 'store'])->name('notifications.store');
-        Route::get('/notifications/{notification}/edit', [NotificationTemplateController::class, 'edit'])->name('notifications.edit');
-        Route::put('/notifications/{notification}', [NotificationTemplateController::class, 'update'])->name('notifications.update');
-        Route::post('/notifications/{notification}/toggle', [NotificationTemplateController::class, 'toggle'])->name('notifications.toggle');
-        Route::delete('/notifications/{notification}', [NotificationTemplateController::class, 'destroy'])->name('notifications.destroy');
     });
 });

@@ -45,7 +45,7 @@
                 {{-- Identity --}}
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-building"></i></div>
+                        <div class="c-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-building"></i></div>
                         <div>
                             <h3>Business Identity</h3>
                             <p>Site name, slug and contact information</p>
@@ -103,7 +103,7 @@
                 {{-- Logo & Favicon --}}
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-photo"></i></div>
+                        <div class="c-icon" style="background:#faf5ff;color:#7c3aed"><i class="ti ti-photo"></i></div>
                         <div><h3>Branding</h3><p>Logo and favicon displayed across the app</p></div>
                     </div>
                     <div class="s-card-body">
@@ -135,7 +135,7 @@
                 {{-- Locale & Format --}}
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-world"></i></div>
+                        <div class="c-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-world"></i></div>
                         <div>
                             <h3>Locale & Formats</h3>
                             <p>Timezone, date format and language preferences</p>
@@ -152,7 +152,7 @@
                             </div>
                             <div>
                                 <label>Date Format</label>
-                                <select class="form-select" name="date_format">
+                                <select class="form-select" name="date_format" data-toggle="select2" data-placeholder="Select date format">
                                     @foreach(['d/m/Y'=>'DD/MM/YYYY', 'm/d/Y'=>'MM/DD/YYYY', 'Y-m-d'=>'YYYY-MM-DD', 'd M Y'=>'DD Mon YYYY'] as $fmt => $label)
                                     <option value="{{ $fmt }}" @selected(($settings['date_format'] ?? 'd/m/Y') === $fmt)>{{ $label }}</option>
                                     @endforeach
@@ -178,7 +178,7 @@
 
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#fff7ed;color:#ea580c"><i class="ti ti-mail"></i></div>
+                        <div class="c-icon" style="background:#fff7ed;color:#ea580c"><i class="ti ti-mail"></i></div>
                         <div>
                             <h3>Mail / SMTP Configuration</h3>
                             <p>Settings are written directly to your <code>.env</code> file</p>
@@ -188,7 +188,7 @@
                         <div class="fg">
                             <div class="span-2">
                                 <label>Mail Driver</label>
-                                <select class="form-select" name="mail_mailer" id="mailMailer">
+                                <select class="form-select" name="mail_mailer" id="mailMailer" data-toggle="select2" data-placeholder="Select mail driver">
                                     @foreach(['smtp'=>'SMTP','log'=>'Log (Development)'] as $v => $l)
                                     <option value="{{ $v }}" @selected(($settings['mail_mailer'] ?? $env['MAIL_MAILER'] ?? 'log') === $v)>{{ $l }}</option>
                                     @endforeach
@@ -223,7 +223,7 @@
                                 </div>
                                 <div>
                                     <label>Encryption</label>
-                                    <select class="form-select" name="mail_encryption">
+                                    <select class="form-select" name="mail_encryption" data-toggle="select2" data-placeholder="Select encryption">
                                         @foreach(['' => 'None', 'tls' => 'TLS', 'ssl' => 'SSL'] as $v => $l)
                                         <option value="{{ $v }}" @selected(($settings['mail_encryption'] ?? $env['MAIL_ENCRYPTION'] ?? 'tls') === $v)>{{ $l }}</option>
                                         @endforeach
@@ -268,7 +268,7 @@
             </form>
             <form class="s-card" method="POST" action="{{ route('settings.general.mail.test') }}">
                 @csrf
-                <div class="s-card-head"><div class="card-icon" style="background:#e8f5ef;color:#14836b"><i class="ti ti-send"></i></div><div><h3>Send test email</h3><p>Uses the saved SMTP settings</p></div></div>
+                <div class="s-card-head"><div class="c-icon" style="background:#e8f5ef;color:#14836b"><i class="ti ti-send"></i></div><div><h3>Send test email</h3><p>Uses the saved SMTP settings</p></div></div>
                 <div class="s-card-body">
                     @if(session('mail_test_success'))<div class="alert alert-success">{{ session('mail_test_success') }}</div>@endif
                     <label for="testEmail" class="form-label">Recipient email</label>
@@ -290,7 +290,7 @@
 
                 <div class="s-card">
                     <div class="s-card-head">
-                        <div class="card-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-terminal"></i></div>
+                        <div class="c-icon" style="background:#f0fdf4;color:#16a34a"><i class="ti ti-terminal"></i></div>
                         <div>
                             <h3>Application Environment</h3>
                             <p>Core .env values — changes clear config cache automatically</p>
@@ -307,7 +307,7 @@
                             </div>
                             <div>
                                 <label>Environment</label>
-                                <select class="form-select" name="app_env" id="appEnvSelect">
+                                <select class="form-select" name="app_env" id="appEnvSelect" data-toggle="select2" data-placeholder="Select environment">
                                     @foreach(['local'=>'Local (Development)','staging'=>'Staging','production'=>'Production'] as $v => $l)
                                     <option value="{{ $v }}" @selected(($env['APP_ENV'] ?? 'local') === $v)>{{ $l }}</option>
                                     @endforeach

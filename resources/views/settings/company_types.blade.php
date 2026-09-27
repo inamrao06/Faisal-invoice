@@ -15,7 +15,7 @@
             <input id="company-type-search" class="form-control" type="search" placeholder="Search company types" aria-label="Search company types">
         </label>
         <div class="company-types-actions">
-            <select id="company-type-status" class="form-select" aria-label="Filter company type status">
+            <select id="company-type-status" class="form-select" aria-label="Filter company type status" data-toggle="select2" data-placeholder="All statuses">
                 <option value="all">All statuses</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>

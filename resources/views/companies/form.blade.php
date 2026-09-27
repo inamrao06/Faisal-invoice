@@ -54,7 +54,7 @@
                 </div>
                 <div>
                     <label class="frm-lbl" for="company_currency">Currency</label>
-                    <select id="company_currency" class="form-select" name="currency_id">
+                    <select id="company_currency" class="form-select" name="currency_id" data-toggle="select2" data-placeholder="Select currency">
                         <option value="">— Select Currency —</option>
                         @foreach($currencies as $c)
                             <option value="{{ $c->id }}" @selected(old('currency_id',$company->currency_id)==$c->id)>

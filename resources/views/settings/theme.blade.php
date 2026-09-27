@@ -5,6 +5,32 @@
 @section('content')
 @php
     $isDarkMode = ($settings['theme_mode'] ?? 'light') === 'dark';
+    $lightDefaults = [
+        'accent_color'   => '#2563eb',
+        'active_color'   => '#3b82f6',
+        'border_color'   => '#e2e8f0',
+        'sidebar_color'  => '#0f172a',
+        'header_color'   => '#ffffff',
+        'body_bg_color'  => '#f8fafc',
+        'card_bg_color'  => '#ffffff',
+        'input_bg_color' => '#ffffff',
+        'text_color'     => '#1e293b',
+        'muted_color'    => '#64748b',
+    ];
+    $darkDefaults = [
+        'accent_color'   => '#3b82f6',
+        'active_color'   => '#60a5fa',
+        'border_color'   => '#334155',
+        'sidebar_color'  => '#020617',
+        'header_color'   => '#0f172a',
+        'body_bg_color'  => '#0f172a',
+        'card_bg_color'  => '#1e293b',
+        'input_bg_color' => '#1e293b',
+        'text_color'     => '#f1f5f9',
+        'muted_color'    => '#94a3b8',
+    ];
+    $defaults = $isDarkMode ? $darkDefaults : $lightDefaults;
+
     $colorGroups = [
         [
             'title' => 'Brand Colors',
@@ -12,14 +38,20 @@
             'icon'  => 'ti-palette',
             'items' => [
                 ['name' => 'accent_color', 'id' => 'accentColor', 'label' => 'Accent color', 'hint' => 'Buttons, links and active navigation',
-                 'value' => $settings['accent_color'] ?? '#236dc9',
-                 'presets' => ['#236dc9' => 'Paces blue', '#02bc9c' => 'Paces green', '#7b70ef' => 'Paces violet', '#e45b5b' => 'Coral']],
+                 'value' => $settings['accent_color'] ?? $defaults['accent_color'],
+                 'presets' => $isDarkMode
+                     ? ['#3b82f6' => 'Blue', '#60a5fa' => 'Light blue', '#818cf8' => 'Indigo', '#22d3ee' => 'Cyan']
+                     : ['#2563eb' => 'Royal blue', '#0ea5e9' => 'Sky blue', '#6366f1' => 'Indigo', '#0d9488' => 'Teal']],
                 ['name' => 'active_color', 'id' => 'activeColor', 'label' => 'Active color', 'hint' => 'Selected menu items and focused controls',
-                 'value' => $settings['active_color'] ?? ($settings['accent_color'] ?? '#236dc9'),
-                 'presets' => ['#236dc9' => 'Blue', '#16a34a' => 'Green', '#d97706' => 'Amber', '#dc2626' => 'Red']],
+                 'value' => $settings['active_color'] ?? $defaults['active_color'],
+                 'presets' => $isDarkMode
+                     ? ['#60a5fa' => 'Light blue', '#3b82f6' => 'Blue', '#a78bfa' => 'Violet', '#2dd4bf' => 'Teal']
+                     : ['#3b82f6' => 'Blue', '#2563eb' => 'Royal blue', '#8b5cf6' => 'Violet', '#06b6d4' => 'Cyan']],
                 ['name' => 'border_color', 'id' => 'borderColor', 'label' => 'Border color', 'hint' => 'Cards, tables, inputs and separators',
-                 'value' => $settings['border_color'] ?? '#e5e7ef',
-                 'presets' => ['#e5e7ef' => 'Soft gray', '#cbd5e1' => 'Slate', '#d6bcfa' => 'Lavender', '#94a3b8' => 'Strong gray']],
+                 'value' => $settings['border_color'] ?? $defaults['border_color'],
+                 'presets' => $isDarkMode
+                     ? ['#334155' => 'Slate', '#475569' => 'Gray', '#1e293b' => 'Dark', '#3f3f46' => 'Zinc']
+                     : ['#e2e8f0' => 'Soft gray', '#cbd5e1' => 'Slate', '#e5e7eb' => 'Gray', '#d1d5db' => 'Strong gray']],
             ],
         ],
         [
@@ -28,20 +60,30 @@
             'icon'  => 'ti-layout-board-split',
             'items' => [
                 ['name' => 'sidebar_color', 'id' => 'sidebarColor', 'label' => 'Sidebar color', 'hint' => 'Navigation background',
-                 'value' => $settings['sidebar_color'] ?? '#1e1f27',
-                 'presets' => ['#1e1f27' => 'Paces dark', '#263a36' => 'Deep green', '#374151' => 'Gray', '#ffffff' => 'White']],
+                 'value' => $settings['sidebar_color'] ?? $defaults['sidebar_color'],
+                 'presets' => $isDarkMode
+                     ? ['#020617' => 'Black', '#0f172a' => 'Navy', '#1e293b' => 'Slate', '#18181b' => 'Zinc']
+                     : ['#0f172a' => 'Navy', '#1e293b' => 'Slate', '#1e3a5f' => 'Deep blue', '#334155' => 'Gray']],
                 ['name' => 'header_color', 'id' => 'headerColor', 'label' => 'Header color', 'hint' => 'Top navigation background',
-                 'value' => $settings['header_color'] ?? '#ffffff',
-                 'presets' => ['#ffffff' => 'White', '#f6f7fb' => 'Paces gray', '#1e1f27' => 'Paces dark']],
+                 'value' => $settings['header_color'] ?? $defaults['header_color'],
+                 'presets' => $isDarkMode
+                     ? ['#0f172a' => 'Navy', '#1e293b' => 'Slate', '#020617' => 'Black']
+                     : ['#ffffff' => 'White', '#f8fafc' => 'Off-white', '#f1f5f9' => 'Light gray']],
                 ['name' => 'body_bg_color', 'id' => 'bodyBgColor', 'label' => 'Page background', 'hint' => 'Main dashboard canvas',
-                 'value' => $settings['body_bg_color'] ?? ($isDarkMode ? '#252831' : '#f6f7fb'),
-                 'presets' => ['#f6f7fb' => 'Light gray', '#ffffff' => 'White', '#252831' => 'Dark', '#eef2f7' => 'Cool gray']],
+                 'value' => $settings['body_bg_color'] ?? $defaults['body_bg_color'],
+                 'presets' => $isDarkMode
+                     ? ['#0f172a' => 'Navy', '#1e293b' => 'Slate', '#020617' => 'Black', '#18181b' => 'Zinc']
+                     : ['#f8fafc' => 'Off-white', '#f1f5f9' => 'Light gray', '#ffffff' => 'White', '#eef2f7' => 'Cool gray']],
                 ['name' => 'card_bg_color', 'id' => 'cardBgColor', 'label' => 'Card background', 'hint' => 'Panels, widgets and form cards',
-                 'value' => $settings['card_bg_color'] ?? ($isDarkMode ? '#2b2f39' : '#ffffff'),
-                 'presets' => ['#ffffff' => 'White', '#2b2f39' => 'Dark', '#f8fafc' => 'Soft white', '#313640' => 'Slate dark']],
+                 'value' => $settings['card_bg_color'] ?? $defaults['card_bg_color'],
+                 'presets' => $isDarkMode
+                     ? ['#1e293b' => 'Slate', '#334155' => 'Gray', '#0f172a' => 'Navy', '#27272a' => 'Zinc']
+                     : ['#ffffff' => 'White', '#f8fafc' => 'Off-white', '#f1f5f9' => 'Light gray', '#f9fafb' => 'Soft white']],
                 ['name' => 'input_bg_color', 'id' => 'inputBgColor', 'label' => 'Input background', 'hint' => 'Text fields, selects and filters',
-                 'value' => $settings['input_bg_color'] ?? ($settings['card_bg_color'] ?? '#ffffff'),
-                 'presets' => ['#ffffff' => 'White', '#f8fafc' => 'Soft white', '#2b2f39' => 'Dark']],
+                 'value' => $settings['input_bg_color'] ?? $defaults['input_bg_color'],
+                 'presets' => $isDarkMode
+                     ? ['#1e293b' => 'Slate', '#334155' => 'Gray', '#0f172a' => 'Navy']
+                     : ['#ffffff' => 'White', '#f8fafc' => 'Off-white', '#f1f5f9' => 'Light gray']],
             ],
         ],
         [
@@ -50,11 +92,15 @@
             'icon'  => 'ti-typography',
             'items' => [
                 ['name' => 'text_color', 'id' => 'textColor', 'label' => 'Text color', 'hint' => 'Primary text throughout the system',
-                 'value' => $settings['text_color'] ?? ($isDarkMode ? '#f0f3f6' : '#26313d'),
-                 'presets' => ['#26313d' => 'Ink', '#0f172a' => 'Deep ink', '#f0f3f6' => 'Light', '#334155' => 'Slate']],
+                 'value' => $settings['text_color'] ?? $defaults['text_color'],
+                 'presets' => $isDarkMode
+                     ? ['#f1f5f9' => 'Light', '#e2e8f0' => 'Slate', '#f8fafc' => 'White', '#cbd5e1' => 'Gray']
+                     : ['#1e293b' => 'Slate', '#0f172a' => 'Navy', '#334155' => 'Dark slate', '#475569' => 'Gray']],
                 ['name' => 'muted_color', 'id' => 'mutedColor', 'label' => 'Muted text color', 'hint' => 'Labels, help text and secondary text',
-                 'value' => $settings['muted_color'] ?? ($isDarkMode ? '#aab3c2' : '#8c98a9'),
-                 'presets' => ['#8c98a9' => 'Gray', '#94a3b8' => 'Slate', '#aab3c2' => 'Light gray', '#64748b' => 'Dark gray']],
+                 'value' => $settings['muted_color'] ?? $defaults['muted_color'],
+                 'presets' => $isDarkMode
+                     ? ['#94a3b8' => 'Slate', '#64748b' => 'Gray', '#cbd5e1' => 'Light gray', '#475569' => 'Dark gray']
+                     : ['#64748b' => 'Gray', '#94a3b8' => 'Slate', '#6b7280' => 'Dark gray', '#4b5563' => 'Charcoal']],
             ],
         ],
     ];
@@ -115,9 +161,19 @@
                                                 <label class="form-label mb-1" for="{{ $color['id'] }}">{{ $color['label'] }}</label>
                                                 <p class="text-muted fs-12 mb-0">{{ $color['hint'] }}</p>
                                             </div>
-                                            <input id="{{ $color['id'] }}" type="color" name="{{ $color['name'] }}"
-                                                   value="{{ old($color['name'], $color['value']) }}"
-                                                   aria-label="{{ $color['label'] }}">
+                                            <div class="color-picker-wrap">
+                                                <input id="{{ $color['id'] }}" type="color" name="{{ $color['name'] }}"
+                                                       value="{{ old($color['name'], $color['value']) }}"
+                                                       aria-label="{{ $color['label'] }}">
+                                                <input type="text" class="form-control color-hex-input"
+                                                       id="{{ $color['id'] }}_hex"
+                                                       value="{{ strtoupper(old($color['name'], $color['value'])) }}"
+                                                       maxlength="7"
+                                                       placeholder="#000000"
+                                                       aria-label="{{ $color['label'] }} hex value"
+                                                       data-hex-input="{{ $color['id'] }}"
+                                                       style="width:110px;padding:6px 10px;font-size:12px;font-family:monospace;">
+                                            </div>
                                         </div>
                                         <div class="color-card-foot">
                                             <code class="theme-hex" data-hex-for="{{ $color['id'] }}">{{ $current }}</code>
@@ -203,7 +259,7 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/theme-settings.js') }}?v=2"></script>
+<script src="{{ asset('js/theme-settings.js') }}?v=3"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-hex-for]').forEach((chip) => {
@@ -215,6 +271,27 @@
             };
             input.addEventListener('input', sync);
             sync();
+        });
+
+        /* Sync hex text input with color picker */
+        document.querySelectorAll('[data-hex-input]').forEach((hexInput) => {
+            const colorInput = document.getElementById(hexInput.dataset.hexInput);
+            if (!colorInput) return;
+
+            // When user types a valid hex code, update the color picker
+            hexInput.addEventListener('input', () => {
+                let val = hexInput.value.trim();
+                if (!val.startsWith('#')) val = '#' + val;
+                if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+                    colorInput.value = val;
+                    colorInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            });
+
+            // When user picks a color, update the text input
+            colorInput.addEventListener('input', () => {
+                hexInput.value = colorInput.value.toUpperCase();
+            });
         });
     });
 </script>
