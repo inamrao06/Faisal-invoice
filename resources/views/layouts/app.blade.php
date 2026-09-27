@@ -5,20 +5,30 @@
     $siteName = $appSettings['site_name'] ?? ($appSettings['business_name'] ?? 'Car Business');
     $themeMode = $appSettings['theme_mode'] ?? 'light';
     $accent = $appSettings['accent_color'] ?? '#236dc9';
+    $activeColor = $appSettings['active_color'] ?? $accent;
+    $borderColor = $appSettings['border_color'] ?? '#e5e7ef';
+    $bodyBg = $appSettings['body_bg_color'] ?? ($themeMode === 'dark' ? '#252831' : '#f6f7fb');
+    $cardBg = $appSettings['card_bg_color'] ?? ($themeMode === 'dark' ? '#2b2f39' : '#ffffff');
+    $textColor = $appSettings['text_color'] ?? ($themeMode === 'dark' ? '#f0f3f6' : '#26313d');
+    $mutedColor = $appSettings['muted_color'] ?? ($themeMode === 'dark' ? '#aab3c2' : '#8c98a9');
+    $inputBg = $appSettings['input_bg_color'] ?? $cardBg;
     $sidebarBg = $appSettings['sidebar_color'] ?? '#1e1f27';
     $headerBg = $appSettings['header_color'] ?? '#ffffff';
-    if (!preg_match('/^#[0-9a-fA-F]{6}$/', $accent)) {
-        $accent = '#236dc9';
-    }
-    if (!preg_match('/^#[0-9a-fA-F]{6}$/', $sidebarBg)) {
-        $sidebarBg = '#1e1f27';
-    }
-    if (!preg_match('/^#[0-9a-fA-F]{6}$/', $headerBg)) {
-        $headerBg = '#ffffff';
-    }
+    $safeColor = static fn ($color, $fallback) => preg_match('/^#[0-9a-fA-F]{6}$/', (string) $color) ? $color : $fallback;
+    $accent = $safeColor($accent, '#236dc9');
+    $activeColor = $safeColor($activeColor, $accent);
+    $borderColor = $safeColor($borderColor, '#e5e7ef');
+    $bodyBg = $safeColor($bodyBg, $themeMode === 'dark' ? '#252831' : '#f6f7fb');
+    $cardBg = $safeColor($cardBg, $themeMode === 'dark' ? '#2b2f39' : '#ffffff');
+    $textColor = $safeColor($textColor, $themeMode === 'dark' ? '#f0f3f6' : '#26313d');
+    $mutedColor = $safeColor($mutedColor, $themeMode === 'dark' ? '#aab3c2' : '#8c98a9');
+    $inputBg = $safeColor($inputBg, $cardBg);
+    $sidebarBg = $safeColor($sidebarBg, '#1e1f27');
+    $headerBg = $safeColor($headerBg, '#ffffff');
     $logoPath = $appSettings['logo_path'] ?? null;
     $faviconPath = $appSettings['favicon_path'] ?? null;
     $accentRgb = implode(',', array_map('hexdec', str_split(substr($accent, 1), 2)));
+    $activeRgb = implode(',', array_map('hexdec', str_split(substr($activeColor, 1), 2)));
     $contrast = static function ($color) {
         [$red, $green, $blue] = array_map('hexdec', str_split(substr($color, 1), 2));
         return ($red * 299 + $green * 587 + $blue * 114) / 1000 < 150 ? '#ffffff' : '#26313d';
@@ -46,16 +56,32 @@
     <link href="{{ asset('paces/assets/css/vendors.min.css') }}" rel="stylesheet">
     <link id="app-style" href="{{ asset('paces/assets/css/app.min.css') }}" rel="stylesheet">
     <link href="{{ asset('paces/assets/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/paces-custom.css') }}?v=10" rel="stylesheet">
+    <link href="{{ asset('css/dx.light.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/paces-custom.css') }}?v=12" rel="stylesheet">
     <style>
         html[data-bs-theme] {
             --app-accent: {{ $accent }};
+            --app-active: {{ $activeColor }};
+            --app-border: {{ $borderColor }};
             --app-sidebar: {{ $sidebarBg }};
             --app-topbar: {{ $headerBg }};
             --theme-primary: {{ $accent }};
             --theme-primary-rgb: {{ $accentRgb }};
+            --theme-active: {{ $activeColor }};
+            --theme-active-rgb: {{ $activeRgb }};
             --bs-primary: {{ $accent }};
             --bs-primary-rgb: {{ $accentRgb }};
+            --bs-body-bg: {{ $bodyBg }};
+            --bs-body-color: {{ $textColor }};
+            --bs-secondary-color: {{ $mutedColor }};
+            --bs-tertiary-bg: {{ $cardBg }};
+            --bs-border-color: {{ $borderColor }};
+            --bs-card-bg: {{ $cardBg }};
+            --bs-card-border-color: {{ $borderColor }};
+            --bs-link-color: {{ $activeColor }};
+            --bs-link-hover-color: color-mix(in srgb, {{ $activeColor }} 82%, #000);
+            --bs-form-control-bg: {{ $inputBg }};
+            --bs-form-control-border-color: {{ $borderColor }};
         }
 
         html[data-menu-color] {
@@ -64,8 +90,8 @@
             --theme-sidenav-item-color: color-mix(in srgb, {{ $sidebarText }} 65%, {{ $sidebarBg }});
             --theme-sidenav-item-hover-color: {{ $sidebarText }};
             --theme-sidenav-item-active-color: {{ $sidebarText }};
-            --theme-sidenav-item-hover-bg: color-mix(in srgb, {{ $sidebarText }} 10%, {{ $sidebarBg }});
-            --theme-sidenav-item-active-bg: color-mix(in srgb, {{ $sidebarText }} 10%, {{ $sidebarBg }});
+            --theme-sidenav-item-hover-bg: color-mix(in srgb, {{ $activeColor }} 16%, {{ $sidebarBg }});
+            --theme-sidenav-item-active-bg: color-mix(in srgb, {{ $activeColor }} 24%, {{ $sidebarBg }});
         }
 
         html[data-topbar-color] {
@@ -264,6 +290,48 @@
                                                 class="menu-text">Users</span></a></li>
                                 @endcan
                                 <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#sales-menu"
+                                        aria-expanded="{{ request()->routeIs('company.vehicle-*') || request()->routeIs('company.customers.*') || request()->routeIs('company.vehicles.*') ? 'true' : 'false' }}"
+                                        class="side-nav-link {{ request()->routeIs('company.vehicle-*') || request()->routeIs('company.customers.*') || request()->routeIs('company.vehicles.*') ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-car"></i></span><span
+                                            class="menu-text">Vehicle Sales</span><span class="menu-arrow"></span></a>
+                                    <div class="collapse {{ request()->routeIs('company.vehicle-*') || request()->routeIs('company.customers.*') || request()->routeIs('company.vehicles.*') ? 'show' : '' }}"
+                                        id="sales-menu">
+                                        <ul class="sub-menu">
+                                            <li class="side-nav-item"><a href="{{ route('company.vehicle-invoices.index') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.vehicle-invoices.*') ? 'active' : '' }}"><span
+                                                        class="menu-text">Invoices</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.customers.index') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.customers.*') ? 'active' : '' }}"><span
+                                                        class="menu-text">Customers</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.vehicles.index') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.vehicles.*') ? 'active' : '' }}"><span
+                                                        class="menu-text">Vehicles</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.vehicle-categories.index') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.vehicle-categories.*') ? 'active' : '' }}"><span
+                                                        class="menu-text">Vehicle Categories</span></a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#car-spec-menu"
+                                        aria-expanded="{{ request()->routeIs('company.car-specifications.*') ? 'true' : 'false' }}"
+                                        class="side-nav-link {{ request()->routeIs('company.car-specifications.*') ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-file-description"></i></span><span
+                                            class="menu-text">Car Specifications</span><span class="menu-arrow"></span></a>
+                                    <div class="collapse {{ request()->routeIs('company.car-specifications.*') ? 'show' : '' }}"
+                                        id="car-spec-menu">
+                                        <ul class="sub-menu">
+                                            <li class="side-nav-item"><a href="{{ route('company.vehicle-categories.index') }}" class="side-nav-link"><span class="menu-text">Categories</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'condition') }}" class="side-nav-link"><span class="menu-text">Conditions</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'brand') }}" class="side-nav-link"><span class="menu-text">Brands</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'model') }}" class="side-nav-link"><span class="menu-text">Models</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'fuel_type') }}" class="side-nav-link"><span class="menu-text">Fuel Types</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.car-specifications.index', 'transmission_type') }}" class="side-nav-link"><span class="menu-text">Transmission Types</span></a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
                                     <a data-bs-toggle="collapse" href="#access-menu"
                                         aria-expanded="{{ request()->routeIs('company.roles.*') || request()->routeIs('company.permissions.*') ? 'true' : 'false' }}"
                                         class="side-nav-link {{ request()->routeIs('company.roles.*') || request()->routeIs('company.permissions.*') ? 'active' : '' }}"><span
@@ -288,7 +356,11 @@
                                 <li class="side-nav-item"><a href="{{ route('company.warranty-providers.index') }}"
                                         class="side-nav-link {{ request()->routeIs('company.warranty-providers.*') ? 'active' : '' }}"><span
                                             class="menu-icon"><i class="ti ti-shield-check"></i></span><span
-                                            class="menu-text">Warranty</span></a></li>
+                                            class="menu-text">Warranty Providers</span></a></li>
+                                <li class="side-nav-item"><a href="{{ route('company.warranty-durations.index') }}"
+                                        class="side-nav-link {{ request()->routeIs('company.warranty-durations.*') ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-calendar-time"></i></span><span
+                                            class="menu-text">Warranty Durations</span></a></li>
                                 <li class="side-nav-item"><a href="{{ route('company.settings.edit') }}"
                                         class="side-nav-link {{ request()->routeIs('company.settings.*') ? 'active' : '' }}"><span
                                             class="menu-icon"><i class="ti ti-settings-cog"></i></span><span
@@ -380,6 +452,7 @@
     <script src="{{ asset('paces/assets/js/vendors.min.js') }}"></script>
     <script src="{{ asset('paces/assets/js/app.js') }}"></script>
     <script src="{{ asset('paces/assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/dx.web.js') }}"></script>
     <script src="{{ asset('paces/assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('js/searchable-selects.js') }}?v=2" defer></script>
     <script>
@@ -397,6 +470,8 @@
         }));
     </script>
     <script src="{{ asset('js/inner-tables.js') }}?v=1" defer></script>
+    <script src="{{ asset('js/devexpress-grids.js') }}?v=3" defer></script>
+    <script src="{{ asset('js/devexpress-forms.js') }}?v=1" defer></script>
     @stack('scripts')
 </body>
 

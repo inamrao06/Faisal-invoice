@@ -14,7 +14,7 @@
 </div>
 <div class="card">
     <div class="table-responsive">
-        <table class="table wp-table align-middle mb-0">
+        <table class="table wp-table align-middle mb-0" data-dx-grid>
             <thead><tr><th>Name</th><th>Type</th><th>Status</th><th class="text-end"></th></tr></thead>
             <tbody>
                 @foreach($providers as $provider)

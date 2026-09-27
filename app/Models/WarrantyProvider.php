@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class WarrantyProvider extends Model
 {
-    protected $fillable = ['branch_id', 'name', 'is_system', 'is_active'];
+    protected $fillable = ['branch_id', 'name', 'phone', 'repairs_phone', 'email', 'sales_email', 'repairs_email', 'terms', 'is_system', 'is_active'];
 
     protected function casts(): array
     {

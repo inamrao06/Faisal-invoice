@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Models\ExpenseHead;
 use App\Models\PaymentMethod;
 use App\Models\WarrantyProvider;
+use App\Models\WarrantyDuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +22,7 @@ class CompanyExpenseController extends Controller
 
     public function create()
     {
-        return view('company.expenses.form', ['expense' => new Expense(['expense_date' => now(), 'status' => 'submitted']), 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'warrantyProviders' => $this->warrantyProviders()]);
+        return view('company.expenses.form', ['expense' => new Expense(['expense_date' => now(), 'status' => 'submitted']), 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'warrantyProviders' => $this->warrantyProviders(), 'warrantyDurations' => $this->warrantyDurations()]);
     }
 
     public function store(Request $request)
@@ -36,7 +37,7 @@ class CompanyExpenseController extends Controller
         $this->authorizeExpense($expense);
         $expense->load('items');
 
-        return view('company.expenses.form', ['expense' => $expense, 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'warrantyProviders' => $this->warrantyProviders()]);
+        return view('company.expenses.form', ['expense' => $expense, 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'warrantyProviders' => $this->warrantyProviders(), 'warrantyDurations' => $this->warrantyDurations()]);
     }
 
     public function update(Request $request, Expense $expense)
@@ -124,6 +125,26 @@ class CompanyExpenseController extends Controller
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
+    }
+
+    private function warrantyDurations()
+    {
+        $this->ensureWarrantyDurationDefaults();
+
+        return WarrantyDuration::where('branch_id', $this->companyId())
+            ->where('is_active', true)
+            ->orderBy('months')
+            ->get();
+    }
+
+    private function ensureWarrantyDurationDefaults(): void
+    {
+        foreach ([0, 3, 6, 12, 18, 24, 36, 48, 60] as $months) {
+            WarrantyDuration::firstOrCreate(
+                ['branch_id' => $this->companyId(), 'months' => $months],
+                ['name' => $months . ' month' . ($months === 1 ? '' : 's'), 'is_system' => true, 'is_active' => true]
+            );
+        }
     }
 
     private function ensureWarrantyDefaults(): void

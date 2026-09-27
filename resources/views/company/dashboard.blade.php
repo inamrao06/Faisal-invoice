@@ -172,7 +172,7 @@
                         </div><a href="{{ route('company.expenses.index') }}" class="btn btn-sm btn-light">View all</a>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0" data-dx-grid data-dx-page-size="10">
                             <thead class="table-light">
                                 <tr>
                                     <th>Invoice</th>

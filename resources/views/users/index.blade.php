@@ -55,7 +55,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table ui-table mb-0 align-middle">
+        <table class="table ui-table mb-0 align-middle" data-dx-grid>
             <thead>
                 <tr>
                     <th>User</th>

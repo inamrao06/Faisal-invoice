@@ -28,7 +28,7 @@
 
 <div class="panel">
     <div class="table-responsive">
-        <table class="table et-table mb-0 align-middle">
+        <table class="table et-table mb-0 align-middle" data-dx-grid>
             <thead>
                 <tr>
                     <th>Name</th>

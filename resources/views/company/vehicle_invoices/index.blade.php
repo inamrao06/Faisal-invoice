@@ -1,0 +1,7 @@
+@extends('layouts.app')
+@section('title','Vehicle Invoices')
+@section('page_title','Vehicle Invoices')
+@section('content')
+<div class="page-actions"><div><h2>Vehicle Sales Invoices</h2><p>Customer, vehicle, payment and warranty records.</p></div><a class="btn btn-primary" href="{{ route('company.vehicle-invoices.create') }}"><i class="ti ti-plus"></i> New Invoice</a></div>
+<div class="panel"><div class="table-responsive"><table class="table mb-0 align-middle" data-dx-grid><thead><tr><th>Invoice</th><th>Customer</th><th>Vehicle</th><th>Status</th><th class="text-end">Total</th><th class="text-end">Balance</th><th></th></tr></thead><tbody>@forelse($invoices as $invoice)<tr><td class="fw-semibold"><a href="{{ route('company.vehicle-invoices.show',$invoice) }}">{{ $invoice->invoice_no }}</a></td><td>{{ $invoice->customer?->name }}</td><td>{{ $invoice->vehicle?->make_model }}</td><td><span class="status {{ $invoice->payment_status === 'paid' ? 'on' : 'off' }}">{{ str($invoice->payment_status)->replace('_',' ')->title() }}</span></td><td class="text-end">{{ number_format($invoice->total_sale_price,2) }}</td><td class="text-end">{{ number_format($invoice->balance_amount,2) }}</td><td class="text-end"><a class="btn btn-sm btn-light" href="{{ route('company.vehicle-invoices.show',$invoice) }}">View</a></td></tr>@empty<tr><td colspan="7" class="text-center text-muted py-5">No vehicle invoices yet.</td></tr>@endforelse</tbody></table></div>@if($invoices->hasPages())<div class="p-3 border-top">{{ $invoices->links() }}</div>@endif</div>
+@endsection

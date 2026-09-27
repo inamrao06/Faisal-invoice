@@ -25,7 +25,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table align-middle mb-0 company-types-table">
+        <table class="table align-middle mb-0 company-types-table" data-dx-grid>
             <thead><tr><th>Code</th><th>Name</th><th>Status</th></tr></thead>
             <tbody>
                 @forelse($types as $type)

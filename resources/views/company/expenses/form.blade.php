@@ -99,9 +99,8 @@
                     <label for="warranty_duration_months">Warranty Duration</label>
                     <select id="warranty_duration_months" class="form-select @error('warranty_duration_months') is-invalid @enderror" name="warranty_duration_months">
                         <option value="">Select months...</option>
-                        <option value="0" @selected((string) old('warranty_duration_months', $expense->warranty_duration_months) === '0')>0 months</option>
-                        @foreach([1,3,6,12,18,24,36,48,60] as $months)
-                            <option value="{{ $months }}" @selected((int) old('warranty_duration_months', $expense->warranty_duration_months) === $months)>{{ $months }} month{{ $months === 1 ? '' : 's' }}</option>
+                        @foreach($warrantyDurations as $duration)
+                            <option value="{{ $duration->months }}" @selected((string) old('warranty_duration_months', $expense->warranty_duration_months) === (string) $duration->months)>{{ $duration->name }}</option>
                         @endforeach
                     </select>
                     @error('warranty_duration_months')<div class="invalid-feedback">{{ $message }}</div>@enderror

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const enhanceSelects = (root) => {
         const selects = root.matches?.('select') ? [root] : root.querySelectorAll?.('select') || [];
         selects.forEach((select) => {
+            if (select.dataset.toggle !== 'select2' && !select.hasAttribute('data-searchable-select')) return;
             if (select.classList.contains('select2-hidden-accessible') || select.closest('.select2-container')) return;
             const label = select.labels?.[0]?.textContent?.trim().replace(/\s*\*$/, '') || select.name.replaceAll('_', ' ');
             const $select = jQuery(select);

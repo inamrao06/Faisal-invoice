@@ -102,7 +102,7 @@
 
             <div class="report-table-wrap">
                 <div class="table-responsive">
-                    <table class="table report-table align-middle">
+                    <table class="table report-table align-middle" data-dx-grid>
                         <thead>
                             <tr>
                                 <th>Invoice</th>

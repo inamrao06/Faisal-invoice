@@ -62,7 +62,7 @@
                 <a href="{{ route('companies.index') }}" class="btn btn-sm btn-light">View all <i class="ti ti-arrow-right ms-1"></i></a>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0" data-dx-grid data-dx-page-size="10">
                     <thead class="table-light"><tr><th>Company</th><th>Type</th><th>Contact</th><th>Currency</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                     @forelse($recentCompanies as $company)

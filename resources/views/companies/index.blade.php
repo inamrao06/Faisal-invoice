@@ -35,7 +35,7 @@
 
 <div class="panel">
     <div class="table-responsive">
-        <table class="table ci-table mb-0 align-middle">
+        <table class="table ci-table mb-0 align-middle" data-dx-grid>
             <thead>
                 <tr>
                     <th>Company</th>

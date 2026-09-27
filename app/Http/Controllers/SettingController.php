@@ -187,6 +187,13 @@ class SettingController extends Controller
             'header_color'  => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'sidebar_color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'accent_color'  => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'active_color'  => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'border_color'  => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'body_bg_color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'card_bg_color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'text_color'    => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'muted_color'   => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'input_bg_color'=> ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
         foreach ($data as $key => $value) {

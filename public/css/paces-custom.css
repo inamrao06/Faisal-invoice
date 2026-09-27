@@ -208,3 +208,56 @@ html[data-topbar-color] .logo-dark .app-wordmark{color:var(--theme-topbar-item-c
 .theme-preview-metrics span{padding:17px 8px;border:1px solid var(--bs-border-color);border-radius:3px;background:var(--bs-body-bg)}
 .theme-preview-button{display:inline-block;padding:7px 10px;border-radius:3px;background:var(--preview-accent);color:#fff;font-size:11px}
 @media(max-width:575.98px){.theme-preview{height:200px}.theme-preview-content{padding:10px}}
+
+/* Extended theme variables. */
+body,.content-page{background:var(--bs-body-bg);color:var(--bs-body-color)}
+.card,.modal-content,.dropdown-menu,.offcanvas,.panel,.theme-settings-card{background:var(--bs-card-bg);border-color:var(--bs-border-color);color:var(--bs-body-color)}
+.table,.dx-datagrid{color:var(--bs-body-color)}
+.form-control,.form-select,.form-check-input,.select2-container .select2-selection{background-color:var(--bs-form-control-bg)!important;border-color:var(--bs-form-control-border-color)!important;color:var(--bs-body-color)!important}
+.form-control:focus,.form-select:focus,.select2-container--default.select2-container--focus .select2-selection{border-color:var(--app-active)!important;box-shadow:0 0 0 .18rem rgba(var(--theme-active-rgb),.16)!important}
+.btn-primary{--bs-btn-bg:var(--app-accent);--bs-btn-border-color:var(--app-accent);--bs-btn-hover-bg:color-mix(in srgb,var(--app-accent) 86%,#000);--bs-btn-hover-border-color:color-mix(in srgb,var(--app-accent) 86%,#000);--bs-btn-active-bg:var(--app-active);--bs-btn-active-border-color:var(--app-active)}
+.nav-pills .nav-link.active,.nav-tabs .nav-link.active,.list-group-item.active,.page-item.active .page-link{background-color:var(--app-active);border-color:var(--app-active);color:#fff}
+.side-nav .side-nav-link.active,.side-nav .side-nav-link:focus{color:var(--theme-sidenav-item-active-color)}
+.theme-preview{background:var(--preview-body,#f6f7fb);color:var(--preview-text,#26313d);border-color:var(--preview-border,#e5e7ef)}
+.theme-preview.is-dark{background:var(--preview-body,#252831);color:var(--preview-text,#f0f3f6)}
+.theme-preview-content{color:var(--preview-text,#26313d)}
+.theme-preview-content b{color:var(--preview-text,#26313d)}
+.theme-preview-metrics span{background:var(--preview-card,#fff);border-color:var(--preview-border,#e5e7ef);color:var(--preview-muted,#8c98a9)}
+.theme-preview-button{background:var(--preview-active,var(--preview-accent))}
+.theme-preview-sidebar span:first-of-type{background:color-mix(in srgb,var(--preview-active,var(--preview-accent)) 28%,transparent)}
+
+/* DevExpress form integration. */
+.app-dx-form .app-dx-field{margin-bottom:16px}
+.app-dx-form .app-dx-label,.app-dx-form .form-label,.app-dx-form label:not(.form-check-label){display:inline-block;margin-bottom:7px;color:var(--bs-secondary-color);font-size:12px;font-weight:600}
+.app-dx-form .form-control,.app-dx-form .form-select{min-height:38px;border-radius:4px;border:1px solid var(--bs-border-color)!important;background-color:var(--bs-form-control-bg)!important;color:var(--bs-body-color)!important;font-size:13px;line-height:1.4;padding:8px 11px;box-shadow:none;transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease}
+.app-dx-form textarea.form-control{min-height:82px;resize:vertical}
+.app-dx-form .form-control::placeholder{color:color-mix(in srgb,var(--bs-secondary-color) 76%,transparent)}
+.app-dx-form .form-control:focus,.app-dx-form .form-select:focus{border-color:var(--app-active)!important;box-shadow:0 0 0 1px var(--app-active)!important;outline:0}
+.app-dx-form .form-control[readonly],.app-dx-form .form-control:disabled,.app-dx-form .form-select:disabled{background:color-mix(in srgb,var(--bs-form-control-bg) 78%,var(--bs-border-color))!important;color:var(--bs-secondary-color)!important}
+.app-dx-form .is-invalid{border-color:var(--bs-danger)!important}
+.app-dx-form .invalid-feedback,.app-dx-form .text-danger.small{font-size:12px;margin-top:5px}
+.app-dx-form .input-group-text{border-radius:4px;border-color:var(--bs-border-color);background:color-mix(in srgb,var(--bs-form-control-bg) 84%,var(--bs-border-color));color:var(--bs-secondary-color)}
+.app-dx-form .input-group>.form-control:not(:first-child),.app-dx-form .input-group>.form-select:not(:first-child){border-top-left-radius:0;border-bottom-left-radius:0}
+.app-dx-form .input-group>.form-control:not(:last-child),.app-dx-form .input-group>.form-select:not(:last-child){border-top-right-radius:0;border-bottom-right-radius:0}
+.app-dx-form input[type=file].form-control{padding:6px 10px}
+.app-dx-form input[type=file].form-control::file-selector-button{margin:-6px 10px -6px -10px;padding:7px 12px;border:0;border-right:1px solid var(--bs-border-color);background:color-mix(in srgb,var(--bs-form-control-bg) 86%,var(--bs-border-color));color:var(--bs-body-color)}
+.app-dx-form .form-check{min-height:26px}
+.app-dx-form .form-check-input{width:18px;height:18px;margin-top:2px;border-radius:3px;border-color:var(--bs-border-color);box-shadow:none}
+.app-dx-form .form-check-input:checked{background-color:var(--app-active)!important;border-color:var(--app-active)!important}
+.app-dx-form .form-switch .form-check-input{width:38px;height:20px;border-radius:20px}
+.app-dx-form .form-check-label{font-size:13px;color:var(--bs-body-color)}
+.app-dx-form .select2-container .select2-selection{min-height:38px;border-radius:4px!important}
+.app-dx-form .select2-container--default .select2-selection--single .select2-selection__rendered{line-height:36px;color:var(--bs-body-color)}
+.app-dx-form .select2-container--default .select2-selection--single .select2-selection__arrow{height:36px}
+.app-dx-form .btn{border-radius:4px}
+.app-dx-form .form-grid{gap:16px}
+
+/* DevExpress grid integration. */
+.app-dx-grid{min-width:720px}
+.app-dx-grid .dx-datagrid{background:var(--bs-body-bg);color:var(--bs-body-color);font-family:inherit}
+.app-dx-grid .dx-datagrid-headers,.app-dx-grid .dx-toolbar,.app-dx-grid .dx-pager{background:var(--bs-body-bg);color:var(--bs-body-color)}
+.app-dx-grid .dx-header-row>td{font-weight:700;color:var(--bs-secondary-color);font-size:12px;text-transform:uppercase}
+.app-dx-grid .dx-row>td{vertical-align:middle;border-color:var(--bs-border-color)}
+.app-dx-grid .dx-datagrid-filter-row input,.app-dx-grid .dx-searchbox input{font-family:inherit}
+.app-dx-grid .dx-texteditor{border-radius:4px;border-color:var(--bs-border-color);background:var(--bs-body-bg);color:var(--bs-body-color)}
+.app-dx-grid .dx-datagrid-pager{border-top:1px solid var(--bs-border-color)}
