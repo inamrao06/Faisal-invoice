@@ -56,8 +56,7 @@
     <link href="{{ asset('paces/assets/css/vendors.min.css') }}" rel="stylesheet">
     <link id="app-style" href="{{ asset('paces/assets/css/app.min.css') }}" rel="stylesheet">
     <link href="{{ asset('paces/assets/plugins/select2/select2.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/dx.light.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/paces-custom.css') }}?v=12" rel="stylesheet">
+    <link href="{{ asset('css/paces-custom.css') }}?v=14" rel="stylesheet">
     <style>
         html[data-bs-theme] {
             --app-accent: {{ $accent }};
@@ -452,7 +451,6 @@
     <script src="{{ asset('paces/assets/js/vendors.min.js') }}"></script>
     <script src="{{ asset('paces/assets/js/app.js') }}"></script>
     <script src="{{ asset('paces/assets/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/dx.web.js') }}"></script>
     <script src="{{ asset('paces/assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('js/searchable-selects.js') }}?v=2" defer></script>
     <script>
@@ -469,9 +467,7 @@
             sessionStorage.setItem('__THEME_CONFIG__', JSON.stringify(window.config));
         }));
     </script>
-    <script src="{{ asset('js/inner-tables.js') }}?v=1" defer></script>
-    <script src="{{ asset('js/devexpress-grids.js') }}?v=3" defer></script>
-    <script src="{{ asset('js/devexpress-forms.js') }}?v=1" defer></script>
+    <script src="{{ asset('js/inner-tables.js') }}?v=2" defer></script>
     @stack('scripts')
 </body>
 

@@ -8,55 +8,6 @@
     $currentBranch = old('branch_id', $user->branch_id ?? ($isSuper ? null : auth()->user()->branch_id));
     $myCompany = $companies->firstWhere('id', (int) auth()->user()->branch_id);
 @endphp
-<style>
-.uf-wrap{max-width:860px}
-.uf-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
-.uf-header h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}
-.uf-header p{margin:4px 0 0;color:#64748b;font-size:13px}
-.uf-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 4px 24px rgba(15,23,42,.06);overflow:hidden;margin-bottom:0}
-.uf-section{padding:24px 28px;border-bottom:1px solid #f1f5f9}
-.uf-section:last-child{border-bottom:0}
-.uf-sec-title{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.uf-sec-icon{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
-.uf-sec-icon.blue{background:#dbeafe;color:#2563eb}
-.uf-sec-icon.violet{background:#ede9fe;color:#7c3aed}
-.uf-sec-icon.green{background:#dcfce7;color:#16a34a}
-.uf-sec-title h4{margin:0;font-size:14px;font-weight:800;color:#0f172a}
-.uf-sec-title p{margin:1px 0 0;font-size:12px;color:#94a3b8}
-.uf-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.uf-grid .g2{grid-column:span 2}
-.uf-lbl{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;letter-spacing:.01em}
-.uf-lbl .req{color:#ef4444;margin-left:2px}
-.form-control,.form-select{border-radius:8px;border:1px solid #d1d5db;font-size:14px;color:#1e293b;padding:9px 13px;transition:.15s}
-.form-control:focus,.form-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-/* User type cards */
-.type-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.type-card{border:2px solid #e2e8f0;border-radius:12px;padding:18px 16px;cursor:pointer;transition:.18s;position:relative;user-select:none}
-.type-card:hover{border-color:#93c5fd;background:#f0f9ff}
-.type-card input[type=radio]{position:absolute;opacity:0;width:0;height:0}
-.type-card.selected{border-color:#2563eb;background:#eff6ff}
-.type-card-icon{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:20px;margin-bottom:10px;transition:.18s}
-.type-card.super .type-card-icon{background:#fef3c7;color:#d97706}
-.type-card.admin .type-card-icon{background:#dbeafe;color:#2563eb}
-.type-card strong{display:block;font-size:14px;font-weight:800;color:#0f172a;margin-bottom:2px}
-.type-card span{font-size:12px;color:#64748b;line-height:1.5}
-.type-card .check-dot{width:20px;height:20px;border-radius:50%;border:2px solid #cbd5e1;position:absolute;top:14px;right:14px;transition:.18s;display:grid;place-items:center}
-.type-card.selected .check-dot{background:#2563eb;border-color:#2563eb}
-.type-card.selected .check-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;display:block}
-/* Role number field */
-.role-info{background:#fef9ec;border:1px solid #fde68a;border-radius:8px;padding:12px 14px;font-size:13px;color:#92400e;display:flex;gap:10px;align-items:flex-start;margin-top:10px}
-.role-info i{margin-top:1px;flex:0 0 auto}
-/* Status toggle */
-.status-toggle{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;cursor:pointer;background:#f0fdf4;border:1px solid #bbf7d0;width:fit-content}
-.status-toggle input{width:18px;height:18px;accent-color:#16a34a;cursor:pointer}
-.status-toggle span{font-size:13px;font-weight:700;color:#15803d}
-.uf-footer{padding:20px 28px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;gap:10px;align-items:center}
-.company-field{transition:.3s}
-.uf-static{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:14px;font-weight:600;color:#1e293b}
-.uf-static i{color:#2563eb;font-size:16px}
-.uf-static small{display:block;font-weight:400;color:#94a3b8;font-size:11px}
-@media(max-width:600px){.uf-grid{grid-template-columns:1fr}.uf-grid .g2{grid-column:span 1}.type-cards{grid-template-columns:1fr}}
-</style>
 
 <div class="uf-wrap">
 <div class="uf-header">
@@ -178,42 +129,61 @@
         <div class="uf-section company-field" id="companySection">
             <div class="uf-sec-title">
                 <div class="uf-sec-icon blue"><i class="ti ti-buildings"></i></div>
-                <div><h4>Company &amp; Access Role</h4><p>Assign company and set role number (0 = full access)</p></div>
+                <div>
+                    <h4>Company &amp; Access Role</h4>
+                    <p>{{ $isSuper ? 'Assign company and access role' : 'Access role for '.$myCompany?->name }}</p>
+                </div>
             </div>
             <div class="uf-grid">
                 <div>
                     <label class="uf-lbl" for="inp_branch">Assigned Company</label>
-                    <select class="form-select @error('branch_id') is-invalid @enderror"
-                            id="inp_branch" name="branch_id">
-                        <option value="">— Select Company —</option>
-                        @foreach($companies as $company)
-                            <option value="{{ $company->id }}"
-                                    @selected(old('branch_id',$user->branch_id) == $company->id)>
-                                {{ $company->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('branch_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    @if($isSuper)
+                        <select class="form-select @error('branch_id') is-invalid @enderror"
+                                id="inp_branch" name="branch_id">
+                            <option value="">— Select Company —</option>
+                            @foreach($companies as $company)
+                                <option value="{{ $company->id }}" @selected($currentBranch == $company->id)>
+                                    {{ $company->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('branch_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    @else
+                        <div class="uf-static">
+                            <i class="ti ti-building"></i>
+                            <div>
+                                {{ $myCompany?->name ?? '—' }}
+                                <small>{{ $myCompany?->code }}</small>
+                            </div>
+                        </div>
+                        <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
+                    @endif
                 </div>
                 <div>
-                    <label class="uf-lbl" for="inp_role">
-                        Role Number
-                        <span style="font-weight:400;color:#94a3b8;font-size:11px">(0 = Full Access)</span>
-                    </label>
-                    <input class="form-control @error('company_role_num') is-invalid @enderror"
-                           id="inp_role" type="number" name="company_role_num" min="0" max="255"
-                           value="{{ old('company_role_num', $user->company_role_num ?? 0) }}"
-                           placeholder="0">
+                    <label class="uf-lbl" for="inp_role">Access Role</label>
+                    <select class="form-select @error('company_role_num') is-invalid @enderror"
+                            id="inp_role" name="company_role_num">
+                        <option value="0" @selected($currentRoleNum === 0)>Full Access (all company modules)</option>
+                        @foreach($companyRoles as $crole)
+                            @if($isSuper || (int) $crole->branch_id === (int) auth()->user()->branch_id)
+                                <option value="{{ $crole->id }}"
+                                        data-branch="{{ $crole->branch_id }}"
+                                        @selected($currentRoleNum === (int) $crole->id)>
+                                    {{ $crole->name }}{{ $isSuper ? ' — '.($companies->firstWhere('id',$crole->branch_id)?->name ?? '') : '' }}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
                     @error('company_role_num')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
             </div>
             <div class="role-info mt-3">
                 <i class="ti ti-info-circle-filled"></i>
                 <div>
-                    <strong>Role Number Guide:</strong>
-                    <strong style="color:#15803d"> 0</strong> = Full company access (same as Company Admin).
-                    Any other number (e.g. <strong>1</strong>, <strong>2</strong>) = restricted role — use with
-                    Roles &amp; Permissions to define what they can do.
+                    <strong>Role Guide:</strong>
+                    <strong style="color:#15803d">Full Access</strong> = unrestricted access to the company.
+                    Any other role is restricted — define what it can do under
+                    <a href="{{ route('company.permissions.index') }}" style="color:#92400e;text-decoration:underline">Roles &amp; Permissions</a>.
                 </div>
             </div>
         </div>

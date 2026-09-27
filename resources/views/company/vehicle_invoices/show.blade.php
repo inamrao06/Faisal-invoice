@@ -3,12 +3,170 @@
 @section('page_title','Vehicle Sales Invoice')
 @section('content')
 @php $currency=$invoice->company?->currency?->symbol ?? '£'; @endphp
-<style>
-.invoice-page{max-width:1120px;margin:0 auto}.invoice-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}.invoice-toolbar h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}.invoice-toolbar p{margin:3px 0 0;color:#64748b}.invoice-actions{display:flex;gap:8px}.invoice-sheet{background:var(--bs-body-bg);border:1px solid var(--bs-border-color);border-radius:10px;box-shadow:var(--bs-box-shadow-sm);overflow:hidden}.invoice-hero{padding:28px 30px 22px;display:grid;grid-template-columns:1fr 280px;gap:28px;border-bottom:1px solid var(--bs-border-color)}.brand-copy h3{margin:0 0 6px;font-size:20px;font-weight:800;color:#0f172a}.brand-copy p{margin:0 0 3px;color:#64748b}.invoice-title{text-align:right}.invoice-title span{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8}.invoice-title strong{display:block;font-size:26px;color:#0f172a;margin:4px 0 10px}.status-pill{display:inline-flex!important;border-radius:999px;padding:5px 11px;background:#dcfce7;color:#15803d}.invoice-meta-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--bs-border-color);background:var(--bs-tertiary-bg)}.meta-item{padding:15px 18px;border-right:1px solid var(--bs-border-color)}.meta-item span{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8}.meta-item strong{display:block;color:#0f172a}.invoice-body{padding:24px 30px}.info-box{border:1px solid var(--bs-border-color);border-radius:8px;padding:15px;background:var(--bs-body-bg);margin-bottom:12px}.info-box span{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;margin-bottom:7px}.info-box p{margin:0;color:#475569}.invoice-bottom{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;margin-top:18px}.total-card{border:1px solid var(--bs-border-color);border-radius:8px;background:var(--bs-tertiary-bg);padding:16px}.total-row{display:flex;justify-content:space-between;gap:18px;padding:8px 0;border-bottom:1px dashed var(--bs-border-color)}.total-row.grand{font-size:18px;font-weight:900;color:#0f172a}@media(max-width:900px){.invoice-hero,.invoice-bottom{grid-template-columns:1fr}.invoice-title{text-align:left}.invoice-meta-grid{grid-template-columns:1fr 1fr}}@media(max-width:575px){.invoice-meta-grid{grid-template-columns:1fr}.invoice-hero,.invoice-body{padding:20px}}
-</style>
-<div class="invoice-page"><div class="invoice-toolbar"><div><h2>Vehicle Sales Invoice</h2><p>{{ $invoice->invoice_no }}</p></div><div class="invoice-actions"><a class="btn btn-light" href="{{ route('company.vehicle-invoices.index') }}">Back</a><a class="btn btn-primary" href="{{ route('company.vehicle-invoices.edit',$invoice) }}">Edit</a></div></div>
-<div class="invoice-sheet"><div class="invoice-hero"><div class="brand-copy"><h3>{{ $invoice->company?->name ?? 'Car Hive Ltd' }}</h3><p>{{ $invoice->company?->company_email }}</p><p>{{ $invoice->company?->phone }}</p></div><div class="invoice-title"><span>Invoice No</span><strong>{{ $invoice->invoice_no }}</strong><span class="status-pill">{{ str($invoice->payment_status)->replace('_',' ')->title() }}</span></div></div>
-<div class="invoice-meta-grid"><div class="meta-item"><span>Invoice Date</span><strong>{{ $invoice->invoice_date->format('d M Y') }}</strong></div><div class="meta-item"><span>Sale Date</span><strong>{{ $invoice->sale_date?->format('d M Y') ?? '-' }}</strong></div><div class="meta-item"><span>Transaction</span><strong>{{ str($invoice->transaction_type)->replace('_',' ')->title() }}</strong></div><div class="meta-item"><span>Balance</span><strong>{{ $currency }} {{ number_format($invoice->balance_amount,2) }}</strong></div></div>
-<div class="invoice-body"><div class="row g-3"><div class="col-md-6"><div class="info-box"><span>Customer Details</span><p><strong>{{ $invoice->customer->name }}</strong><br>{{ $invoice->customer->email }}<br>{{ $invoice->customer->phone }}<br>{{ $invoice->customer->address }} {{ $invoice->customer->postcode }}</p></div></div><div class="col-md-6"><div class="info-box"><span>Vehicle Details</span><p><strong>{{ $invoice->vehicle->make_model }}</strong><br>Reg: {{ $invoice->vehicle->registration_no }}<br>VIN: {{ $invoice->vehicle->vin }}<br>Year: {{ $invoice->vehicle->year }} | Mileage: {{ $invoice->vehicle->mileage }} | Keys: {{ $invoice->vehicle->keys_count }}<br>Type: {{ $invoice->category?->name }}</p></div></div></div>
-<div class="invoice-bottom"><div><div class="info-box"><span>Warranty Details</span><p><strong>{{ $invoice->warranty_provider_name ?? 'No Warranty' }}</strong><br>{{ $invoice->warranty_duration_months !== null ? $invoice->warranty_duration_months.' months' : '' }}<br>{!! nl2br(e($invoice->warranty_terms)) !!}</p></div><div class="info-box"><span>Vehicle-Specific Terms</span><p>{!! nl2br(e($invoice->vehicle_terms)) !!}</p></div><div class="info-box"><span>General Terms & Conditions</span><p>{!! nl2br(e($invoice->general_terms)) !!}</p></div></div><div class="total-card"><div class="total-row"><span>Vehicle Price</span><strong>{{ $currency }} {{ number_format($invoice->vehicle_price,2) }}</strong></div><div class="total-row"><span>Discount</span><strong>{{ $currency }} {{ number_format($invoice->discount,2) }}</strong></div><div class="total-row grand"><span>Total Sale Price</span><strong>{{ $currency }} {{ number_format($invoice->total_sale_price,2) }}</strong></div><hr><strong>Payments Received</strong>@foreach($invoice->payments as $p)<div class="total-row"><span>{{ $p->payment_date->format('d/m/Y') }} {{ str($p->payment_type)->replace('_',' ')->title() }}<br><small>{{ $p->method }}</small></span><strong>{{ $currency }} {{ number_format($p->amount,2) }}</strong></div>@endforeach<div class="total-row"><span>Total Paid</span><strong>{{ $currency }} {{ number_format($invoice->total_paid,2) }}</strong></div><div class="total-row grand"><span>Balance</span><strong>{{ $currency }} {{ number_format($invoice->balance_amount,2) }}</strong></div></div></div></div></div></div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-light justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="mb-1">{{ $invoice->invoice_no }}</h5>
+                    <p class="text-muted mb-0 fs-13">{{ $invoice->company?->name ?? 'Car Hive Ltd' }}</p>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    @if($invoice->payment_status === 'paid')
+                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold me-1">
+                            <i class="ti ti-circle-check me-1"></i>{{ str($invoice->payment_status)->replace('_',' ')->title() }}
+                        </span>
+                    @elseif($invoice->payment_status === 'part_paid')
+                        <span class="badge bg-warning bg-opacity-10 text-warning fw-semibold me-1">
+                            <i class="ti ti-clock me-1"></i>{{ str($invoice->payment_status)->replace('_',' ')->title() }}
+                        </span>
+                    @else
+                        <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold me-1">
+                            <i class="ti ti-circle-x me-1"></i>{{ str($invoice->payment_status)->replace('_',' ')->title() }}
+                        </span>
+                    @endif
+                    <button type="button" class="btn btn-soft-secondary btn-sm" onclick="window.print()">
+                        <i class="ti ti-printer me-1"></i>Print
+                    </button>
+                    <a class="btn btn-light btn-sm" href="{{ route('company.vehicle-invoices.index') }}">Back</a>
+                    <a class="btn btn-primary btn-sm" href="{{ route('company.vehicle-invoices.edit',$invoice) }}">
+                        <i class="ti ti-pencil me-1"></i>Edit
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="form-section-title">
+                    <div class="fs-icon"><i class="ti ti-file-invoice"></i></div>
+                    <div>
+                        <h6>Invoice Details</h6>
+                        <p>{{ $invoice->company?->company_email }} {{ $invoice->company?->phone ? '· '.$invoice->company?->phone : '' }}</p>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <p class="text-muted fs-12 text-uppercase mb-1">Invoice Date</p>
+                        <h6 class="mb-0 fs-14">{{ $invoice->invoice_date->format('d M Y') }}</h6>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fs-12 text-uppercase mb-1">Sale Date</p>
+                        <h6 class="mb-0 fs-14">{{ $invoice->sale_date?->format('d M Y') ?? '-' }}</h6>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fs-12 text-uppercase mb-1">Transaction</p>
+                        <h6 class="mb-0 fs-14">{{ str($invoice->transaction_type)->replace('_',' ')->title() }}</h6>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="info-strip h-100">
+                            <p class="text-muted fs-12 text-uppercase mb-1">Customer Details</p>
+                            <h6 class="mb-1 fs-14">{{ $invoice->customer->name }}</h6>
+                            <p class="mb-0 fs-13 text-muted">
+                                {{ $invoice->customer->email }}<br>
+                                {{ $invoice->customer->phone }}<br>
+                                {{ $invoice->customer->address }} {{ $invoice->customer->postcode }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-strip h-100">
+                            <p class="text-muted fs-12 text-uppercase mb-1">Vehicle Details</p>
+                            <h6 class="mb-1 fs-14">{{ $invoice->vehicle->make_model }}</h6>
+                            <p class="mb-0 fs-13 text-muted">
+                                Reg: {{ $invoice->vehicle->registration_no }}<br>
+                                VIN: {{ $invoice->vehicle->vin }}<br>
+                                Year: {{ $invoice->vehicle->year }} | Mileage: {{ $invoice->vehicle->mileage }} | Keys: {{ $invoice->vehicle->keys_count }}<br>
+                                Type: {{ $invoice->category?->name }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <p class="text-muted fs-12 text-uppercase mb-1">Warranty Provider</p>
+                        <h6 class="mb-0 fs-14">{{ $invoice->warranty_provider_name ?? 'No Warranty' }}</h6>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fs-12 text-uppercase mb-1">Warranty Duration</p>
+                        <h6 class="mb-0 fs-14">{{ $invoice->warranty_duration_months !== null ? $invoice->warranty_duration_months.' months' : '-' }}</h6>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="text-muted fs-12 text-uppercase mb-1">Balance</p>
+                        <h6 class="mb-0 fs-14 fw-semibold">{{ $currency }} {{ number_format($invoice->balance_amount,2) }}</h6>
+                    </div>
+                    @if($invoice->warranty_terms)
+                        <div class="col-12">
+                            <p class="text-muted fs-12 text-uppercase mb-1">Warranty Terms</p>
+                            <div class="fs-13">{!! nl2br(e($invoice->warranty_terms)) !!}</div>
+                        </div>
+                    @endif
+                    @if($invoice->vehicle_terms)
+                        <div class="col-12">
+                            <p class="text-muted fs-12 text-uppercase mb-1">Vehicle-Specific Terms</p>
+                            <div class="fs-13">{!! nl2br(e($invoice->vehicle_terms)) !!}</div>
+                        </div>
+                    @endif
+                    @if($invoice->general_terms)
+                        <div class="col-12">
+                            <p class="text-muted fs-12 text-uppercase mb-1">General Terms &amp; Conditions</p>
+                            <div class="fs-13">{!! nl2br(e($invoice->general_terms)) !!}</div>
+                        </div>
+                    @endif
+                </div>
+
+                <hr class="my-4">
+
+                <div class="form-section-title">
+                    <div class="fs-icon"><i class="ti ti-cash"></i></div>
+                    <div>
+                        <h6>Totals &amp; Payments</h6>
+                        <p>Sale totals and payments received.</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">Vehicle Price</td>
+                                <td class="text-end fw-semibold">{{ $currency }} {{ number_format($invoice->vehicle_price,2) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Discount</td>
+                                <td class="text-end fw-semibold">{{ $currency }} {{ number_format($invoice->discount,2) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Total Sale Price</td>
+                                <td class="text-end fw-semibold">{{ $currency }} {{ number_format($invoice->total_sale_price,2) }}</td>
+                            </tr>
+                            @foreach($invoice->payments as $p)
+                                <tr>
+                                    <td>
+                                        {{ $p->payment_date->format('d/m/Y') }} {{ str($p->payment_type)->replace('_',' ')->title() }}
+                                        <small class="text-muted d-block">{{ $p->method }}</small>
+                                    </td>
+                                    <td class="text-end fw-semibold">{{ $currency }} {{ number_format($p->amount,2) }}</td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td class="text-muted">Total Paid</td>
+                                <td class="text-end fw-semibold">{{ $currency }} {{ number_format($invoice->total_paid,2) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Balance</td>
+                                <td class="text-end fw-semibold">{{ $currency }} {{ number_format($invoice->balance_amount,2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

@@ -2,24 +2,6 @@
 @section('title','Companies')
 @section('page_title','Companies')
 @section('content')
-<style>
-.ci-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
-.ci-header h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}
-.ci-header p{margin:3px 0 0;font-size:13px;color:#64748b}
-.ci-table thead th{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#64748b;background:#f8fafc;padding:12px 18px;border-bottom:2px solid #e7ecf3;white-space:nowrap}
-.ci-table tbody td{padding:14px 18px;vertical-align:middle;border-bottom:1px solid #f1f5f9}
-.ci-table tbody tr:last-child td{border-bottom:0}
-.ci-table tbody tr:hover td{background:#fafbff}
-.co-avatar{width:42px;height:42px;border-radius:10px;background:#dbeafe;color:#2563eb;display:grid;place-items:center;font-weight:900;font-size:17px;overflow:hidden;flex:0 0 auto}
-.co-avatar img{width:100%;height:100%;object-fit:contain;padding:4px}
-.co-name strong{display:block;font-size:14px;font-weight:700;color:#0f172a}
-.co-name small{font-size:12px;color:#64748b}
-.type-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;background:#ede9fe;color:#6d28d9}
-.ci-empty{padding:56px 24px;text-align:center;color:#94a3b8}
-.ci-empty i{font-size:44px;display:block;margin-bottom:14px;opacity:.5}
-.ci-empty p{margin:0;font-size:14px}
-.user-count{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#dbeafe;color:#2563eb;font-weight:800;font-size:14px}
-</style>
 
 <div class="ci-header">
     <div>

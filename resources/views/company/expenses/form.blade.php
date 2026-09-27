@@ -2,29 +2,6 @@
 @section('title', $expense->exists ? 'Edit Expense' : 'Create Expense')
 @section('page_title', $expense->exists ? 'Edit Expense' : 'Create Expense')
 @section('content')
-<style>
-.frm-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
-.frm-head h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}
-.frm-head p{margin:3px 0 0;font-size:13px;color:#64748b}
-.frm-card{background:var(--bs-body-bg);border:1px solid var(--bs-border-color);border-radius:var(--bs-border-radius);box-shadow:var(--bs-box-shadow-sm);overflow:hidden;margin-bottom:20px}
-.frm-card-head{padding:16px 20px;border-bottom:1px solid var(--bs-border-color);display:flex;align-items:center;gap:10px}
-.frm-card-head h3{margin:0;font-size:15px;font-weight:700}
-.frm-card-body{padding:20px}
-.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.form-grid .span-2{grid-column:span 2}
-.form-grid .span-3{grid-column:span 3}
-.form-grid label{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
-@media(max-width:767.98px){.form-grid{grid-template-columns:1fr}.form-grid .span-2,.form-grid .span-3{grid-column:span 1}}
-.items-table thead th{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#64748b;background:#f8fafc;padding:10px 12px;border-bottom:2px solid #e7ecf3;white-space:nowrap}
-.items-table tbody td{padding:8px;vertical-align:middle;border-bottom:1px solid #f1f5f9}
-.items-table .line-total{font-weight:700;color:#0f172a;white-space:nowrap}
-.items-table .btn-remove{color:#dc2626}
-.totals-box{max-width:340px;width:100%}
-.totals-box .row-line{display:flex;justify-content:space-between;padding:8px 4px;font-size:14px;color:#475569;border-bottom:1px dashed var(--bs-border-color)}
-.totals-box .row-line:last-child{border-bottom:0}
-.totals-box .grand{font-size:17px;font-weight:800;color:#0f172a}
-.form-actions{display:flex;gap:10px;align-items:center;padding:16px 20px;border-top:1px solid var(--bs-border-color);background:var(--bs-tertiary-bg)}
-</style>
 
 <form method="POST" action="{{ $expense->exists ? route('company.expenses.update', $expense) : route('company.expenses.store') }}" enctype="multipart/form-data">
     @csrf

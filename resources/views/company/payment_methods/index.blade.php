@@ -2,82 +2,87 @@
 @section('title','Payment Methods')
 @section('page_title','Payment Methods')
 @section('content')
-<style>
-.page-actions h2{font-size:22px;font-weight:800;color:#0f172a}
-.page-actions p{font-size:13px;color:#64748b}
-.pm-table thead th{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#64748b;background:#f8fafc;padding:12px 18px;border-bottom:2px solid #e7ecf3;white-space:nowrap}
-.pm-table tbody td{padding:14px 18px;vertical-align:middle;border-bottom:1px solid #f1f5f9}
-.pm-table tbody tr:last-child td{border-bottom:0}
-.pm-table tbody tr:hover td{background:#fafbff}
-.pm-name strong{display:block;font-size:14px;font-weight:700;color:#0f172a}
-.pm-name small{display:block;font-size:12px;color:#64748b}
-.pm-code{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;background:#ede9fe;color:#6d28d9}
-.pm-empty{padding:56px 24px;text-align:center;color:#94a3b8}
-.pm-empty i{font-size:44px;display:block;margin-bottom:14px;opacity:.5}
-.pm-empty p{margin:0;font-size:14px}
-</style>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex align-items-center gap-2 flex-wrap" data-panel-tools>
+                    <div class="app-search">
+                        <input data-panel-search type="search" class="form-control" placeholder="Search payment methods...">
+                        <i class="ti ti-search app-search-icon text-muted"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <a href="{{ route('company.payment-methods.create') }}" class="btn btn-primary ms-1">
+                        <i class="ti ti-plus fs-sm me-2"></i>Add Payment Method
+                    </a>
+                </div>
+            </div>
 
-<div class="page-actions">
-    <div>
-        <h2>Payment Methods</h2>
-        <p>Payment accounts available when recording expenses.</p>
-    </div>
-    <a class="btn btn-primary" href="{{ route('company.payment-methods.create') }}">
-        <i class="ti ti-plus"></i> Add Payment Method
-    </a>
-</div>
+            <div class="table-responsive">
+                <table class="table table-custom table-centered table-hover w-100 mb-0">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th class="text-center" style="width:1%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($methods as $method)
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-md me-2">
+                                            <span class="avatar-title rounded bg-primary bg-opacity-10 text-primary">
+                                                <i class="ti ti-credit-card fs-18"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="cell-title">{{ $method->name }}</h6>
+                                            <p class="cell-sub">Payment account</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-secondary bg-opacity-10 text-body fw-semibold">{{ $method->code }}</span></td>
+                                <td class="text-muted">{{ $method->description ?: '—' }}</td>
+                                <td>
+                                    @if($method->is_active)
+                                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold"><i class="ti ti-circle-check me-1"></i>Active</span>
+                                    @else
+                                        <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold"><i class="ti ti-circle-x me-1"></i>Inactive</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-soft-primary btn-sm" href="{{ route('company.payment-methods.edit',$method) }}" title="Edit">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">
+                                    <div class="table-empty">
+                                        <i class="ti ti-credit-card"></i>
+                                        <p>No payment methods yet.</p>
+                                        <a href="{{ route('company.payment-methods.create') }}" class="btn btn-primary mt-3">
+                                            <i class="ti ti-plus me-1"></i>Add Payment Method
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-<div class="panel">
-    <div class="table-responsive">
-        <table class="table pm-table mb-0 align-middle" data-dx-grid>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($methods as $method)
-                    <tr>
-                        <td>
-                            <div class="pm-name">
-                                <strong>{{ $method->name }}</strong>
-                            </div>
-                        </td>
-                        <td><span class="pm-code"><i class="ti ti-hash"></i>{{ $method->code }}</span></td>
-                        <td style="font-size:13px;color:#475569">{{ $method->description ?: '—' }}</td>
-                        <td>
-                            <span class="status {{ $method->is_active ? 'on' : 'off' }}">
-                                {{ $method->is_active ? 'Active' : 'Inactive' }}
-                            </span>
-                        </td>
-                        <td class="text-end" style="white-space:nowrap">
-                            <a class="btn btn-sm btn-outline-primary" href="{{ route('company.payment-methods.edit',$method) }}">
-                                <i class="ti ti-pencil"></i> Edit
-                            </a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5">
-                            <div class="pm-empty">
-                                <i class="ti ti-credit-card"></i>
-                                <p>No payment methods yet.</p>
-                                <a href="{{ route('company.payment-methods.create') }}" class="btn btn-primary mt-3">
-                                    <i class="ti ti-plus"></i> Add First Payment Method
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            <div class="card-footer py-2 d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <span class="text-muted fs-12" data-panel-count></span>
+                @if($methods->hasPages()){{ $methods->links() }}@endif
+            </div>
+        </div>
     </div>
-    @if($methods->hasPages())
-        <div class="p-3 border-top">{{ $methods->links() }}</div>
-    @endif
 </div>
 @endsection

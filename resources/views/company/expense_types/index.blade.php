@@ -2,81 +2,87 @@
 @section('title','Expense Types')
 @section('page_title','Expense Types')
 @section('content')
-<style>
-.page-actions h2{font-size:22px;font-weight:800;color:#0f172a}
-.page-actions p{font-size:13px;color:#64748b}
-.et-table thead th{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#64748b;background:#f8fafc;padding:12px 18px;border-bottom:2px solid #e7ecf3;white-space:nowrap}
-.et-table tbody td{padding:14px 18px;vertical-align:middle;border-bottom:1px solid #f1f5f9}
-.et-table tbody tr:last-child td{border-bottom:0}
-.et-table tbody tr:hover td{background:#fafbff}
-.et-name strong{display:block;font-size:14px;font-weight:700;color:#0f172a}
-.et-code{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;background:#ede9fe;color:#6d28d9}
-.et-empty{padding:56px 24px;text-align:center;color:#94a3b8}
-.et-empty i{font-size:44px;display:block;margin-bottom:14px;opacity:.5}
-.et-empty p{margin:0;font-size:14px}
-</style>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex align-items-center gap-2 flex-wrap" data-panel-tools>
+                    <div class="app-search">
+                        <input data-panel-search type="search" class="form-control" placeholder="Search expense types...">
+                        <i class="ti ti-search app-search-icon text-muted"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <a href="{{ route('company.expense-types.create') }}" class="btn btn-primary ms-1">
+                        <i class="ti ti-plus fs-sm me-2"></i>Add Expense Type
+                    </a>
+                </div>
+            </div>
 
-<div class="page-actions">
-    <div>
-        <h2>Expense Types</h2>
-        <p>Company-specific expense categories.</p>
-    </div>
-    <a class="btn btn-primary" href="{{ route('company.expense-types.create') }}">
-        <i class="ti ti-plus"></i> Add Expense Type
-    </a>
-</div>
+            <div class="table-responsive">
+                <table class="table table-custom table-centered table-hover w-100 mb-0">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th class="text-center" style="width:1%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($types as $type)
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-md me-2">
+                                            <span class="avatar-title rounded bg-primary bg-opacity-10 text-primary">
+                                                <i class="ti ti-category fs-18"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="cell-title">{{ $type->name }}</h6>
+                                            <p class="cell-sub">{{ $type->created_at?->diffForHumans() }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-secondary bg-opacity-10 text-body fw-semibold">{{ $type->code }}</span></td>
+                                <td class="text-muted">{{ $type->description ?: '—' }}</td>
+                                <td>
+                                    @if($type->is_active)
+                                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold"><i class="ti ti-circle-check me-1"></i>Active</span>
+                                    @else
+                                        <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold"><i class="ti ti-circle-x me-1"></i>Inactive</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-soft-primary btn-sm" href="{{ route('company.expense-types.edit',$type) }}" title="Edit">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5">
+                                    <div class="table-empty">
+                                        <i class="ti ti-category"></i>
+                                        <p>No expense types yet.</p>
+                                        <a href="{{ route('company.expense-types.create') }}" class="btn btn-primary mt-3">
+                                            <i class="ti ti-plus me-1"></i>Add Expense Type
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-<div class="panel">
-    <div class="table-responsive">
-        <table class="table et-table mb-0 align-middle" data-dx-grid>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($types as $type)
-                    <tr>
-                        <td>
-                            <div class="et-name">
-                                <strong>{{ $type->name }}</strong>
-                            </div>
-                        </td>
-                        <td><span class="et-code"><i class="ti ti-hash"></i>{{ $type->code }}</span></td>
-                        <td style="font-size:13px;color:#475569">{{ $type->description ?: '—' }}</td>
-                        <td>
-                            <span class="status {{ $type->is_active ? 'on' : 'off' }}">
-                                {{ $type->is_active ? 'Active' : 'Inactive' }}
-                            </span>
-                        </td>
-                        <td class="text-end" style="white-space:nowrap">
-                            <a class="btn btn-sm btn-outline-primary" href="{{ route('company.expense-types.edit',$type) }}">
-                                <i class="ti ti-pencil"></i> Edit
-                            </a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5">
-                            <div class="et-empty">
-                                <i class="ti ti-category"></i>
-                                <p>No expense types yet.</p>
-                                <a href="{{ route('company.expense-types.create') }}" class="btn btn-primary mt-3">
-                                    <i class="ti ti-plus"></i> Add First Expense Type
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            <div class="card-footer py-2 d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <span class="text-muted fs-12" data-panel-count></span>
+                @if($types->hasPages()){{ $types->links() }}@endif
+            </div>
+        </div>
     </div>
-    @if($types->hasPages())
-        <div class="p-3 border-top">{{ $types->links() }}</div>
-    @endif
 </div>
 @endsection

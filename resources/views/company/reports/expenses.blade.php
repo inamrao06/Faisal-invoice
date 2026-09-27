@@ -8,38 +8,7 @@
         $hasFilters = request()->filled('from') || request()->filled('to') || request()->filled('expense_head_id');
     @endphp
 
-    <style>
-        .report-page{max-width:1180px;margin:0 auto}
-        .report-shell{background:var(--bs-body-bg);border:1px solid var(--bs-border-color);border-radius:10px;box-shadow:var(--bs-box-shadow-sm);overflow:hidden}
-        .report-hero{padding:24px 26px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;align-items:center;border-bottom:1px solid var(--bs-border-color)}
-        .report-title h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}
-        .report-title p{margin:4px 0 0;font-size:13px;color:#64748b}
-        .report-kpis{display:grid;grid-template-columns:1fr 1.4fr;gap:12px}
-        .kpi{border:1px solid var(--bs-border-color);border-radius:8px;padding:14px 16px;background:var(--bs-tertiary-bg)}
-        .kpi span{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:5px}
-        .kpi strong{font-size:24px;line-height:1.15;color:#0f172a}
-        .filter-bar{padding:16px 26px;border-bottom:1px solid var(--bs-border-color);background:#fbfcfe}
-        .filter-grid{display:grid;grid-template-columns:170px 170px minmax(240px,1fr) auto;gap:12px;align-items:end}
-        .filter-grid label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:6px}
-        .filter-actions{display:flex;gap:8px}
-        .active-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-        .filter-chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:rgba(var(--bs-primary-rgb),.09);color:var(--bs-primary);font-size:12px;font-weight:700;padding:5px 10px}
-        .report-table-wrap{padding:0}
-        .report-table{margin:0}
-        .report-table thead th{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#64748b;background:var(--bs-tertiary-bg);padding:13px 18px;white-space:nowrap;border-bottom:1px solid var(--bs-border-color)}
-        .report-table tbody td{padding:14px 18px;vertical-align:middle;border-bottom:1px solid #f1f5f9}
-        .report-table tbody tr:hover td{background:#fafbff}
-        .invoice-link{display:inline-flex;align-items:center;gap:10px;color:#0f172a;font-weight:800}
-        .invoice-icon{width:34px;height:34px;border-radius:8px;background:rgba(var(--bs-primary-rgb),.1);color:var(--bs-primary);display:grid;place-items:center;flex:0 0 auto}
-        .type-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#f1f5f9;color:#475569;padding:5px 10px;font-size:12px;font-weight:800}
-        .amount{font-weight:900;color:#0f172a;white-space:nowrap}
-        .report-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 18px;background:var(--bs-tertiary-bg);border-top:1px solid var(--bs-border-color);flex-wrap:wrap}
-        .report-foot strong{font-size:16px;color:#0f172a}
-        .empty-report{padding:54px 20px;text-align:center;color:#94a3b8}
-        .empty-report i{font-size:42px;display:block;margin-bottom:10px;opacity:.6}
-        @media(max-width:991.98px){.report-hero{grid-template-columns:1fr}.report-kpis{max-width:520px}.filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filter-actions{grid-column:span 2}}
-        @media(max-width:575.98px){.report-hero,.filter-bar{padding:20px}.report-kpis,.filter-grid{grid-template-columns:1fr}.filter-actions{grid-column:span 1}.filter-actions .btn{flex:1}}
-    </style>
+    
 
     <div class="report-page">
         <div class="report-shell">

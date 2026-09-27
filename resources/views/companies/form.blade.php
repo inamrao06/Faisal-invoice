@@ -2,46 +2,6 @@
 @section('title', $company->exists ? 'Edit Company' : 'Create Company')
 @section('page_title', $company->exists ? 'Edit Company' : 'Create Company')
 @section('content')
-<style>
-.frm-wrap{max-width:1100px}
-.frm-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
-.frm-header h2{margin:0;font-size:22px;font-weight:800;color:#0f172a}
-.frm-header p{margin:4px 0 0;color:#64748b;font-size:13px}
-.frm-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 4px 24px rgba(15,23,42,.06);margin-bottom:20px;overflow:hidden}
-.frm-section{padding:24px 28px;border-bottom:1px solid #f1f5f9}
-.frm-section:last-child{border-bottom:0}
-.frm-sec-title{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.frm-sec-icon{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
-.frm-sec-icon.blue{background:#dbeafe;color:#2563eb}
-.frm-sec-icon.teal{background:#ccfbf1;color:#0d9488}
-.frm-sec-icon.violet{background:#ede9fe;color:#7c3aed}
-.frm-sec-icon.amber{background:#fef3c7;color:#d97706}
-.frm-sec-icon.green{background:#dcfce7;color:#16a34a}
-.frm-sec-title h4{margin:0;font-size:14px;font-weight:800;color:#0f172a}
-.frm-sec-title p{margin:1px 0 0;font-size:12px;color:#94a3b8}
-.frm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.frm-grid .g2{grid-column:span 2}
-.frm-grid .g3{grid-column:span 3}
-.frm-lbl{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px;letter-spacing:.01em}
-.frm-lbl .req{color:#ef4444;margin-left:2px}
-.form-control,.form-select{border-radius:8px;border:1px solid #d1d5db;font-size:14px;color:#1e293b;padding:9px 13px;transition:.15s}
-.form-control:focus,.form-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.form-control.is-invalid{border-color:#ef4444}
-.upload-zone{border:2px dashed #cbd5e1;border-radius:10px;padding:20px 14px;text-align:center;cursor:pointer;background:#f8fafc;transition:.2s;position:relative;overflow:hidden}
-.upload-zone:hover{border-color:#2563eb;background:#eff6ff}
-.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upload-zone .uz-icon{font-size:28px;color:#cbd5e1;display:block;margin-bottom:6px;transition:.2s}
-.upload-zone:hover .uz-icon{color:#2563eb}
-.upload-zone p{margin:0;font-size:12px;color:#94a3b8;line-height:1.5}
-.upload-zone strong{color:#2563eb}
-.uz-preview{width:100%;max-height:88px;object-fit:contain;border-radius:7px;margin-bottom:8px;display:none}
-.toggle-row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;cursor:pointer;background:#f0fdf4;border:1px solid #bbf7d0;width:fit-content}
-.toggle-row input[type=checkbox]{width:18px;height:18px;accent-color:#16a34a;cursor:pointer;flex:0 0 auto}
-.toggle-row span{font-size:13px;font-weight:700;color:#15803d}
-.frm-footer{padding:20px 28px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;gap:10px;align-items:center}
-@media(max-width:860px){.frm-grid{grid-template-columns:1fr 1fr}.frm-grid .g2,.frm-grid .g3{grid-column:span 2}}
-@media(max-width:560px){.frm-grid{grid-template-columns:1fr}.frm-grid .g2,.frm-grid .g3{grid-column:span 1}}
-</style>
 
 <div class="frm-wrap">
 <div class="frm-header">

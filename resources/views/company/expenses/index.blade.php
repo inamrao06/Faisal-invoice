@@ -2,24 +2,6 @@
 @section('title','Expenses')
 @section('page_title','Expenses')
 @section('content')
-<style>
-.page-actions h2{font-size:22px;font-weight:800;color:#0f172a}
-.page-actions p{font-size:13px;color:#64748b}
-.ex-table thead th{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#64748b;background:#f8fafc;padding:12px 18px;border-bottom:2px solid #e7ecf3;white-space:nowrap}
-.ex-table tbody td{padding:14px 18px;vertical-align:middle;border-bottom:1px solid #f1f5f9}
-.ex-table tbody tr:last-child td{border-bottom:0}
-.ex-table tbody tr:hover td{background:#fafbff}
-.ex-inv{display:inline-flex;align-items:center;gap:10px}
-.ex-inv .ex-ic{width:38px;height:38px;border-radius:10px;background:#fee2e2;color:#dc2626;display:grid;place-items:center;font-size:17px;flex:0 0 auto}
-.ex-inv strong{display:block;font-size:14px;font-weight:700;color:#0f172a}
-.ex-inv small{display:block;font-size:12px;color:#64748b}
-.ex-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;background:#ede9fe;color:#6d28d9}
-.ex-pay{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#475569;font-weight:600}
-.ex-total{font-size:14px;font-weight:800;color:#0f172a;white-space:nowrap}
-.ex-empty{padding:56px 24px;text-align:center;color:#94a3b8}
-.ex-empty i{font-size:44px;display:block;margin-bottom:14px;opacity:.5}
-.ex-empty p{margin:0;font-size:14px}
-</style>
 
 <div class="page-actions">
     <div>

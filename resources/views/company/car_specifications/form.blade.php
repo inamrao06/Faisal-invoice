@@ -2,11 +2,6 @@
 @section('title', $spec->exists ? 'Edit '.$title : 'Add '.$title)
 @section('page_title', $spec->exists ? 'Edit '.$title : 'Add '.$title)
 @section('content')
-<style>
-.frm-card{background:var(--bs-body-bg);border:1px solid var(--bs-border-color);border-radius:var(--bs-border-radius);box-shadow:var(--bs-box-shadow-sm);overflow:hidden;max-width:760px}
-.frm-body{padding:20px}.frm-actions{display:flex;gap:10px;padding:16px 20px;background:var(--bs-tertiary-bg);border-top:1px solid var(--bs-border-color)}
-.frm-body label{display:block;font-size:12px;font-weight:800;color:#475569;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
-</style>
 <form class="frm-card" method="POST" action="{{ $spec->exists ? route('company.car-specifications.update', [$type, $spec]) : route('company.car-specifications.store', $type) }}">
     @csrf
     @if($spec->exists) @method('PUT') @endif
