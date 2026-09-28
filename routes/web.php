@@ -12,6 +12,7 @@ use App\Http\Controllers\CompanyPaymentMethodController;
 use App\Http\Controllers\CompanyPermissionController;
 use App\Http\Controllers\CompanyRoleController;
 use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\CompanyTemplateController;
 use App\Http\Controllers\CompanyTypeController;
 use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\CompanyVehicleCategoryController;
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('customers', CompanyCustomerController::class)->except('show', 'destroy');
         Route::resource('vehicles', CompanyVehicleController::class)->except('show', 'destroy');
         Route::resource('vehicle-invoices', CompanyVehicleSaleInvoiceController::class)->parameters(['vehicle-invoices' => 'vehicle_invoice'])->except('destroy');
+        Route::resource('templates', CompanyTemplateController::class)->parameters(['templates' => 'template'])->except('show');
         Route::get('/car-specifications/{type}', [CompanyCarSpecificationController::class, 'index'])->name('car-specifications.index');
         Route::get('/car-specifications/{type}/create', [CompanyCarSpecificationController::class, 'create'])->name('car-specifications.create');
         Route::post('/car-specifications/{type}', [CompanyCarSpecificationController::class, 'store'])->name('car-specifications.store');
@@ -60,6 +62,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [CompanySettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings/profile', [CompanySettingController::class, 'updateProfile'])->name('settings.profile');
         Route::put('/settings/smtp', [CompanySettingController::class, 'updateSmtp'])->name('settings.smtp');
+        Route::post('/settings/smtp/test', [CompanySettingController::class, 'testSmtp'])->name('settings.smtp.test');
+        Route::put('/settings/account', [CompanySettingController::class, 'updateAccount'])->name('settings.account');
+        Route::put('/settings/password', [CompanySettingController::class, 'updatePassword'])->name('settings.password');
         Route::resource('expenses', CompanyExpenseController::class)->only('index', 'create', 'store', 'show', 'edit', 'update', 'destroy');
         Route::get('/expenses-data', [CompanyExpenseController::class, 'data'])->name('expenses.data');
         Route::get('/expense-dropdowns', [CompanyExpenseController::class, 'dropdowns'])->name('expenses.dropdowns');

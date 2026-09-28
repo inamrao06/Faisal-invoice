@@ -6,16 +6,16 @@
 @php
     $isDarkMode = ($settings['theme_mode'] ?? 'light') === 'dark';
     $lightDefaults = [
-        'accent_color'   => '#2563eb',
-        'active_color'   => '#3b82f6',
-        'border_color'   => '#e2e8f0',
-        'sidebar_color'  => '#0f172a',
-        'header_color'   => '#ffffff',
-        'body_bg_color'  => '#f8fafc',
-        'card_bg_color'  => '#ffffff',
-        'input_bg_color' => '#ffffff',
-        'text_color'     => '#1e293b',
-        'muted_color'    => '#64748b',
+        'accent_color'   => '#1D4ED8',
+        'active_color'   => '#0F766E',
+        'border_color'   => '#D8E0EA',
+        'sidebar_color'  => '#111827',
+        'header_color'   => '#FFFFFF',
+        'body_bg_color'  => '#F3F7FB',
+        'card_bg_color'  => '#FFFFFF',
+        'input_bg_color' => '#F8FAFC',
+        'text_color'     => '#18212F',
+        'muted_color'    => '#667085',
     ];
     $darkDefaults = [
         'accent_color'   => '#3b82f6',
@@ -41,17 +41,17 @@
                  'value' => $settings['accent_color'] ?? $defaults['accent_color'],
                  'presets' => $isDarkMode
                      ? ['#3b82f6' => 'Blue', '#60a5fa' => 'Light blue', '#818cf8' => 'Indigo', '#22d3ee' => 'Cyan']
-                     : ['#2563eb' => 'Royal blue', '#0ea5e9' => 'Sky blue', '#6366f1' => 'Indigo', '#0d9488' => 'Teal']],
+                     : ['#1D4ED8' => 'Electric blue', '#0EA5E9' => 'Sky blue', '#6366F1' => 'Indigo', '#0F766E' => 'Teal']],
                 ['name' => 'active_color', 'id' => 'activeColor', 'label' => 'Active color', 'hint' => 'Selected menu items and focused controls',
                  'value' => $settings['active_color'] ?? $defaults['active_color'],
                  'presets' => $isDarkMode
                      ? ['#60a5fa' => 'Light blue', '#3b82f6' => 'Blue', '#a78bfa' => 'Violet', '#2dd4bf' => 'Teal']
-                     : ['#3b82f6' => 'Blue', '#2563eb' => 'Royal blue', '#8b5cf6' => 'Violet', '#06b6d4' => 'Cyan']],
+                     : ['#0F766E' => 'Deep teal', '#1D4ED8' => 'Electric blue', '#7C3AED' => 'Violet', '#0891B2' => 'Cyan']],
                 ['name' => 'border_color', 'id' => 'borderColor', 'label' => 'Border color', 'hint' => 'Cards, tables, inputs and separators',
                  'value' => $settings['border_color'] ?? $defaults['border_color'],
                  'presets' => $isDarkMode
                      ? ['#334155' => 'Slate', '#475569' => 'Gray', '#1e293b' => 'Dark', '#3f3f46' => 'Zinc']
-                     : ['#e2e8f0' => 'Soft gray', '#cbd5e1' => 'Slate', '#e5e7eb' => 'Gray', '#d1d5db' => 'Strong gray']],
+                     : ['#D8E0EA' => 'Soft steel', '#CBD5E1' => 'Slate', '#E5E7EB' => 'Gray', '#BAC7D5' => 'Strong steel']],
             ],
         ],
         [
@@ -63,7 +63,7 @@
                  'value' => $settings['sidebar_color'] ?? $defaults['sidebar_color'],
                  'presets' => $isDarkMode
                      ? ['#020617' => 'Black', '#0f172a' => 'Navy', '#1e293b' => 'Slate', '#18181b' => 'Zinc']
-                     : ['#0f172a' => 'Navy', '#1e293b' => 'Slate', '#1e3a5f' => 'Deep blue', '#334155' => 'Gray']],
+                     : ['#111827' => 'Graphite', '#0F172A' => 'Navy', '#1E3A5F' => 'Deep blue', '#334155' => 'Slate']],
                 ['name' => 'header_color', 'id' => 'headerColor', 'label' => 'Header color', 'hint' => 'Top navigation background',
                  'value' => $settings['header_color'] ?? $defaults['header_color'],
                  'presets' => $isDarkMode
@@ -73,7 +73,7 @@
                  'value' => $settings['body_bg_color'] ?? $defaults['body_bg_color'],
                  'presets' => $isDarkMode
                      ? ['#0f172a' => 'Navy', '#1e293b' => 'Slate', '#020617' => 'Black', '#18181b' => 'Zinc']
-                     : ['#f8fafc' => 'Off-white', '#f1f5f9' => 'Light gray', '#ffffff' => 'White', '#eef2f7' => 'Cool gray']],
+                     : ['#F3F7FB' => 'Cool mist', '#F8FAFC' => 'Off-white', '#F1F5F9' => 'Light gray', '#EEF2F7' => 'Cool gray']],
                 ['name' => 'card_bg_color', 'id' => 'cardBgColor', 'label' => 'Card background', 'hint' => 'Panels, widgets and form cards',
                  'value' => $settings['card_bg_color'] ?? $defaults['card_bg_color'],
                  'presets' => $isDarkMode
@@ -83,7 +83,7 @@
                  'value' => $settings['input_bg_color'] ?? $defaults['input_bg_color'],
                  'presets' => $isDarkMode
                      ? ['#1e293b' => 'Slate', '#334155' => 'Gray', '#0f172a' => 'Navy']
-                     : ['#ffffff' => 'White', '#f8fafc' => 'Off-white', '#f1f5f9' => 'Light gray']],
+                     : ['#F8FAFC' => 'Off-white', '#FFFFFF' => 'White', '#F1F5F9' => 'Light gray']],
             ],
         ],
         [
@@ -95,12 +95,12 @@
                  'value' => $settings['text_color'] ?? $defaults['text_color'],
                  'presets' => $isDarkMode
                      ? ['#f1f5f9' => 'Light', '#e2e8f0' => 'Slate', '#f8fafc' => 'White', '#cbd5e1' => 'Gray']
-                     : ['#1e293b' => 'Slate', '#0f172a' => 'Navy', '#334155' => 'Dark slate', '#475569' => 'Gray']],
+                     : ['#18212F' => 'Ink', '#0F172A' => 'Navy', '#334155' => 'Dark slate', '#475569' => 'Gray']],
                 ['name' => 'muted_color', 'id' => 'mutedColor', 'label' => 'Muted text color', 'hint' => 'Labels, help text and secondary text',
                  'value' => $settings['muted_color'] ?? $defaults['muted_color'],
                  'presets' => $isDarkMode
                      ? ['#94a3b8' => 'Slate', '#64748b' => 'Gray', '#cbd5e1' => 'Light gray', '#475569' => 'Dark gray']
-                     : ['#64748b' => 'Gray', '#94a3b8' => 'Slate', '#6b7280' => 'Dark gray', '#4b5563' => 'Charcoal']],
+                     : ['#667085' => 'Cool gray', '#64748B' => 'Slate', '#6B7280' => 'Dark gray', '#4B5563' => 'Charcoal']],
             ],
         ],
     ];

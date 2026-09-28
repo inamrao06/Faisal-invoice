@@ -5,6 +5,7 @@
     @php
         $company = $expense->company;
         $currency = $company?->currency?->symbol ?? 'PKR';
+        $customTemplate = \App\Models\CompanyDocumentTemplate::defaultFor($expense->branch_id, 'expense');
     @endphp
 
     
@@ -25,6 +26,9 @@
             </div>
         </div>
 
+        @if($customTemplate)
+            {!! $customTemplate->render(\App\Models\CompanyDocumentTemplate::expenseValues($expense)) !!}
+        @else
         <div class="invoice-sheet">
             <div class="invoice-hero">
                 <div class="brand-row">
@@ -39,7 +43,9 @@
                         <h3>{{ $company?->name ?? 'Company' }}</h3>
                         @if($company?->company_email)<p><i class="ti ti-mail me-1"></i>{{ $company->company_email }}</p>@endif
                         @if($company?->phone)<p><i class="ti ti-phone me-1"></i>{{ $company->phone }}</p>@endif
+                        @if($company?->website)<p><i class="ti ti-world me-1"></i>{{ $company->website }}</p>@endif
                         @if($company?->address || $company?->city)<p><i class="ti ti-map-pin me-1"></i>{{ trim(($company->address ?? '') . ' ' . ($company->city ?? '')) }}</p>@endif
+                        @if($company?->tax_number)<p><i class="ti ti-file-certificate me-1"></i>Tax No: {{ $company->tax_number }}</p>@endif
                     </div>
                 </div>
                 <div class="invoice-title">
@@ -111,10 +117,21 @@
                         <div class="total-row"><span>Subtotal</span><strong>{{ $currency }} {{ number_format($expense->subtotal, 2) }}</strong></div>
                         <div class="total-row"><span>Total Tax</span><strong>{{ $currency }} {{ number_format($expense->tax_amount, 2) }}</strong></div>
                         <div class="total-row grand"><span>Grand Total</span><strong>{{ $currency }} {{ number_format($expense->total_amount, 2) }}</strong></div>
+                        <div class="text-center mt-3">
+                            @if($company?->signature_path)
+                                <img src="{{ asset('storage/'.$company->signature_path) }}" alt="Signature" style="max-height:58px;max-width:180px;object-fit:contain">
+                            @endif
+                            @if($company?->stamp_path)
+                                <img src="{{ asset('storage/'.$company->stamp_path) }}" alt="Stamp" style="max-height:64px;max-width:110px;object-fit:contain;margin-left:10px">
+                            @endif
+                            <div class="text-muted fs-12 mt-2">{{ $company?->authorized_person ?: $company?->manager_name ?: 'Authorized Signatory' }}</div>
+                            @if($company?->designation)<div class="text-muted fs-12">{{ $company->designation }}</div>@endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        @endif
     </div>
 @endsection
 

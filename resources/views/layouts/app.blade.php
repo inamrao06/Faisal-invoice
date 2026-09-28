@@ -4,29 +4,29 @@
     $appSettings = \App\Models\Setting::pluck('value', 'key');
     $siteName = $appSettings['site_name'] ?? ($appSettings['business_name'] ?? 'Car Business');
     $themeMode = $appSettings['theme_mode'] ?? 'light';
-    $accent = $appSettings['accent_color'] ?? '#236dc9';
+    $accent = $appSettings['accent_color'] ?? '#1D4ED8';
     $activeColor = $appSettings['active_color'] ?? $accent;
-    $borderColor = $appSettings['border_color'] ?? '#e5e7ef';
-    $bodyBg = $appSettings['body_bg_color'] ?? ($themeMode === 'dark' ? '#252831' : '#f6f7fb');
+    $borderColor = $appSettings['border_color'] ?? '#D8E0EA';
+    $bodyBg = $appSettings['body_bg_color'] ?? ($themeMode === 'dark' ? '#252831' : '#F3F7FB');
     $cardBg = $appSettings['card_bg_color'] ?? ($themeMode === 'dark' ? '#2b2f39' : '#ffffff');
     $textColor = $appSettings['text_color'] ?? ($themeMode === 'dark' ? '#f0f3f6' : '#26313d');
     $mutedColor = $appSettings['muted_color'] ?? ($themeMode === 'dark' ? '#aab3c2' : '#8c98a9');
     $inputBg = $appSettings['input_bg_color'] ?? $cardBg;
-    $sidebarBg = $appSettings['sidebar_color'] ?? '#1e1f27';
-    $headerBg = $appSettings['header_color'] ?? '#ffffff';
+    $sidebarBg = $appSettings['sidebar_color'] ?? '#111827';
+    $headerBg = $appSettings['header_color'] ?? '#FFFFFF';
     $safeColor = static fn($color, $fallback) => preg_match('/^#[0-9a-fA-F]{6}$/', (string) $color)
         ? $color
         : $fallback;
-    $accent = $safeColor($accent, '#236dc9');
+    $accent = $safeColor($accent, '#1D4ED8');
     $activeColor = $safeColor($activeColor, $accent);
-    $borderColor = $safeColor($borderColor, '#e5e7ef');
-    $bodyBg = $safeColor($bodyBg, $themeMode === 'dark' ? '#252831' : '#f6f7fb');
+    $borderColor = $safeColor($borderColor, '#D8E0EA');
+    $bodyBg = $safeColor($bodyBg, $themeMode === 'dark' ? '#252831' : '#F3F7FB');
     $cardBg = $safeColor($cardBg, $themeMode === 'dark' ? '#2b2f39' : '#ffffff');
     $textColor = $safeColor($textColor, $themeMode === 'dark' ? '#f0f3f6' : '#26313d');
     $mutedColor = $safeColor($mutedColor, $themeMode === 'dark' ? '#aab3c2' : '#8c98a9');
     $inputBg = $safeColor($inputBg, $cardBg);
-    $sidebarBg = $safeColor($sidebarBg, '#1e1f27');
-    $headerBg = $safeColor($headerBg, '#ffffff');
+    $sidebarBg = $safeColor($sidebarBg, '#111827');
+    $headerBg = $safeColor($headerBg, '#FFFFFF');
     $logoPath = $appSettings['logo_path'] ?? null;
     $faviconPath = $appSettings['favicon_path'] ?? null;
     $accentRgb = implode(',', array_map('hexdec', str_split(substr($accent, 1), 2)));
@@ -378,6 +378,10 @@
                                         class="side-nav-link {{ request()->routeIs('company.warranty-durations.*') ? 'active' : '' }}"><span
                                             class="menu-icon"><i class="ti ti-calendar-time"></i></span><span
                                             class="menu-text">Warranty Durations</span></a></li>
+                                <li class="side-nav-item"><a href="{{ route('company.templates.index') }}"
+                                        class="side-nav-link {{ request()->routeIs('company.templates.*') ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-template"></i></span><span
+                                            class="menu-text">Templates</span></a></li>
                                 <li class="side-nav-item"><a href="{{ route('company.settings.edit') }}"
                                         class="side-nav-link {{ request()->routeIs('company.settings.*') ? 'active' : '' }}"><span
                                             class="menu-icon"><i class="ti ti-settings-cog"></i></span><span

@@ -6,6 +6,7 @@
 @endpush
 
 @section('content')
+@php $accountUser = auth()->user(); @endphp
 @if(session('success'))
 <div class="flash success"><i class="ti ti-circle-check-filled"></i>{{ session('success') }}</div>
 @endif
@@ -18,6 +19,8 @@
         <div class="tab-nav-head"><h4>Settings</h4></div>
         <a href="#tab-company" class="tab-link active" data-tab="tab-company"><i class="ti ti-building"></i> Company Details</a>
         <a href="#tab-smtp" class="tab-link" data-tab="tab-smtp"><i class="ti ti-mail-cog"></i> Mail / SMTP</a>
+        <a href="#tab-profile" class="tab-link" data-tab="tab-profile"><i class="ti ti-user-circle"></i> Profile</a>
+        <a href="#tab-password" class="tab-link" data-tab="tab-password"><i class="ti ti-lock"></i> Password</a>
     </div>
 
     <div>
@@ -140,6 +143,9 @@
         </div>
 
         <div id="tab-smtp" class="tab-panel">
+            @if(session('smtp_test_success'))
+                <div class="alert alert-success"><i class="ti ti-circle-check me-1"></i>{{ session('smtp_test_success') }}</div>
+            @endif
             <form method="POST" action="{{ route('company.settings.smtp') }}">
                 @csrf
                 @method('PUT')
@@ -201,6 +207,103 @@
                 <div class="form-footer">
                     <button class="btn btn-primary px-4" type="submit"><i class="ti ti-check me-1"></i>Save SMTP Settings</button>
                     <span style="font-size:12px;color:#94a3b8">Password remains unchanged when left blank</span>
+                </div>
+            </form>
+
+            <form method="POST" action="{{ route('company.settings.smtp.test') }}" class="mt-3">
+                @csrf
+                <div class="s-card">
+                    <div class="s-card-head">
+                        <div class="card-icon" style="background:#ecfeff;color:#0891b2"><i class="ti ti-send"></i></div>
+                        <div><h3>Test Company SMTP</h3><p>Send a test email using this company's saved SMTP credentials</p></div>
+                    </div>
+                    <div class="s-card-body">
+                        <div class="fg">
+                            <div>
+                                <label>Send Test To</label>
+                                <input class="form-control @error('test_email') is-invalid @enderror" type="email" name="test_email" value="{{ old('test_email', $accountUser->email) }}" placeholder="name@example.com" required>
+                                @error('test_email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="d-flex align-items-end">
+                                <button class="btn btn-primary px-4" type="submit"><i class="ti ti-send me-1"></i>Send Test Email</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="tab-profile" class="tab-panel">
+            <form method="POST" action="{{ route('company.settings.account') }}">
+                @csrf
+                @method('PUT')
+                <div class="s-card">
+                    <div class="s-card-head">
+                        <div class="card-icon" style="background:#eff6ff;color:#2563eb"><i class="ti ti-user-circle"></i></div>
+                        <div><h3>My Profile</h3><p>Your sign-in identity and contact details</p></div>
+                    </div>
+                    <div class="s-card-body">
+                        <div class="fg">
+                            <div>
+                                <label>Name <span class="text-danger">*</span></label>
+                                <input class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $accountUser->name) }}" required>
+                                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div>
+                                <label>Email <span class="text-danger">*</span></label>
+                                <input class="form-control @error('email') is-invalid @enderror" type="email" name="email" value="{{ old('email', $accountUser->email) }}" required>
+                                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div>
+                                <label>Phone</label>
+                                <input class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone', $accountUser->phone) }}">
+                                @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div>
+                                <label>Access</label>
+                                <input class="form-control" value="{{ $accountUser->accessLabel() }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button class="btn btn-primary px-4" type="submit"><i class="ti ti-check me-1"></i>Save Profile</button>
+                    <span style="font-size:12px;color:#94a3b8">Updates only your user account</span>
+                </div>
+            </form>
+        </div>
+
+        <div id="tab-password" class="tab-panel">
+            <form method="POST" action="{{ route('company.settings.password') }}">
+                @csrf
+                @method('PUT')
+                <div class="s-card">
+                    <div class="s-card-head">
+                        <div class="card-icon" style="background:#fef2f2;color:#dc2626"><i class="ti ti-lock"></i></div>
+                        <div><h3>Change Password</h3><p>Use a strong password for your own login</p></div>
+                    </div>
+                    <div class="s-card-body">
+                        <div class="fg">
+                            <div class="span-2">
+                                <label>Current Password <span class="text-danger">*</span></label>
+                                <input class="form-control @error('current_password') is-invalid @enderror" type="password" name="current_password" autocomplete="current-password" required>
+                                @error('current_password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div>
+                                <label>New Password <span class="text-danger">*</span></label>
+                                <input class="form-control @error('password') is-invalid @enderror" type="password" name="password" autocomplete="new-password" required>
+                                @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div>
+                                <label>Confirm New Password <span class="text-danger">*</span></label>
+                                <input class="form-control" type="password" name="password_confirmation" autocomplete="new-password" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button class="btn btn-primary px-4" type="submit"><i class="ti ti-key me-1"></i>Change Password</button>
+                    <span style="font-size:12px;color:#94a3b8">You will keep your current session after changing it</span>
                 </div>
             </form>
         </div>

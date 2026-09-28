@@ -68,6 +68,21 @@
                         @enderror
                     </div>
                     <div>
+                        <label for="vehicle_id">Vehicle</label>
+                        <select id="vehicle_id" class="form-select @error('vehicle_id') is-invalid @enderror"
+                            data-toggle="select2" data-placeholder="Select vehicle..." name="vehicle_id">
+                            <option value="">No vehicle</option>
+                            @foreach ($vehicles as $vehicle)
+                                <option value="{{ $vehicle->id }}" @selected((int) old('vehicle_id', $expense->vehicle_id) === $vehicle->id)>
+                                    {{ $vehicle->make_model }} {{ $vehicle->registration_no ? ' - '.$vehicle->registration_no : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('vehicle_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div>
                         <label for="attachment">Attachment</label>
                         <input id="attachment" class="form-control @error('attachment') is-invalid @enderror" type="file"
                             name="attachment" accept=".jpg,.jpeg,.png,.webp,.pdf">

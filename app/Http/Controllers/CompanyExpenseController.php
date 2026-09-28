@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Expense;
 use App\Models\ExpenseHead;
 use App\Models\PaymentMethod;
+use App\Models\Vehicle;
 use App\Models\WarrantyProvider;
 use App\Models\WarrantyDuration;
 use Illuminate\Http\Request;
@@ -22,7 +23,8 @@ class CompanyExpenseController extends Controller
 
     public function create()
     {
-        return view('company.expenses.form', ['expense' => new Expense(['expense_date' => now(), 'status' => 'submitted']), 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'warrantyProviders' => $this->warrantyProviders(), 'warrantyDurations' => $this->warrantyDurations()]);
+        $vehicleId = request('vehicle_id');
+        return view('company.expenses.form', ['expense' => new Expense(['expense_date' => now(), 'status' => 'submitted', 'vehicle_id' => $vehicleId]), 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'vehicles' => $this->vehicles(), 'warrantyProviders' => $this->warrantyProviders(), 'warrantyDurations' => $this->warrantyDurations()]);
     }
 
     public function store(Request $request)
@@ -37,7 +39,7 @@ class CompanyExpenseController extends Controller
         $this->authorizeExpense($expense);
         $expense->load('items');
 
-        return view('company.expenses.form', ['expense' => $expense, 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'warrantyProviders' => $this->warrantyProviders(), 'warrantyDurations' => $this->warrantyDurations()]);
+        return view('company.expenses.form', ['expense' => $expense, 'heads' => $this->heads(), 'paymentMethods' => $this->paymentMethods(), 'vehicles' => $this->vehicles(), 'warrantyProviders' => $this->warrantyProviders(), 'warrantyDurations' => $this->warrantyDurations()]);
     }
 
     public function update(Request $request, Expense $expense)
@@ -66,7 +68,7 @@ class CompanyExpenseController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate(['expense_date' => ['required', 'date'], 'expense_head_id' => ['required', Rule::in($this->heads()->pluck('id')->all())], 'payment_method' => ['required', Rule::in($this->paymentMethods()->pluck('code')->all())], 'warranty_provider_id' => ['nullable', Rule::in($this->warrantyProviders()->pluck('id')->all())], 'warranty_duration_months' => ['nullable', 'integer', 'min:0', 'max:120'], 'remarks' => ['nullable', 'max:2000'], 'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'], 'items' => ['required', 'array', 'min:1'], 'items.*.description' => ['required', 'max:500'], 'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'], 'items.*.tax_percent' => ['nullable', 'numeric', 'min:0', 'max:100']]);
+        return $request->validate(['expense_date' => ['required', 'date'], 'vehicle_id' => ['nullable', Rule::in($this->vehicles()->pluck('id')->all())], 'expense_head_id' => ['required', Rule::in($this->heads()->pluck('id')->all())], 'payment_method' => ['required', Rule::in($this->paymentMethods()->pluck('code')->all())], 'warranty_provider_id' => ['nullable', Rule::in($this->warrantyProviders()->pluck('id')->all())], 'warranty_duration_months' => ['nullable', 'integer', 'min:0', 'max:120'], 'remarks' => ['nullable', 'max:2000'], 'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'], 'items' => ['required', 'array', 'min:1'], 'items.*.description' => ['required', 'max:500'], 'items.*.quantity' => ['required', 'numeric', 'gt:0'], 'items.*.rate' => ['required', 'numeric', 'min:0'], 'items.*.tax_percent' => ['nullable', 'numeric', 'min:0', 'max:100']]);
     }
 
     private function save(Request $request, array $data, ?Expense $expense = null): Expense
@@ -95,7 +97,7 @@ class CompanyExpenseController extends Controller
             $expense = new Expense(['invoice_no' => sprintf('%s-EXP-%06d', $branch->invoice_prefix ?: $branch->code, $seq), 'branch_id' => $branch->id, 'created_by' => auth()->id()]);
         }
         $provider = filled($data['warranty_provider_id'] ?? null) ? WarrantyProvider::find($data['warranty_provider_id']) : null;
-        $expense->fill(['expense_head_id' => $data['expense_head_id'], 'expense_date' => $data['expense_date'], 'payment_method' => $data['payment_method'], 'warranty_provider_id' => $provider?->id, 'warranty_provider_name' => $provider?->name, 'warranty_duration_months' => $data['warranty_duration_months'] ?? null, 'remarks' => $data['remarks'] ?? null, 'attachment_path' => $attachmentPath, 'subtotal' => $subtotal, 'tax_amount' => $totalTax, 'total_amount' => round($subtotal + $totalTax, 2), 'status' => $expense->status ?: 'submitted']);
+        $expense->fill(['vehicle_id' => $data['vehicle_id'] ?? null, 'expense_head_id' => $data['expense_head_id'], 'expense_date' => $data['expense_date'], 'payment_method' => $data['payment_method'], 'warranty_provider_id' => $provider?->id, 'warranty_provider_name' => $provider?->name, 'warranty_duration_months' => $data['warranty_duration_months'] ?? null, 'remarks' => $data['remarks'] ?? null, 'attachment_path' => $attachmentPath, 'subtotal' => $subtotal, 'tax_amount' => $totalTax, 'total_amount' => round($subtotal + $totalTax, 2), 'status' => $expense->status ?: 'submitted']);
         $expense->save();
         $expense->items()->delete();
         $expense->items()->createMany($items);
@@ -115,6 +117,11 @@ class CompanyExpenseController extends Controller
         $company = PaymentMethod::where('branch_id', $this->companyId())->where('is_active', true)->orderBy('name')->get();
 
         return $company->isNotEmpty() ? $company : PaymentMethod::whereNull('branch_id')->where('is_active', true)->orderBy('name')->get();
+    }
+
+    private function vehicles()
+    {
+        return Vehicle::where('branch_id', $this->companyId())->orderBy('make_model')->get();
     }
 
     private function warrantyProviders()

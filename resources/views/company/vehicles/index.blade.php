@@ -74,6 +74,9 @@
                                 </td>
                                 <td class="text-end fw-semibold">{{ number_format($vehicle->sale_price,2) }}</td>
                                 <td class="text-center">
+                                    <a class="btn btn-soft-success btn-sm" href="{{ route('company.expenses.create', ['vehicle_id' => $vehicle->id]) }}" title="Add Expense">
+                                        <i class="ti ti-receipt-2"></i>
+                                    </a>
                                     <a class="btn btn-soft-primary btn-sm" href="{{ route('company.vehicles.edit',$vehicle) }}" title="Edit">
                                         <i class="ti ti-pencil"></i>
                                     </a>
