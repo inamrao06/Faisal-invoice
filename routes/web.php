@@ -35,6 +35,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 });
 
+Route::get('/company/vehicle-invoices/{vehicle_invoice}/print', [CompanyVehicleSaleInvoiceController::class, 'publicPrint'])->name('company.vehicle-invoices.print');
 Route::get('/public/vehicle-invoices/{vehicle_invoice}/print', [CompanyVehicleSaleInvoiceController::class, 'publicPrint'])->name('public.vehicle-invoices.print');
 
 Route::middleware('auth')->group(function () {
@@ -56,7 +57,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('customers', CompanyCustomerController::class)->except('show', 'destroy');
         Route::resource('vehicles', CompanyVehicleController::class)->except('show', 'destroy');
         Route::resource('vehicle-invoices', CompanyVehicleSaleInvoiceController::class)->parameters(['vehicle-invoices' => 'vehicle_invoice'])->except('destroy');
-        Route::get('/vehicle-invoices/{vehicle_invoice}/print', [CompanyVehicleSaleInvoiceController::class, 'print'])->name('vehicle-invoices.print');
         Route::post('/vehicle-invoices/{vehicle_invoice}/email', [CompanyVehicleSaleInvoiceController::class, 'email'])->name('vehicle-invoices.email');
         Route::resource('templates', CompanyTemplateController::class)->parameters(['templates' => 'template'])->except('show');
         Route::get('/car-specifications/{type}', [CompanyCarSpecificationController::class, 'index'])->name('car-specifications.index');

@@ -1,8 +1,34 @@
 @php
     $currency = $invoice->company?->currency?->symbol ?? 'PKR';
+    $vehicle = $invoice->vehicle;
+    $companyName = $invoice->company?->name ?? 'our company';
     $modalId = 'invoiceEmailModal-' . $invoice->id;
-    $defaultSubject = 'Vehicle Invoice ' . $invoice->invoice_no . ' from ' . ($invoice->company?->name ?? 'our company');
-    $defaultMessage = "Dear " . ($invoice->customer?->name ?? 'Customer') . ",\n\nPlease find your vehicle invoice " . $invoice->invoice_no . " dated " . $invoice->invoice_date?->format('d M Y') . " below.\n\nThank you for your business.";
+    $defaultSubject = 'Vehicle Invoice ' . $invoice->invoice_no . ' from ' . $companyName;
+    $paymentLines = $invoice->payments->map(function ($payment) use ($currency) {
+        return '- ' . optional($payment->payment_date)->format('d M Y') . ' | '
+            . str($payment->payment_type ?? 'Payment')->replace('_', ' ')->title() . ' | '
+            . ($payment->method ?? 'Payment') . ' | '
+            . $currency . ' ' . number_format((float) $payment->amount, 2);
+    })->implode("\n");
+    $defaultMessage = "Dear " . ($invoice->customer?->name ?? 'Customer') . ",\n\n"
+        . "Please find your vehicle invoice " . $invoice->invoice_no . " dated " . $invoice->invoice_date?->format('d M Y') . " below.\n\n"
+        . "Car details:\n"
+        . "Vehicle: " . ($vehicle?->make_model ?? '-') . "\n"
+        . "Registration: " . ($vehicle?->registration_no ?? '-') . "\n"
+        . "VIN / Chassis No: " . ($vehicle?->vin ?? '-') . "\n"
+        . "Year: " . ($vehicle?->year ?? '-') . "\n"
+        . "Mileage: " . ($vehicle?->mileage !== null ? number_format((float) $vehicle->mileage) : '-') . "\n\n"
+        . "Payment details:\n"
+        . "Total: " . $currency . ' ' . number_format((float) $invoice->total_sale_price, 2) . "\n"
+        . "Paid: " . $currency . ' ' . number_format((float) $invoice->total_paid, 2) . "\n"
+        . "Balance: " . $currency . ' ' . number_format((float) $invoice->balance_amount, 2) . "\n"
+        . ($paymentLines ? "\nPayments received:\n" . $paymentLines . "\n" : "\n")
+        . "\nGood luck with your car! We hope you enjoy driving it.\n\n"
+        . "Kind regards,\n"
+        . "Team " . $companyName . "\n"
+        . "cars@carhive.uk | www.carhive.uk\n"
+        . "07399 517094 | 01700 800521\n"
+        . "35 Fengate, Peterborough, PE1 5BA";
 @endphp
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

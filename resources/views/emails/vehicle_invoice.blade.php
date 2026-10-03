@@ -1,5 +1,8 @@
 @php
     $company = $invoice->company;
+    $vehicle = $invoice->vehicle;
+    $customer = $invoice->customer;
+    $publicUrl = route('company.vehicle-invoices.print', $invoice);
     $currency = $company?->currency?->symbol ?? 'PKR';
     $label = 'font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;';
     $cell = 'padding:10px 14px;font-size:13px;';
@@ -42,26 +45,38 @@
     @endif
 
     <tr>
+        <td style="padding:18px 28px 0;">
+            <div style="padding:14px 16px;border:1px solid #bfdbfe;border-radius:8px;background:#eff6ff;">
+                <div style="{{ $label }}margin-bottom:5px;color:#1D4ED8;">Public Invoice Link</div>
+                <div style="font-size:13px;line-height:1.6;color:#334155;">
+                    Open, print, or save the latest invoice copy here:<br>
+                    <a href="{{ $publicUrl }}" style="color:#1D4ED8;font-weight:800;text-decoration:none;">{{ $publicUrl }}</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
         <td style="padding:20px 28px 0;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
                 <td style="{{ $box }}vertical-align:top;">
                     <div style="{{ $label }}margin-bottom:5px;">Bill To</div>
-                    <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ $invoice->customer?->name }}</div>
+                    <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ $customer?->name }}</div>
                     <div style="font-size:12px;color:#64748b;line-height:1.6;">
-                        {{ collect([$invoice->customer?->phone, $invoice->customer?->email])->filter()->implode('<br>') }}<br>
-                        {{ trim(($invoice->customer?->address ?? '').' '.($invoice->customer?->postcode ?? '')) }}
+                        {{ collect([$customer?->phone, $customer?->email])->filter()->implode('<br>') }}<br>
+                        {{ trim(($customer?->address ?? '').' '.($customer?->postcode ?? '')) }}
                     </div>
                 </td>
                 <td width="12"></td>
                 <td style="{{ $box }}vertical-align:top;">
                     <div style="{{ $label }}margin-bottom:5px;">Vehicle</div>
-                    <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ $invoice->vehicle?->make_model }}</div>
+                    <div style="font-size:14px;font-weight:700;color:#0f172a;">{{ $vehicle?->make_model }}</div>
                     <div style="font-size:12px;color:#64748b;line-height:1.6;">
-                        Reg: {{ $invoice->vehicle?->registration_no ?: '—' }}<br>
-                        VIN: {{ $invoice->vehicle?->vin ?: '—' }}<br>
-                        @if($invoice->vehicle?->year)Year: {{ $invoice->vehicle->year }} · @endif
-                        @if($invoice->vehicle?->mileage)Mileage: {{ number_format($invoice->vehicle->mileage) }}@endif<br>
-                        Type: {{ $invoice->category?->name ?? '—' }}
+                        Reg: {{ $vehicle?->registration_no ?: '-' }}<br>
+                        VIN: {{ $vehicle?->vin ?: '-' }}<br>
+                        @if($vehicle?->year)Year: {{ $vehicle->year }} | @endif
+                        @if($vehicle?->mileage)Mileage: {{ number_format($vehicle->mileage) }}@endif<br>
+                        Type: {{ $invoice->category?->name ?? $vehicle?->category?->name ?? '-' }}
                     </div>
                 </td>
             </tr></table>
@@ -79,6 +94,28 @@
                     </td>
                 @endforeach
             </tr></table>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding:18px 28px 0;">
+            <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64748b;margin-bottom:8px;">Car Details</div>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:8px;">
+                @foreach([
+                    'Make / Model' => $vehicle?->make_model,
+                    'Registration No' => $vehicle?->registration_no,
+                    'VIN / Chassis No' => $vehicle?->vin,
+                    'Year' => $vehicle?->year,
+                    'Mileage' => $vehicle?->mileage !== null ? number_format((float) $vehicle->mileage) : null,
+                    'Keys' => $vehicle?->keys_count,
+                    'Category' => $invoice->category?->name ?? $vehicle?->category?->name,
+                ] as $key => $value)
+                    <tr>
+                        <td style="padding:9px 14px;font-size:12px;color:#64748b;border-top:{{ $loop->first ? '0' : '1px solid #f1f5f9' }};">{{ $key }}</td>
+                        <td align="right" style="padding:9px 14px;font-size:12px;font-weight:700;color:#0f172a;border-top:{{ $loop->first ? '0' : '1px solid #f1f5f9' }};">{{ filled($value) ? $value : '-' }}</td>
+                    </tr>
+                @endforeach
+            </table>
         </td>
     </tr>
 
@@ -164,8 +201,20 @@
     @endif
 
     <tr>
-        <td style="padding:24px 28px;border-top:1px solid #e2e8f0;background:#f8fafc;font-size:11px;color:#94a3b8;line-height:1.6;">
-            This invoice was sent by {{ $company?->name ?? 'our company' }}.@if($company?->phone) For questions call {{ $company->phone }}.@endif @if($company?->website){{ $company->website }}@endif
+        <td style="padding:24px 28px;border-top:1px solid #e2e8f0;background:#f8fafc;font-size:12px;color:#64748b;line-height:1.7;">
+            <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:8px;">Good luck with your car! We hope you enjoy driving it.</div>
+            <div>Kind regards,<br><strong style="color:#0f172a;">Team {{ $company?->name ?? 'our company' }}</strong></div>
+            <div style="margin-top:8px;">
+                Email: <a href="mailto:cars@carhive.uk" style="color:#1D4ED8;text-decoration:none;font-weight:700;">cars@carhive.uk</a>
+                |
+                Website: <a href="https://www.carhive.uk" style="color:#1D4ED8;text-decoration:none;font-weight:700;">www.carhive.uk</a>
+            </div>
+            <div>
+                Mobile: 07399 517094 | Phone: 01700 800521
+            </div>
+            <div>
+                35 Fengate, Peterborough, PE1 5BA
+            </div>
         </td>
     </tr>
 </table>

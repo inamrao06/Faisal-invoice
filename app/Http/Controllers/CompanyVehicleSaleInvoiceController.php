@@ -178,7 +178,7 @@ class CompanyVehicleSaleInvoiceController extends Controller
 
         return view('company.vehicle_invoices.print', [
             'invoice' => $vehicle_invoice,
-            'publicUrl' => route('public.vehicle-invoices.print', $vehicle_invoice),
+            'publicUrl' => route('company.vehicle-invoices.print', $vehicle_invoice),
             'backUrl' => route('company.vehicle-invoices.show', $vehicle_invoice),
         ]);
     }
@@ -189,7 +189,7 @@ class CompanyVehicleSaleInvoiceController extends Controller
 
         return view('company.vehicle_invoices.print', [
             'invoice' => $vehicle_invoice,
-            'publicUrl' => route('public.vehicle-invoices.print', $vehicle_invoice),
+            'publicUrl' => route('company.vehicle-invoices.print', $vehicle_invoice),
             'backUrl' => null,
         ]);
     }
@@ -209,7 +209,7 @@ class CompanyVehicleSaleInvoiceController extends Controller
         $vehicle_invoice->load([
             'customer',
             'sellerCustomer',
-            'vehicle',
+            'vehicle.category',
             'category',
             'warrantyProvider',
             'payments',
@@ -252,6 +252,7 @@ class CompanyVehicleSaleInvoiceController extends Controller
 
                     $mail
                         ->to($data['to'])
+                        ->cc('carhives@gmail.com')
                         ->subject($data['subject']);
 
                     if (filled($company?->smtp_from_address)) {
