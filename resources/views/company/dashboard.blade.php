@@ -8,38 +8,45 @@
     <div class="company-dashboard modern-dashboard">
         <section class="modern-hero company-hero">
             <div class="company-logo-box">
-                        @if ($company->logo_path)
-                            <img src="{{ asset('storage/' . $company->logo_path) }}" alt="{{ $company->name }}">
-                        @else
-                            <span
-                                class="avatar-title rounded bg-primary-subtle text-primary fs-28 fw-bold">{{ strtoupper(substr($company->name, 0, 1)) }}</span>
-                        @endif
+                @if ($company->logo_path)
+                    <img src="{{ asset('storage/' . $company->logo_path) }}" alt="{{ $company->name }}">
+                @else
+                    <span
+                        class="avatar-title rounded bg-primary-subtle text-primary fs-28 fw-bold">{{ strtoupper(substr($company->name, 0, 1)) }}</span>
+                @endif
             </div>
             <div class="modern-hero-main flex-grow-1 min-w-0">
                 <span class="modern-kicker">Company Workspace</span>
-                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                            <h3 class="mb-0">{{ $company->name }}</h3><span
-                                class="badge text-bg-primary">{{ str($company->type)->replace('_', ' ')->title() }}</span>
-                        </div>
-                        <div class="d-flex flex-wrap gap-3 text-muted">
-                            @if ($company->company_email)
-                                <span><i class="ti ti-mail me-1"></i>{{ $company->company_email }}</span>
-                            @endif
-                            @if ($company->phone)
-                                <span><i class="ti ti-phone me-1"></i>{{ $company->phone }}</span>
-                            @endif
-                            @if ($company->city)
-                                <span><i class="ti ti-map-pin me-1"></i>{{ $company->city }}</span>
-                            @endif
-                        </div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                    <h3 class="mb-0">{{ $company->name }}</h3><span
+                        class="badge text-bg-primary">{{ str($company->type)->replace('_', ' ')->title() }}</span>
+                </div>
+                <div class="company-hero-meta">
+                    @if ($company->company_email)
+                        <span><i class="ti ti-mail"></i>{{ $company->company_email }}</span>
+                    @endif
+                    @if ($company->phone)
+                        <span><i class="ti ti-phone"></i>{{ $company->phone }}</span>
+                    @endif
+                    @if ($company->city)
+                        <span><i class="ti ti-map-pin"></i>{{ $company->city }}</span>
+                    @endif
+                </div>
+                <div class="company-hero-strip">
+                    <span><i class="ti ti-building-store"></i>{{ $company->code }}</span>
+                    <span><i class="ti ti-coins"></i>{{ $company->currency?->code ?? 'Currency' }}</span>
+                    <span><i class="ti ti-calendar-stats"></i>{{ now()->format('F Y') }}</span>
+                </div>
             </div>
             <div class="modern-hero-actions">
-                        <a class="btn btn-primary" href="{{ route('company.expenses.create') }}"><i
-                                class="ti ti-plus me-1"></i>New Expense</a>
-                        @can('manage-users')
-                            <a class="btn btn-light" href="{{ route('company.users.create') }}"><i
-                                    class="ti ti-user-plus me-1"></i>Add User</a>
-                        @endcan
+                <a class="btn btn-primary" href="{{ route('company.expenses.create') }}"><i
+                        class="ti ti-plus me-1"></i>New Expense</a>
+                <a class="btn btn-light" href="{{ route('company.vehicle-invoices.create') }}"><i
+                        class="ti ti-file-invoice me-1"></i>New Invoice</a>
+                @can('manage-users')
+                    <a class="btn btn-light" href="{{ route('company.users.create') }}"><i
+                            class="ti ti-user-plus me-1"></i>Add User</a>
+                @endcan
             </div>
         </section>
 
@@ -60,20 +67,56 @@
             @foreach ($cards as $card)
                 @php
                     $tone =
-                        ['primary' => 'primary', 'success' => 'success', 'warning' => 'warning', 'danger' => 'danger'][
+                        ['primary' => 'primary', 'success' => 'success', 'warning' => 'warning', 'danger' => 'danger', 'info' => 'info', 'secondary' => 'secondary'][
                             $card['tone']
                         ] ?? 'primary';
                     $icon =
-                        ['people' => 'users', 'tags' => 'tags', 'person-badge' => 'user-shield', 'cash-coin' => 'cash'][
+                        ['people' => 'users', 'tags' => 'tags', 'person-badge' => 'user-shield', 'cash-coin' => 'cash', 'invoice' => 'file-invoice', 'salary' => 'wallet'][
                             $card['icon']
                         ] ?? 'chart-bar';
                 @endphp
                 <div class="modern-stat">
                     <span class="modern-stat-icon text-{{ $tone }}"><i class="ti ti-{{ $icon }}"></i></span>
                     <span>{{ $card['label'] }}</span>
-                    <strong>{{ !empty($card['money']) ? number_format($card['value'], 2) : number_format($card['value']) }}</strong>
+                    <strong>{{ !empty($card['money']) ? ($company->currency?->symbol ?? 'PKR') . ' ' . number_format($card['value'], 2) : number_format($card['value']) }}</strong>
                 </div>
             @endforeach
+        </div>
+
+        <div class="modern-panel company-chart-panel">
+            <div class="modern-panel-head">
+                <div>
+                    <h3>Finance Charts</h3>
+                    <p>Separate monthly graphs for expenses, invoices and salaries</p>
+                </div>
+            </div>
+            <div class="company-chart-sections">
+                @foreach ([
+                    'expenses' => ['label' => 'Expenses', 'bar' => 'chart-bar-expenses'],
+                    'invoices' => ['label' => 'Invoices', 'bar' => 'chart-bar-invoices'],
+                    'salaries' => ['label' => 'Salaries', 'bar' => 'chart-bar-salaries'],
+                ] as $metric => $chart)
+                    @php
+                        $metricMax = max(1, $financeChart->max($metric));
+                    @endphp
+                    <div class="company-mini-chart">
+                        <div class="company-mini-chart-head">
+                            <strong><i class="ti ti-chart-bar"></i>{{ $chart['label'] }}</strong>
+                            <span>{{ $company->currency?->symbol ?? 'PKR' }} {{ number_format($financeChart->sum($metric), 2) }}</span>
+                        </div>
+                        <div class="company-mini-chart-body">
+                            @foreach ($financeChart as $month)
+                                <div class="company-mini-chart-month">
+                                    <span class="company-chart-bar {{ $chart['bar'] }}"
+                                        style="height: {{ max(4, round(($month[$metric] / $metricMax) * 100)) }}%"
+                                        title="{{ $chart['label'] }}: {{ $company->currency?->symbol ?? 'PKR' }} {{ number_format($month[$metric], 2) }}"></span>
+                                    <small>{{ $month['label'] }}</small>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
 
         <div class="row g-3">

@@ -155,6 +155,11 @@
             <button type="button" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#invoiceEmailModal-{{ $invoice->id }}"><i class="ti ti-mail me-1"></i>Email</button>
             <a class="btn btn-light btn-sm" href="{{ route('company.vehicle-invoices.index') }}">Back</a>
             <a class="btn btn-primary btn-sm" href="{{ route('company.vehicle-invoices.edit',$invoice) }}"><i class="ti ti-pencil me-1"></i>Edit</a>
+            <form method="POST" action="{{ route('company.vehicle-invoices.destroy', $invoice) }}" onsubmit="return confirm('Delete invoice {{ $invoice->invoice_no }}? This action cannot be undone from this screen.');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm"><i class="ti ti-trash me-1"></i>Delete</button>
+            </form>
         </div>
     </div>
 

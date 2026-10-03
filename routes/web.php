@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('vehicle-categories', CompanyVehicleCategoryController::class)->parameters(['vehicle-categories' => 'vehicle_category'])->except('show', 'destroy');
         Route::resource('customers', CompanyCustomerController::class)->except('show', 'destroy');
         Route::resource('vehicles', CompanyVehicleController::class)->except('show', 'destroy');
-        Route::resource('vehicle-invoices', CompanyVehicleSaleInvoiceController::class)->parameters(['vehicle-invoices' => 'vehicle_invoice'])->except('destroy');
+        Route::resource('vehicle-invoices', CompanyVehicleSaleInvoiceController::class)->parameters(['vehicle-invoices' => 'vehicle_invoice']);
         Route::post('/vehicle-invoices/{vehicle_invoice}/email', [CompanyVehicleSaleInvoiceController::class, 'email'])->name('vehicle-invoices.email');
         Route::resource('templates', CompanyTemplateController::class)->parameters(['templates' => 'template'])->except('show');
         Route::get('/car-specifications/{type}', [CompanyCarSpecificationController::class, 'index'])->name('car-specifications.index');

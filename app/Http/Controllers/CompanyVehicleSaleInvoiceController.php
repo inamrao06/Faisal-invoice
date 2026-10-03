@@ -164,6 +164,19 @@ class CompanyVehicleSaleInvoiceController extends Controller
             );
     }
 
+    public function destroy(VehicleSaleInvoice $vehicle_invoice)
+    {
+        $this->authorizeInvoice($vehicle_invoice);
+
+        $invoiceNo = $vehicle_invoice->invoice_no;
+
+        $vehicle_invoice->delete();
+
+        return redirect()
+            ->route('company.vehicle-invoices.index')
+            ->with('success', 'Invoice ' . $invoiceNo . ' deleted successfully.');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Print Invoice

@@ -1,7 +1,7 @@
 @php
     $currency = $invoice->company?->currency?->symbol ?? 'PKR';
     $vehicle = $invoice->vehicle;
-    $companyName = $invoice->company?->name ?? 'our company';
+    $companyName = $invoice->company?->smtp_from_name ?: ($invoice->company?->name ?? 'our company');
     $modalId = 'invoiceEmailModal-' . $invoice->id;
     $defaultSubject = 'Vehicle Invoice ' . $invoice->invoice_no . ' from ' . $companyName;
     $paymentLines = $invoice->payments->map(function ($payment) use ($currency) {

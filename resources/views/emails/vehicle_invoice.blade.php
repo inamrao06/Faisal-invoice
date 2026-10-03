@@ -2,6 +2,7 @@
     $company = $invoice->company;
     $vehicle = $invoice->vehicle;
     $customer = $invoice->customer;
+    $companyName = $company?->smtp_from_name ?: ($company?->name ?? 'Company');
     $publicUrl = route('company.vehicle-invoices.print', $invoice);
     $currency = $company?->currency?->symbol ?? 'PKR';
     $label = 'font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;';
@@ -24,7 +25,7 @@
                     @if($company?->logo_path)
                         <img src="{{ asset('storage/'.$company->logo_path) }}" alt="{{ $company->name }}" height="46" style="height:46px;max-width:170px;object-fit:contain;display:block;margin-bottom:10px;">
                     @endif
-                    <div style="font-size:19px;font-weight:800;color:#0f172a;">{{ $company?->name ?? 'Company' }}</div>
+                    <div style="font-size:19px;font-weight:800;color:#0f172a;">{{ $companyName }}</div>
                     <div style="font-size:12px;color:#64748b;margin-top:4px;line-height:1.6;">
                         {{ collect([$company?->company_email, $company?->phone])->filter()->implode(' · ') }}<br>
                         {{ trim(($company?->address ?? '').' '.($company?->city ?? '')) }}
@@ -203,7 +204,7 @@
     <tr>
         <td style="padding:24px 28px;border-top:1px solid #e2e8f0;background:#f8fafc;font-size:12px;color:#64748b;line-height:1.7;">
             <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:8px;">Good luck with your car! We hope you enjoy driving it.</div>
-            <div>Kind regards,<br><strong style="color:#0f172a;">Team {{ $company?->name ?? 'our company' }}</strong></div>
+            <div>Kind regards,<br><strong style="color:#0f172a;">Team {{ $companyName }}</strong></div>
             <div style="margin-top:8px;">
                 Email: <a href="mailto:cars@carhive.uk" style="color:#1D4ED8;text-decoration:none;font-weight:700;">cars@carhive.uk</a>
                 |

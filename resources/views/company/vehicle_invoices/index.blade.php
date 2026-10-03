@@ -74,6 +74,13 @@
                                         <button type="button" class="btn btn-soft-success btn-sm" data-bs-toggle="modal" data-bs-target="#invoiceEmailModal-{{ $invoice->id }}" title="Email to customer">
                                             <i class="ti ti-mail"></i>
                                         </button>
+                                        <form method="POST" action="{{ route('company.vehicle-invoices.destroy', $invoice) }}" onsubmit="return confirm('Delete invoice {{ $invoice->invoice_no }}? This action cannot be undone from this screen.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-soft-danger btn-sm" title="Delete">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
