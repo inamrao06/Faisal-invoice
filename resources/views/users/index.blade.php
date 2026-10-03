@@ -2,149 +2,135 @@
 @section('title','Users')
 @section('page_title','Users')
 @section('content')
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-light justify-content-between">
+                <div class="d-flex align-items-center gap-2 flex-wrap" data-panel-tools>
+                    <form class="app-search mb-0" method="GET">
+                        <input data-panel-search class="form-control" type="search" name="q" value="{{ request('q') }}" placeholder="Search name or email...">
+                        <i class="ti ti-search app-search-icon text-muted"></i>
+                    </form>
+                    @if(request('q'))
+                        <a href="{{ route('users.index') }}" class="btn btn-soft-secondary btn-sm">Clear</a>
+                    @endif
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <a href="{{ route('users.create') }}" class="btn btn-primary ms-1">
+                        <i class="ti ti-user-plus fs-sm me-2"></i>Create User
+                    </a>
+                </div>
+            </div>
 
-<div class="ui-header">
-    <div>
-        <h2>User Management</h2>
-        <p>Super Admin and Company Admin accounts for the booking system.</p>
+            <div class="table-responsive">
+                <table class="table table-custom table-centered table-hover w-100 mb-0">
+                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                        <tr class="text-uppercase fs-xxs">
+                            <th>User</th>
+                            <th>User Type</th>
+                            <th>Company</th>
+                            <th>Access Role</th>
+                            <th>Status</th>
+                            <th class="text-center" style="width:1%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($users as $user)
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-md me-2">
+                                            <span class="avatar-title rounded {{ $user->isSuperUser() ? 'bg-primary text-white' : 'bg-primary bg-opacity-10 text-primary' }} fw-semibold">
+                                                {{ strtoupper(substr($user->name,0,1)) }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h6 class="cell-title">{{ $user->name }}</h6>
+                                            <p class="cell-sub">
+                                                {{ $user->email }}
+                                                @if($user->phone) &middot; {{ $user->phone }} @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if($user->isSuperUser())
+                                        <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold"><i class="ti ti-shield-star me-1"></i>Super Admin</span>
+                                    @else
+                                        <span class="badge bg-secondary bg-opacity-10 text-body fw-semibold"><i class="ti ti-building-community me-1"></i>Company Admin</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($user->company)
+                                        <h6 class="cell-title">{{ $user->company->name }}</h6>
+                                        <p class="cell-sub">{{ $user->company->code }}</p>
+                                    @else
+                                        <span class="text-muted fst-italic">All companies</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($user->isSuperUser() || (int)($user->company_role_num ?? 0) === 0)
+                                        <span class="badge bg-info bg-opacity-10 text-info fw-semibold">
+                                            <i class="ti {{ $user->isSuperUser() ? 'ti-infinity' : 'ti-shield-check' }} me-1"></i>{{ $user->accessLabel() }}
+                                        </span>
+                                    @else
+                                        <span class="badge bg-warning bg-opacity-10 text-warning fw-semibold">
+                                            <i class="ti ti-shield-half me-1"></i>{{ $user->accessLabel() }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($user->is_active)
+                                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold"><i class="ti ti-circle-check me-1"></i>Active</span>
+                                    @else
+                                        <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold"><i class="ti ti-circle-x me-1"></i>Inactive</span>
+                                    @endif
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if(auth()->user()->isSuperUser() && !session()->has('impersonation') && $user->is_active && !$user->is(auth()->user()))
+                                        <form method="POST" action="{{ route('users.impersonate',$user) }}" class="d-inline" data-confirm-impersonate data-user-name="{{ $user->name }}">
+                                            @csrf
+                                            <button class="btn btn-soft-secondary btn-sm" type="submit" title="Log in as {{ $user->name }}">
+                                                <i class="ti ti-user-share"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    <a class="btn btn-soft-primary btn-sm" href="{{ route('users.edit',$user) }}" title="Edit">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                    @if($user->is_active && !$user->is(auth()->user()))
+                                        <form method="POST" action="{{ route('users.destroy',$user) }}" class="d-inline" data-confirm-disable data-user-name="{{ $user->name }}">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-soft-danger btn-sm" type="submit" title="Disable user" aria-label="Disable {{ $user->name }}">
+                                                <i class="ti ti-user-x"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6">
+                                    <div class="table-empty">
+                                        <i class="ti ti-users"></i>
+                                        <p>No users found{{ request('q') ? ' for "'.request('q').'"' : '' }}.</p>
+                                        <a href="{{ route('users.create') }}" class="btn btn-primary mt-3">
+                                            <i class="ti ti-user-plus me-1"></i>Create First User
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer py-2 d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <span class="text-muted fs-12">{{ $users->total() }} user{{ $users->total() !== 1 ? 's' : '' }} found</span>
+                @if($users->hasPages()){{ $users->links() }}@endif
+            </div>
+        </div>
     </div>
-    <a class="btn btn-primary" href="{{ route('users.create') }}">
-        <i class="ti ti-user-plus"></i> Create User
-    </a>
-</div>
-
-<div class="panel">
-    <div class="panel-toolbar">
-        <form class="ui-search" method="GET">
-            <input class="form-control" name="q" value="{{ request('q') }}"
-                   placeholder="Search name or email…">
-            <button class="btn btn-dark" type="submit">
-                <i class="ti ti-search"></i>
-            </button>
-            @if(request('q'))
-                <a href="{{ route('users.index') }}" class="btn btn-light">Clear</a>
-            @endif
-        </form>
-        <small style="color:#94a3b8">
-            {{ $users->total() }} user{{ $users->total() !== 1 ? 's' : '' }} found
-        </small>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table ui-table mb-0 align-middle" data-dx-grid>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>User Type</th>
-                    <th>Company</th>
-                    <th>Access Role</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
-                    <tr>
-                        <td>
-                            <div style="display:flex;align-items:center;gap:12px">
-                                <div class="u-av {{ $user->isSuperUser() ? 'super' : 'admin' }}">
-                                    {{ strtoupper(substr($user->name,0,1)) }}
-                                </div>
-                                <div class="u-name">
-                                    <strong>{{ $user->name }}</strong>
-                                    <small>{{ $user->email }}
-                                        @if($user->phone) · {{ $user->phone }}@endif
-                                    </small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            @if($user->isSuperUser())
-                                <span class="type-super">
-                                    <i class="ti ti-shield-star"></i> Super Admin
-                                </span>
-                            @else
-                                <span class="type-admin">
-                                    <i class="ti ti-building-community"></i> Company Admin
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($user->company)
-                                <div style="font-size:13px;font-weight:700;color:#0f172a">
-                                    {{ $user->company->name }}
-                                </div>
-                                <div style="font-size:11px;color:#94a3b8">{{ $user->company->code }}</div>
-                            @else
-                                <span style="font-size:13px;color:#94a3b8;font-style:italic">
-                                    All companies
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($user->isSuperUser())
-                                <span class="role-badge role-full">
-                                    <i class="ti ti-infinity"></i> Global
-                                </span>
-                            @elseif((int)($user->company_role_num ?? 0) === 0)
-                                <span class="role-badge role-full">
-                                    <i class="ti ti-shield-check-filled"></i> Full Access
-                                </span>
-                            @else
-                                <span class="role-badge role-restricted">
-                                    <i class="ti ti-shield-half"></i> Role {{ $user->company_role_num }}
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            <span class="status {{ $user->is_active ? 'on' : 'off' }}">
-                                {{ $user->is_active ? 'Active' : 'Inactive' }}
-                            </span>
-                        </td>
-                        <td class="text-end" style="white-space:nowrap">
-                            @if(auth()->user()->isSuperUser() && !session()->has('impersonation') && $user->is_active && !$user->is(auth()->user()))
-                                <form method="POST" action="{{ route('users.impersonate', $user) }}" class="d-inline" data-confirm-impersonate data-user-name="{{ $user->name }}">
-                                    @csrf
-                                    <button class="btn btn-sm btn-light me-1" type="submit" title="Log in as {{ $user->name }}"><i class="ti ti-user-share me-1"></i>Log in as</button>
-                                </form>
-                            @endif
-                            <a class="btn btn-sm btn-outline-primary"
-                               href="{{ route('users.edit',$user) }}">
-                                <i class="ti ti-pencil"></i> Edit
-                            </a>
-                            @if($user->is_active && !$user->is(auth()->user()))
-                                <form method="POST"
-                                      action="{{ route('users.destroy',$user) }}"
-                                      style="display:inline"
-                                      data-confirm-disable data-user-name="{{ $user->name }}">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-light ms-1" type="submit" title="Disable user" aria-label="Disable {{ $user->name }}">
-                                        <i class="ti ti-user-x"></i>
-                                    </button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6">
-                            <div class="ui-empty">
-                                <i class="ti ti-users"></i>
-                                <p>No users found{{ request('q') ? ' for "'.request('q').'"' : '' }}.</p>
-                                <a href="{{ route('users.create') }}" class="btn btn-primary mt-3">
-                                    <i class="ti ti-user-plus"></i> Create First User
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    @if($users->hasPages())
-        <div class="p-3 border-top">{{ $users->links() }}</div>
-    @endif
 </div>
 @endsection
 

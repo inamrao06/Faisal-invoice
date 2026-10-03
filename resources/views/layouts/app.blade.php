@@ -287,6 +287,33 @@
                                                 class="menu-icon"><i class="ti ti-users"></i></span><span
                                                 class="menu-text">Users</span></a></li>
                                 @endcan
+                                @php $employeeMenuActive = request()->routeIs('company.employees.*') || request()->routeIs('company.salaries.*') || request()->routeIs('company.reports.salaries'); @endphp
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#employee-menu"
+                                        aria-expanded="{{ $employeeMenuActive ? 'true' : 'false' }}"
+                                        class="side-nav-link {{ $employeeMenuActive ? 'active' : '' }}"><span
+                                            class="menu-icon"><i class="ti ti-id-badge"></i></span><span
+                                            class="menu-text">Employees</span><span class="menu-arrow"></span></a>
+                                    <div class="collapse {{ $employeeMenuActive ? 'show' : '' }}" id="employee-menu">
+                                        <ul class="sub-menu">
+                                            <li class="side-nav-item"><a href="{{ route('company.employees.index') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.employees.index') || request()->routeIs('company.employees.show') ? 'active' : '' }}"><span
+                                                        class="menu-text">All Employees</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.employees.create') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.employees.create') ? 'active' : '' }}"><span
+                                                        class="menu-text">Add Employee</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.salaries.create') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.salaries.create') ? 'active' : '' }}"><span
+                                                        class="menu-text">Generate Salary</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.salaries.index') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.salaries.index') || request()->routeIs('company.salaries.show') ? 'active' : '' }}"><span
+                                                        class="menu-text">Salary Records</span></a></li>
+                                            <li class="side-nav-item"><a href="{{ route('company.reports.salaries') }}"
+                                                    class="side-nav-link {{ request()->routeIs('company.reports.salaries') ? 'active' : '' }}"><span
+                                                        class="menu-text">Salary Report</span></a></li>
+                                        </ul>
+                                    </div>
+                                </li>
                                 <li class="side-nav-item">
                                     <a data-bs-toggle="collapse" href="#sales-menu"
                                         aria-expanded="{{ request()->routeIs('company.vehicle-*') || request()->routeIs('company.customers.*') || request()->routeIs('company.vehicles.*') ? 'true' : 'false' }}"
@@ -420,6 +447,11 @@
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert"><i
                             class="ti ti-circle-check me-2"></i>{{ session('success') }}<button type="button"
+                            class="btn-close" data-bs-dismiss="alert"></button></div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert"><i
+                            class="ti ti-alert-triangle me-2"></i>{{ session('error') }}<button type="button"
                             class="btn-close" data-bs-dismiss="alert"></button></div>
                 @endif
                 @if ($errors->any())

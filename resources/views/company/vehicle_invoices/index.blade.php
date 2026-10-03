@@ -64,9 +64,17 @@
                                 <td class="text-end fw-semibold">{{ number_format($invoice->total_sale_price,2) }}</td>
                                 <td class="text-end fw-semibold">{{ number_format($invoice->balance_amount,2) }}</td>
                                 <td class="text-center">
-                                    <a class="btn btn-soft-primary btn-sm" href="{{ route('company.vehicle-invoices.show',$invoice) }}" title="View">
-                                        <i class="ti ti-eye"></i>
-                                    </a>
+                                    <div class="d-inline-flex align-items-center gap-1">
+                                        <a class="btn btn-soft-primary btn-sm" href="{{ route('company.vehicle-invoices.show',$invoice) }}" title="View">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                        <a class="btn btn-soft-secondary btn-sm" target="_blank" href="{{ route('company.vehicle-invoices.print',$invoice) }}" title="Print">
+                                            <i class="ti ti-printer"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-soft-success btn-sm" data-bs-toggle="modal" data-bs-target="#invoiceEmailModal-{{ $invoice->id }}" title="Email to customer">
+                                            <i class="ti ti-mail"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -93,4 +101,8 @@
         </div>
     </div>
 </div>
+
+@foreach($invoices as $invoice)
+    @include('company.vehicle_invoices._email_modal', ['invoice' => $invoice])
+@endforeach
 @endsection

@@ -48,6 +48,7 @@ class CompanyWarrantyProviderController extends Controller
     {
         return $request->validate([
             'name' => ['required', 'max:120', Rule::unique('warranty_providers', 'name')->where('branch_id', $this->companyId())->ignore($provider)],
+            'description'=>['nullable'],
             'is_active' => ['nullable', 'boolean'],
         ]) + [
             'branch_id' => $this->companyId(),

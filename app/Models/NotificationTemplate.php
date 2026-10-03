@@ -109,6 +109,7 @@ class NotificationTemplate extends Model
                 '[registration]' => 'Vehicle registration number',
                 '[vin]' => 'Vehicle VIN/chassis number',
                 '[vehicle_price]' => 'Vehicle sale price',
+                '[tax_amount]' => 'VAT amount',
                 '[warranty_period]' => 'warranty period',
                 '[warranty_status]' => 'warranty status',
                 '[warranty_duration]' => 'warranty duration',

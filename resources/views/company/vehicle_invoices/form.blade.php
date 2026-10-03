@@ -565,6 +565,15 @@
                                 <input class="form-control fw-bold" id="total_sale_price" readonly>
                             </div>
                             <div class="col-md-6">
+                                <label class="form-label" for="tax">Tax</label>
+                                <input class="form-control calc @error('tax') is-invalid @enderror" id="tax"
+                                    type="number" step="0.01" name="tax"
+                                    value="{{ old('tax', $invoice->tax ?? 0) }}">
+                                @error('tax')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
                                 <label class="form-label" for="commission_notes">Commission Notes</label>
                                 <input class="form-control @error('commission_notes') is-invalid @enderror"
                                     id="commission_notes" name="commission_notes"
@@ -727,6 +736,7 @@
             var discount = document.getElementById('discount');
             var commission = document.getElementById('commission_amount');
             var total = document.getElementById('total_sale_price');
+            var tax = document.getElementById('tax');
             var summaryTotal = document.getElementById('summaryTotal');
             var transactionType = document.getElementById('transaction_type');
             var sellerWrap = document.getElementById('sellerCustomerWrap');
@@ -744,7 +754,7 @@
             }
 
             function calc() {
-                var due = Math.max(0, n(price.value) - n(discount.value) + n(commission.value));
+                var due = Math.max(0, n(price.value) + n(tax.value) - n(discount.value) + n(commission.value));
                 total.value = f(due);
                 summaryTotal.textContent = f(due);
                 var paid = 0;
@@ -828,6 +838,7 @@
                     option.dataset.mileage ? 'Mileage: ' + option.dataset.mileage : '',
                     option.dataset.keys ? 'Keys: ' + option.dataset.keys : '',
                     option.dataset.price ? 'Price: ' + option.dataset.price : ''
+
                 ].filter(Boolean).join('<br>');
             }
 

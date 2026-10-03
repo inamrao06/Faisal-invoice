@@ -5,12 +5,15 @@ use App\Http\Controllers\CompanyCarSpecificationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyCustomerController;
 use App\Http\Controllers\CompanyDashboardController;
+use App\Http\Controllers\CompanyEmployeeController;
 use App\Http\Controllers\CompanyExpenseController;
 use App\Http\Controllers\CompanyExpenseReportController;
 use App\Http\Controllers\CompanyExpenseTypeController;
 use App\Http\Controllers\CompanyPaymentMethodController;
 use App\Http\Controllers\CompanyPermissionController;
 use App\Http\Controllers\CompanyRoleController;
+use App\Http\Controllers\CompanySalaryController;
+use App\Http\Controllers\CompanySalaryReportController;
 use App\Http\Controllers\CompanySettingController;
 use App\Http\Controllers\CompanyTemplateController;
 use App\Http\Controllers\CompanyTypeController;
@@ -32,6 +35,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 });
 
+Route::get('/public/vehicle-invoices/{vehicle_invoice}/print', [CompanyVehicleSaleInvoiceController::class, 'publicPrint'])->name('public.vehicle-invoices.print');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/impersonation/stop', [ImpersonationController::class, 'stop'])->name('impersonation.stop');
@@ -51,6 +56,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('customers', CompanyCustomerController::class)->except('show', 'destroy');
         Route::resource('vehicles', CompanyVehicleController::class)->except('show', 'destroy');
         Route::resource('vehicle-invoices', CompanyVehicleSaleInvoiceController::class)->parameters(['vehicle-invoices' => 'vehicle_invoice'])->except('destroy');
+        Route::get('/vehicle-invoices/{vehicle_invoice}/print', [CompanyVehicleSaleInvoiceController::class, 'print'])->name('vehicle-invoices.print');
+        Route::post('/vehicle-invoices/{vehicle_invoice}/email', [CompanyVehicleSaleInvoiceController::class, 'email'])->name('vehicle-invoices.email');
         Route::resource('templates', CompanyTemplateController::class)->parameters(['templates' => 'template'])->except('show');
         Route::get('/car-specifications/{type}', [CompanyCarSpecificationController::class, 'index'])->name('car-specifications.index');
         Route::get('/car-specifications/{type}/create', [CompanyCarSpecificationController::class, 'create'])->name('car-specifications.create');
@@ -69,6 +76,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/expenses-data', [CompanyExpenseController::class, 'data'])->name('expenses.data');
         Route::get('/expense-dropdowns', [CompanyExpenseController::class, 'dropdowns'])->name('expenses.dropdowns');
         Route::get('/reports/expenses', CompanyExpenseReportController::class)->name('reports.expenses');
+        Route::resource('employees', CompanyEmployeeController::class);
+        Route::get('/salaries', [CompanySalaryController::class, 'index'])->name('salaries.index');
+        Route::get('/salaries/generate', [CompanySalaryController::class, 'create'])->name('salaries.create');
+        Route::post('/salaries/generate', [CompanySalaryController::class, 'store'])->name('salaries.store');
+        Route::get('/salaries/{salary}', [CompanySalaryController::class, 'show'])->name('salaries.show');
+        Route::get('/salaries/{salary}/edit', [CompanySalaryController::class, 'edit'])->name('salaries.edit');
+        Route::put('/salaries/{salary}', [CompanySalaryController::class, 'update'])->name('salaries.update');
+        Route::post('/salaries/{salary}/mark-paid', [CompanySalaryController::class, 'markPaid'])->name('salaries.mark-paid');
+        Route::delete('/salaries/{salary}', [CompanySalaryController::class, 'destroy'])->name('salaries.destroy');
+        Route::get('/reports/salaries', CompanySalaryReportController::class)->name('reports.salaries');
         Route::resource('users', CompanyUserController::class)->except('show')->middleware('can:manage-users');
 
     });
